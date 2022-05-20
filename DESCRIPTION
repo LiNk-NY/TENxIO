@@ -1,0 +1,18 @@
+Package: TENxIO
+Type: Package
+Title: Import methods for 10X Genomics files
+Version: 0.1.0
+Authors@R:
+  person(
+    "Marcel", "Ramos", , "marcel.ramos@roswellpark.org",
+    c("aut", "cre"), c(ORCID = "0000-0002-3242-0582")
+  )
+Imports: BiocIO
+Depends: R (>= 4.2.0)
+Description: The package exports methods for working with version 2 and 3 of
+    10X Genomics files. It simplifies importing by creating a class with
+    slots for version and group in the H5 file. Currently only H5 files are
+    supported.
+License: Artistic-2.0
+Encoding: UTF-8
+RoxygenNote: 7.1.2
