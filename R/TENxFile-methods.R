@@ -54,14 +54,19 @@ setMethod("import", "TENxMTX", function(con, format, text, ...) {
 })
 
 
-.TENxDecompress <- function(resource, version, group, extension, ...) {
+.TENxUntar <- function(con) {
+    dir.create(tempdir <- tempfile())
+    untar(con, exdir = tempdir)
+    tempdir
+}
+
+.TENxDecompress <- function(con) {
     res_ext <- .get_ext(resource)
     if (identical(res_ext, "tar.gz")) {
-       dir.create(tempdir <- tempfile())
-       untar(resource, exdir = tempdir)
-       tenxgfiles <- list.files(tempdir, recursive = TRUE, full.names = TRUE)
-       ## Sort through files and import
-       ## import()
+        tenfolder <- .TENxUntar(con)
+        gfiles <- list.files(tenfolder, full.names = TRUE)
+        ## Sort through files and import
+        ## import()
     } else {
         stop("Extension type: ", res_ext, " not supported")
     }
