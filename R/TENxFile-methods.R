@@ -1,3 +1,6 @@
+#' @importFrom MatrixGenerics rowRanges
+NULL
+
 gene.meta <- data.frame(
     version = c("3", "2"),
     ID = c("/features/id", "/genes"),
@@ -18,17 +21,52 @@ gene.meta <- data.frame(
     as.data.frame(res)
 }
 
+.getGenome <- function(con) {
+    gloc <- "matrix/features/genome"
+    gen <- unique(rhdf5::h5read(h5f, gloc))
+    if (length(gen) != 1L)
+        stop("The genome build in ", gloc, " is not consistent")
+    gen
+}
+
+#' @importFrom GenomeInfoDb genome genome<-
 .getRowRanges <- function(con) {
     interval <- rhdf5::h5read(path(con), "matrix/features/interval")
     interval[interval == "NA"] <- "NA_character_:0"
     gr <- as(as.character(interval), "GRanges")
     mcols(gr) <- .getRowDat(con)
+    genbuild <- rep(.getGenome(con), length(genome(gr)))
+    genome(gr) <- genbuild
     gr
 }
 
-setMethod("import", "TENxFile", function(con, format, text, ...) {
+setMethod("import", "TENxH5", function(con, format, text, ...) {
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
     SingleCellExperiment::SingleCellExperiment(
         assays = list(counts = matrixdata), rowRanges = .getRowRanges(con)
     )
+})
+
+setMethod("import", "TENxMTX", function(con, format, text, ...) {
+    mtxf <- SingleCellMultiModal:::.read_mtx(path(con))
+    ## TODO: make use of other files
+    SummarizedExperiment(assays = SimpleList(counts = mtxf))
+})
+
+
+.TENxDecompress <- function(resource, version, group, extension, ...) {
+    res_ext <- .get_ext(resource)
+    if (identical(res_ext, "tar.gz")) {
+       dir.create(tempdir <- tempfile())
+       untar(resource, exdir = tempdir)
+       tenxgfiles <- list.files(tempdir, recursive = TRUE, full.names = TRUE)
+       ## Sort through files and import
+       ## import()
+    } else {
+        stop("Extension type: ", res_ext, " not supported")
+    }
+}
+
+setMethod("import", "TENxCompressed", function(con, format, text, ...) {
+   ## Decompress and callNextMethod to proper file type
 })
