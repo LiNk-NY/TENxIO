@@ -8,8 +8,19 @@ Authors@R:
     c("aut", "cre"), c(ORCID = "0000-0002-3242-0582")
   )
 Depends: R (>= 4.2.0)
-Imports: BiocIO, BiocGenerics, MatrixGenerics, GenomeInfoDb,
-  SingleCellMultiModal, S4Vectors
+Imports:
+  BiocGenerics,
+  BiocIO,
+  GenomeInfoDb,
+  MatrixGenerics,
+  S4Vectors,
+  SingleCellMultiModal
+Suggests:
+  BiocStyle,
+  HDF5Array,
+  knit,
+  rhdf5,
+  rmarkdown
 Description: The package exports methods for working with version 2 and 3 of
     10X Genomics files. It simplifies importing by creating a class with
     slots for version and group in the H5 file. Currently only H5 files are

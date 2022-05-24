@@ -42,6 +42,8 @@ gene.meta <- data.frame(
 
 setMethod("import", "TENxH5", function(con, format, text, ...) {
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
+    if (!requireNamespace("rhdf5", quietly = TRUE))
+        stop("Install 'rhdf5' to import TENxH5 data")
     SingleCellExperiment::SingleCellExperiment(
         assays = list(counts = matrixdata), rowRanges = .getRowRanges(con)
     )
