@@ -7,12 +7,13 @@ Authors@R:
     "Marcel", "Ramos", , "marcel.ramos@roswellpark.org",
     c("aut", "cre"), c(ORCID = "0000-0002-3242-0582")
   )
-Depends: R (>= 4.2.0)
+Depends: R (>= 4.2.0), SingleCellExperiment, SummarizedExperiment
 Imports:
   BiocGenerics,
   BiocIO,
   GenomeInfoDb,
   MatrixGenerics,
+  methods,
   S4Vectors,
   SingleCellMultiModal,
   utils

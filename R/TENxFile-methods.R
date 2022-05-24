@@ -30,6 +30,7 @@ gene.meta <- data.frame(
 }
 
 #' @importFrom GenomeInfoDb genome genome<-
+#' @importFrom S4Vectors mcols<-
 .getRowRanges <- function(con) {
     interval <- rhdf5::h5read(path(con), "matrix/features/interval")
     interval[interval == "NA"] <- "NA_character_:0"
@@ -40,6 +41,7 @@ gene.meta <- data.frame(
     gr
 }
 
+#' @import SingleCellExperiment
 setMethod("import", "TENxH5", function(con, format, text, ...) {
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
     if (!requireNamespace("rhdf5", quietly = TRUE))
@@ -49,14 +51,17 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     )
 })
 
+#' @import SummarizedExperiment
 setMethod("import", "TENxMTX", function(con, format, text, ...) {
     mtxf <- SingleCellMultiModal:::.read_mtx(path(con))
     ## TODO: make use of other files
-    SummarizedExperiment(assays = SimpleList(counts = mtxf))
+    SummarizedExperiment::SummarizedExperiment(
+        assays = SimpleList(counts = mtxf)
+    )
 })
 
 
-#' @importFrom utils untar
+#' @importFrom utils untar tail
 .TENxUntar <- function(con) {
     dir.create(tempdir <- tempfile())
     untar(con, exdir = tempdir)

@@ -48,7 +48,10 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 # TENxFile constructor ----------------------------------------------------
 
 .get_ext <- function(fname) {
-    paste0(tail(strsplit(basename(fname), "\\.")[[1]], -1), collapse = ".")
+    paste0(
+        utils::tail(strsplit(basename(fname), "\\.")[[1]], -1),
+        collapse = "."
+    )
 }
 
 #' TENxFile constructor function
