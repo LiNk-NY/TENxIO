@@ -23,7 +23,7 @@ gene.meta <- data.frame(
 
 .getGenome <- function(con) {
     gloc <- "matrix/features/genome"
-    gen <- unique(rhdf5::h5read(h5f, gloc))
+    gen <- unique(rhdf5::h5read(con, gloc))
     if (length(gen) != 1L)
         stop("The genome build in ", gloc, " is not consistent")
     gen
@@ -64,7 +64,7 @@ setMethod("import", "TENxMTX", function(con, format, text, ...) {
 }
 
 .TENxDecompress <- function(con) {
-    res_ext <- .get_ext(resource)
+    res_ext <- .get_ext(con)
     if (identical(res_ext, "tar.gz")) {
         tenfolder <- .TENxUntar(con)
         gfiles <- list.files(tenfolder, full.names = TRUE)
