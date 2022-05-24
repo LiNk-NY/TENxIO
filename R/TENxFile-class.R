@@ -56,10 +56,12 @@ TENxFile <- function(
         group <- match.arg(group)
     version <- match.arg(version)
     ext <- .get_ext(resource)
-    l1 <- rhdf5::h5ls(resource, recursive = FALSE)
-    gname <- l1[l1$otype == "H5I_GROUP", "name"]
-    if (!group %in% gname)
-        stop("'group' not found")
+    if (identical(ext, "h5")) {
+        l1 <- rhdf5::h5ls(resource, recursive = FALSE)
+        gname <- l1[l1$otype == "H5I_GROUP", "name"]
+        if (!group %in% gname)
+            stop("'group' not found")
+    }
     TENxFUN <- switch(
         ext,
         h5 = .TENxH5, mtx = .TENxMTX, tar.gz = .TENxCompressed, .TENxFile
