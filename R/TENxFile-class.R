@@ -11,6 +11,21 @@
         c(version = "character", group = "character", extension = "character")
 )
 
+.check_file_exists <- function(object) {
+    if (file.exists(path(object)))
+        NULL
+    else
+        "Path to the file must be valid"
+}
+
+.validTENxFile <- function(object) {
+    if (length(path(object))) {
+        .check_file_exists(object)
+    }
+}
+
+S4Vectors::setValidity2("TENxFile", .validTENxFile)
+
 #' @exportClass TENxH5
 .TENxH5 <- setClass(
     Class = "TENxH5",
