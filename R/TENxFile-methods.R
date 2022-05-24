@@ -56,6 +56,7 @@ setMethod("import", "TENxMTX", function(con, format, text, ...) {
 })
 
 
+#' @importFrom utils untar
 .TENxUntar <- function(con) {
     dir.create(tempdir <- tempfile())
     untar(con, exdir = tempdir)

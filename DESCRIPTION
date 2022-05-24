@@ -14,11 +14,12 @@ Imports:
   GenomeInfoDb,
   MatrixGenerics,
   S4Vectors,
-  SingleCellMultiModal
+  SingleCellMultiModal,
+  utils
 Suggests:
   BiocStyle,
   HDF5Array,
-  knit,
+  knitr,
   rhdf5,
   rmarkdown
 Description: The package exports methods for working with version 2 and 3 of
