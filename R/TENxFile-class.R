@@ -13,15 +13,13 @@
 
 .check_file_exists <- function(object) {
     if (file.exists(path(object)))
-        NULL
+        TRUE
     else
         "Path to the file must be valid"
 }
 
 .validTENxFile <- function(object) {
-    if (length(path(object))) {
-        .check_file_exists(object)
-    }
+    .check_file_exists(object)
 }
 
 S4Vectors::setValidity2("TENxFile", .validTENxFile)
