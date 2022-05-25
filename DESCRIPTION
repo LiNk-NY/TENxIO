@@ -12,8 +12,10 @@ Imports:
   BiocGenerics,
   BiocIO,
   GenomeInfoDb,
+  Matrix,
   MatrixGenerics,
   methods,
+  readr,
   S4Vectors,
   SingleCellMultiModal,
   utils
@@ -29,4 +31,4 @@ Description: The package exports methods for working with version 2 and 3 of
     supported.
 License: Artistic-2.0
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
