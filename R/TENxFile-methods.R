@@ -23,7 +23,7 @@ gene.meta <- data.frame(
 
 .getGenome <- function(con) {
     gloc <- "matrix/features/genome"
-    gen <- unique(rhdf5::h5read(con, gloc))
+    gen <- unique(rhdf5::h5read(path(con), gloc))
     if (length(gen) != 1L)
         stop("The genome build in ", gloc, " is not consistent")
     gen
