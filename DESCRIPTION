@@ -32,3 +32,8 @@ Description: The package exports methods for working with version 2 and 3 of
 License: Artistic-2.0
 Encoding: UTF-8
 RoxygenNote: 7.2.0
+Collate: 
+    'TENxFile-class.R'
+    'TENxFileList-class.R'
+    'TENxFile-methods.R'
+    'utils.R'

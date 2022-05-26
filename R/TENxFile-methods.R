@@ -1,4 +1,5 @@
 #' @importFrom MatrixGenerics rowRanges
+#' @include TENxFileList-class.R
 NULL
 
 gene.meta <- data.frame(
@@ -126,8 +127,12 @@ setMethod("import", "TENxMTX", function(con, format, text, ...) {
     }
 }
 
-setMethod("import", "TENxCompressed", function(con, format, text, ...) {
-    fdata <- .TENxDecompress(con)
+#' @export
+setMethod("import", "TENxFileList", function(con, format, text, ...) {
+    if (con@compressed)
+        fdata <- .TENxDecompress(con)
+    else
+        fdata <- con@listData
     mat <- fdata[["matrix.mtx.gz"]]
     colnames(mat) <- unlist(fdata[["barcodes.tsv.gz"]])
     warning("Matrix of mixed types; see in rowData(x)")

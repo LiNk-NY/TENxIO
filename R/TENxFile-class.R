@@ -35,11 +35,6 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
     contains = "TENxFile"
 )
 
-.TENxCompressed <- setClass(
-    Class = "TENxCompressed",
-    contains = "TENxFile"
-)
-
 # TENxFile constructor ----------------------------------------------------
 
 .get_ext <- function(fname) {
@@ -91,10 +86,14 @@ TENxFile <- function(resource, ...) {
     gname
 }
 
+#' @rdname TENxH5
+#' @title Import H5 files from 10X
+#'
 #' @examples
 #'
 #' h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
-#' TENxFile(h5f)
+#' con <- TENxFile(h5f)
+#' import(con)
 #'
 #' @export
 TENxH5 <-
