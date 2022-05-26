@@ -4,7 +4,7 @@
 \alias{TENxFile}
 \title{TENxFile constructor function}
 \usage{
-TENxFile(resource, group = c("matrix", "outs"), version = c("3", "2"), ...)
+TENxFile(resource, ...)
 }
 \description{
 TENxFile constructor function
@@ -17,6 +17,7 @@ import(con)
 
 ## compressed
 h5c <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
-con <- TENxFile(h5c)
+comp <- TENxFile(h5c)
+import(comp)
 
 }

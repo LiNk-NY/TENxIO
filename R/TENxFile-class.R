@@ -7,8 +7,7 @@
 .TENxFile <- setClass(
     Class = "TENxFile",
     contains = "BiocFile",
-    slots =
-        c(version = "character", group = "character", extension = "character")
+    slots = c(extension = "character")
 )
 
 .check_file_exists <- function(object) {
@@ -27,7 +26,8 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 #' @exportClass TENxH5
 .TENxH5 <- setClass(
     Class = "TENxH5",
-    contains = "TENxFile"
+    contains = "TENxFile",
+    slots = c(version = "character", group = "character")
 )
 
 .TENxMTX <- setClass(
@@ -56,34 +56,51 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 #'
 #' @examples
 #'
-#' h5f <- "~/data/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
+#' h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
 #' con <- TENxFile(h5f)
 #' import(con)
 #'
 #' ## compressed
 #' h5c <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
-#' con <- TENxFile(h5c)
+#' comp <- TENxFile(h5c)
+#' import(comp)
 #'
 #' @export
-TENxFile <- function(
-        resource, group = c("matrix", "outs"), version = c("3", "2"), ...
-) {
-    if (missing(group))
-        group <- match.arg(group)
-    version <- match.arg(version)
+TENxFile <- function(resource, ...) {
     ext <- .get_ext(resource)
-    if (identical(ext, "h5")) {
-        l1 <- rhdf5::h5ls(resource, recursive = FALSE)
-        gname <- l1[l1$otype == "H5I_GROUP", "name"]
-        if (!group %in% gname)
-            stop("'group' not found")
-    }
     TENxFUN <- switch(
         ext,
-        h5 = .TENxH5, mtx = .TENxMTX, tar.gz = .TENxCompressed, .TENxFile
+        h5 = TENxH5, mtx = .TENxMTX, tar.gz = .TENxCompressed, .TENxFile
     )
-    TENxFUN(
-        resource = resource, version = version,
-        group = group, extension = ext, ...
-    )
+    TENxFUN(resource = resource,  extension = ext, ...)
+}
+
+.get_h5_group <- function(fpath) {
+    if (!requireNamespace("rhdf5", quietly = TRUE))
+        stop("Install 'rhdf5' to work with TENxH5")
+    l1 <- rhdf5::h5ls(fpath, recursive = FALSE)
+    l1[l1$otype == "H5I_GROUP", "name"]
+}
+
+.KNOWN_H5_GROUPS <- c("matrix", "outs")
+
+.check_group_ok <- function(fpath) {
+    gname <- .get_h5_group(fpath)
+    if (!gname %in% .KNOWN_H5_GROUPS)
+        stop("'group' not recognized")
+    gname
+}
+
+#' @examples
+#'
+#' h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
+#' TENxFile(h5f)
+#'
+#' @export
+TENxH5 <-
+    function(resource, version = c("3", "2"), ...)
+{
+    version <- match.arg(version)
+    group <- .check_group_ok(resource)
+    .TENxH5(resource = resource, group = group, version = version, ...)
 }

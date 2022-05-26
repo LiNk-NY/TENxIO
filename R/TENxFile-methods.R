@@ -42,6 +42,7 @@ gene.meta <- data.frame(
 }
 
 #' @import SingleCellExperiment
+#' @export
 setMethod("import", "TENxH5", function(con, format, text, ...) {
     if (!requireNamespace("HDF5Array", quietly = TRUE))
         stop("Install 'HDF5Array' to import TENxH5 files")
@@ -52,6 +53,7 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
 })
 
 #' @import SummarizedExperiment
+#' @export
 setMethod("import", "TENxMTX", function(con, format, text, ...) {
     mtxf <- SingleCellMultiModal:::.read_mtx(path(con))
     ## TODO: make use of other files
