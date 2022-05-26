@@ -27,20 +27,17 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 #' @exportClass TENxH5
 .TENxH5 <- setClass(
     Class = "TENxH5",
-    contains = "TENxFile",
-    slots = c(extension = "character")
+    contains = "TENxFile"
 )
 
 .TENxMTX <- setClass(
     Class = "TENxMTX",
-    contains = "TENxFile",
-    slots = c(extension = "character")
+    contains = "TENxFile"
 )
 
 .TENxCompressed <- setClass(
     Class = "TENxCompressed",
-    contains = "TENxFile",
-    slots = c(extension = "character")
+    contains = "TENxFile"
 )
 
 # TENxFile constructor ----------------------------------------------------
@@ -59,7 +56,7 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 #'
 #' @examples
 #'
-#' h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
+#' h5f <- "~/data/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
 #' con <- TENxFile(h5f)
 #' import(con)
 #'
