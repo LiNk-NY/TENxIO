@@ -36,4 +36,5 @@ Collate:
     'TENxFile-class.R'
     'TENxFileList-class.R'
     'TENxFile-methods.R'
+    'TENxH5-class.R'
     'utils.R'

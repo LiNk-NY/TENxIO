@@ -23,13 +23,6 @@
 
 S4Vectors::setValidity2("TENxFile", .validTENxFile)
 
-#' @exportClass TENxH5
-.TENxH5 <- setClass(
-    Class = "TENxH5",
-    contains = "TENxFile",
-    slots = c(version = "character", group = "character")
-)
-
 .TENxMTX <- setClass(
     Class = "TENxMTX",
     contains = "TENxFile"
@@ -70,36 +63,3 @@ TENxFile <- function(resource, ...) {
     TENxFUN(resource = resource,  extension = ext, ...)
 }
 
-.get_h5_group <- function(fpath) {
-    if (!requireNamespace("rhdf5", quietly = TRUE))
-        stop("Install 'rhdf5' to work with TENxH5")
-    l1 <- rhdf5::h5ls(fpath, recursive = FALSE)
-    l1[l1$otype == "H5I_GROUP", "name"]
-}
-
-.KNOWN_H5_GROUPS <- c("matrix", "outs")
-
-.check_group_ok <- function(fpath) {
-    gname <- .get_h5_group(fpath)
-    if (!gname %in% .KNOWN_H5_GROUPS)
-        stop("'group' not recognized")
-    gname
-}
-
-#' @rdname TENxH5
-#' @title Import H5 files from 10X
-#'
-#' @examples
-#'
-#' h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
-#' con <- TENxFile(h5f)
-#' import(con)
-#'
-#' @export
-TENxH5 <-
-    function(resource, version = c("3", "2"), ...)
-{
-    version <- match.arg(version)
-    group <- .check_group_ok(resource)
-    .TENxH5(resource = resource, group = group, version = version, ...)
-}
