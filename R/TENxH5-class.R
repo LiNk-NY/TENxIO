@@ -93,6 +93,8 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
             assays = list(counts = matrixdata), rowRanges = .getRowRanges(con)
         )
         rownames(sce) <- mcols(sce)[["ID"]]
+        ## remove stand-in NA values
+        sce <- sce[seqnames(rowRanges(sce)) != "NA_character_", ]
         splitAltExps(sce, rowData(sce)[["Type"]], ref = "Gene Expression")
     } else {
         stop("Version 2 not supported yet.")
