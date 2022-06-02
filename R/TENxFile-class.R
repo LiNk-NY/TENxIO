@@ -23,11 +23,6 @@
 
 S4Vectors::setValidity2("TENxFile", .validTENxFile)
 
-.TENxMTX <- setClass(
-    Class = "TENxMTX",
-    contains = "TENxFile"
-)
-
 # TENxFile constructor ----------------------------------------------------
 
 .get_ext <- function(fname) {
@@ -58,7 +53,7 @@ TENxFile <- function(resource, ...) {
     ext <- .get_ext(resource)
     TENxFUN <- switch(
         ext,
-        h5 = TENxH5, mtx = .TENxMTX, tar.gz = .TENxCompressed, .TENxFile
+        h5 = TENxH5, mtx = .TENxMTX, tar.gz = .TENxFileList, .TENxFile
     )
     TENxFUN(resource = resource,  extension = ext, ...)
 }
