@@ -1,6 +1,3 @@
-#' @importFrom MatrixGenerics rowRanges
-NULL
-
 #' @exportClass TENxH5
 .TENxH5 <- setClass(
     Class = "TENxH5",
@@ -82,6 +79,7 @@ gene.meta <- data.frame(
     gr
 }
 
+#' @importFrom MatrixGenerics rowRanges
 #' @import SingleCellExperiment
 #' @export
 setMethod("import", "TENxH5", function(con, format, text, ...) {
