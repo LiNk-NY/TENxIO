@@ -14,5 +14,9 @@ Importing peak-annotation files
 fi <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_atac_peak_annotation.tsv"
 pa <- .import_peak_anno(fi)
 
+con <- TENxFile("~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5")
+sce <- import(con)
+annotation(sce, name = "peak_annotation") <- pa
+
 }
 \keyword{internal}
