@@ -12,6 +12,7 @@ Imports:
   BiocGenerics,
   BiocIO,
   GenomeInfoDb,
+  GenomicRanges,
   Matrix,
   MatrixGenerics,
   methods,
@@ -23,12 +24,16 @@ Suggests:
   BiocStyle,
   HDF5Array,
   knitr,
+  RaggedExperiment,
   rhdf5,
-  rmarkdown
+  rmarkdown,
+  Rsamtools
 Description: The package exports methods for working with version 2 and 3 of
     10X Genomics files. It simplifies importing by creating a class with
     slots for version and group in the H5 file. Currently only H5 files are
     supported.
 License: Artistic-2.0
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
+
