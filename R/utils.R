@@ -104,9 +104,9 @@ setMethod("annotation", "SingleCellExperiment", function(object, ...) {
     RaggedExperiment::RaggedExperiment(ggrl)
 }
 
-.checkPkgsAvail <- function(pkgnames) {
+.checkPkgsAvail <- function(pkgnames, walkback = -3L) {
     vapply(pkgnames, function(pkgname) {
-        func <- as.character(sys.call(-3L)[[1L]])
+        func <- as.character(sys.call(walkback)[[1L]])
         func <- tail(func, 1L)
         if (!requireNamespace(pkgname, quietly = TRUE))
             stop("Install '", pkgname, "' to use '", func, "'", call. = FALSE)

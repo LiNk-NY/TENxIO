@@ -6,15 +6,14 @@
 )
 
 .get_h5_group <- function(fpath) {
-    if (!requireNamespace("rhdf5", quietly = TRUE))
-        stop("Install 'rhdf5' to work with TENxH5")
     l1 <- rhdf5::h5ls(fpath, recursive = FALSE)
     l1[l1$otype == "H5I_GROUP", "name"]
 }
 
 .KNOWN_H5_GROUPS <- c("matrix", "outs")
 
-.check_group_ok <- function(fpath) {
+.check_h5_group <- function(fpath) {
+    .checkPkgsAvail("rhdf5")
     gname <- .get_h5_group(fpath)
     if (!gname %in% .KNOWN_H5_GROUPS)
         stop("'group' not recognized")
@@ -35,7 +34,7 @@ TENxH5 <-
     function(resource, version = c("3", "2"), ...)
 {
     version <- match.arg(version)
-    group <- .check_group_ok(resource)
+    group <- .check_h5_group(resource)
     .TENxH5(resource = resource, group = group, version = version, ...)
 }
 
@@ -83,8 +82,7 @@ gene.meta <- data.frame(
 #' @import SingleCellExperiment
 #' @export
 setMethod("import", "TENxH5", function(con, format, text, ...) {
-    if (!requireNamespace("HDF5Array", quietly = TRUE))
-        stop("Install 'HDF5Array' to import TENxH5 files")
+    .checkPkgsAvail("HDF5Array")
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
     if (identical(con@version, "3")) {
         sce <- SingleCellExperiment::SingleCellExperiment(
