@@ -2,9 +2,11 @@
 
 export(TENxFile)
 export(TENxFileList)
+export(TENxFragments)
 export(TENxH5)
 exportClasses(TENxFile)
 exportClasses(TENxFileList)
+exportClasses(TENxFragments)
 exportClasses(TENxH5)
 exportMethods(import)
 import(SingleCellExperiment)

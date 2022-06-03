@@ -2,6 +2,7 @@
 % Please edit documentation in R/TENxH5-class.R
 \name{TENxH5}
 \alias{TENxH5}
+\alias{TENxH5-class}
 \title{Import H5 files from 10X}
 \usage{
 TENxH5(resource, version = c("3", "2"), ...)

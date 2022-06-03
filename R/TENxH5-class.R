@@ -22,6 +22,7 @@
 
 #' @rdname TENxH5
 #' @title Import H5 files from 10X
+#' @aliases TENxH5-class
 #'
 #' @examples
 #'
