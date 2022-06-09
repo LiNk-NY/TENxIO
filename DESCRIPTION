@@ -13,7 +13,6 @@ Imports:
   BiocIO,
   GenomeInfoDb,
   GenomicRanges,
-  IRanges,
   Matrix,
   MatrixGenerics,
   methods,

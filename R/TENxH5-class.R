@@ -84,7 +84,7 @@ setMethod("dimnames", "TENxH5", function(x) {
         x@version == gene.meta[["version"]],
         !names(gene.meta) %in% c("group", "version")
     ]
-    IRanges::CharacterList(
+    list(
         rhdf5::h5read(path(x), file.path(x@group, gm[["ID"]])),
         rhdf5::h5read(path(x), "matrix/barcodes")
     )
