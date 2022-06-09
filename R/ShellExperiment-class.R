@@ -20,14 +20,15 @@ setMethod("show", "ShellExperiment", function(object) {
     if (length(cno))
         cn <- BiocBaseUtils::selectSome(cno)
     rd <- rowData(object)
+    rdn <- BiocBaseUtils::selectSome(names(rd))
 
     cat(
         "class:", class(object),
         "\nprojection:", "SingleCellExperiment",
         "\ndim:", dim(object),
         "\nrownames:", rn,
-        "\nrowData names(", length(rd), "):", names(rd),
-        "\nconames:", cn,
+        paste0("\nrowData names(", length(rd), "):"), rdn,
+        "\ncolnames:", cn,
         "\n", sep = " "
     )
 })
@@ -40,8 +41,6 @@ setMethod("show", "ShellExperiment", function(object) {
 #'
 #' @export
 ShellExperiment <- function(con) {
-    dims <- dim(con)
-    dimnames <- dimnames(con)
     .ShellExperiment(
         con,
         assays = NULL,
