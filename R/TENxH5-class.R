@@ -95,13 +95,18 @@ setMethod("dimnames", "TENxH5", function(x) {
 #' @importFrom GenomeInfoDb genome genome<-
 #' @export
 setMethod("genome", "TENxH5", function(x) {
+    gens <- rhdf5::h5read(path(x), "matrix/features/genome")
+    ugens <- unique(gens)
     intervals <- rhdf5::h5read(path(x), "matrix/features/interval")
     splitints <- strsplit(intervals, ":", fixed = TRUE)
     seqnames <- vapply(splitints, `[[`, character(1L), 1L)
+    useq <- unique(seqnames)
     if (any(seqnames == "NA"))
         warning("'seqlevels' contain NA values")
-    gens <- rhdf5::h5read(path(x), "matrix/features/genome")
-    vapply(split(gens, seqnames), unique, character(1L))
+    if (identical(length(ugens), 1L))
+        .setNames(rep(ugens, length(useq)), useq)
+    else
+        vapply(split(gens, seqnames), unique, character(1L))
 })
 
 #' @describeIn TENxH5 Read interval data and represent as GRanges

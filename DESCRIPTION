@@ -41,7 +41,6 @@ Collate:
     'TENxFile-class.R'
     'TENxH5-class.R'
     'ShellExperiment-class.R'
-    'TENxFile-methods.R'
     'TENxFileList-class.R'
     'TENxFragments-class.R'
     'TENxMTX-class.R'
