@@ -10,6 +10,7 @@
     )
 )
 
+#' @export
 setMethod("show", "ShellExperiment", function(object) {
     rn <- cn <- NULL
     rno <- rownames(object)
@@ -41,16 +42,9 @@ setMethod("show", "ShellExperiment", function(object) {
 ShellExperiment <- function(con) {
     dims <- dim(con)
     dimnames <- dimnames(con)
-    mat <- Matrix::sparseMatrix(
-        1, 1, x = NA_integer_, dims = dims, dimnames = dimnames
-    )
     .ShellExperiment(
         con,
-        assays = SummarizedExperiment::Assays(
-            SummarizedExperiment:::normarg_assays(
-                mat, as.null.if.no.assay = TRUE
-            )
-        ),
+        assays = NULL,
         rowRanges = rowRanges(con),
         elementMetadata = DataFrame(),
         colData = DataFrame()
