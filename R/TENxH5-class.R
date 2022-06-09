@@ -46,9 +46,11 @@ gene.meta <- data.frame(
     Type = c("/features/feature_type", NA_character_)
 )
 
-.getRowDat <- function(con) {
+#' @describeIn TENxH5 Generate the rowData ad hoc from a TENxH5 file
+#' @export
+setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
     gm <- gene.meta[
-        con@version == gene.meta[["version"]],
+        x@version == gene.meta[["version"]],
         !names(gene.meta) %in% c("group", "version")
     ]
     gm[] <- Filter(Negate(is.na), gm)
@@ -56,29 +58,53 @@ gene.meta <- data.frame(
         readname <- paste0(con@group, colval)
         rhdf5::h5read(path(con), readname)
     })
-    as.data.frame(res)
-}
+    as(res, "DataFrame")
+})
 
-.getGenome <- function(con) {
-    gloc <- "matrix/features/genome"
-    gen <- unique(rhdf5::h5read(path(con), gloc))
-    if (length(gen) != 1L)
-        stop("The genome build in ", gloc, " is not consistent")
-    gen
-}
+#' @describeIn TENxH5 Get the dimensions of the data as stored in the file
+#' @export
+setMethod("dim", "TENxH5", function(x) {
+    rhdf5::h5read(path(con), "matrix/shape")
+})
 
+#' @describeIn TENxH5 Get the dimension names from the file
+#' @export
+setMethod("dimnames", "TENxH5", function(x) {
+    gm <- gene.meta[
+        x@version == gene.meta[["version"]],
+        !names(gene.meta) %in% c("group", "version")
+    ]
+    list(
+        rhdf5::h5read(path(x), file.path(x@group, gm[["ID"]])),
+        rhdf5::h5read(path(x), "matrix/barcodes")
+    )
+})
+#' @describeIn TENxH5 Read genome string from file
 #' @importFrom GenomeInfoDb genome genome<-
+#' @export
+setMethod("genome", "TENxH5", function(x) {
+    intervals <- rhdf5::h5read(path(con), "matrix/features/interval")
+    splitints <- strsplit(intervals, ":", fixed = TRUE)
+    seqnames <- vapply(splitints, `[[`, character(1L), 1L)
+    if (any(seqnames == "NA"))
+        warning("'seqlevels' contain NA values")
+    gens <- rhdf5::h5read(path(con), "matrix/features/genome")
+    vapply(split(gens, seqnames), unique, character(1L))
+})
+
+#' @describeIn TENxH5 Read interval data and represent as GRanges
 #' @importFrom S4Vectors mcols<-
-.getRowRanges <- function(con) {
-    interval <- rhdf5::h5read(path(con), "matrix/features/interval")
+#' @export
+setMethod("rowRanges", "TENxH5", function(x, ...) {
+    interval <- rhdf5::h5read(path(x), "matrix/features/interval")
     interval[interval == "NA"] <- "NA_character_:0"
     gr <- as(as.character(interval), "GRanges")
-    mcols(gr) <- .getRowDat(con)
-    genbuild <- rep(.getGenome(con), length(genome(gr)))
-    genome(gr) <- genbuild
+    mcols(gr) <- rowData(con)
+    genome(gr) <- genome(con)
     gr
-}
+})
 
+#' @describeIn TENxH5 Import TENxH5 data as a SingleCellExperiment
 #' @importFrom MatrixGenerics rowRanges
 #' @import SingleCellExperiment
 #' @export
@@ -87,7 +113,7 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
     if (identical(con@version, "3")) {
         sce <- SingleCellExperiment::SingleCellExperiment(
-            assays = list(counts = matrixdata), rowRanges = .getRowRanges(con)
+            assays = list(counts = matrixdata), rowRanges = rowRanges(con)
         )
         rownames(sce) <- mcols(sce)[["ID"]]
         ## remove stand-in NA values
