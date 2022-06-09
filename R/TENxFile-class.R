@@ -7,7 +7,7 @@
 .TENxFile <- setClass(
     Class = "TENxFile",
     contains = "BiocFile",
-    slots = c(extension = "character")
+    slots = c(extension = "character", colidx = "integer", rowidx = "integer")
 )
 
 .check_file_exists <- function(object) {

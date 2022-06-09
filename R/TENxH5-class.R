@@ -20,6 +20,10 @@
     gname
 }
 
+.getDim <- function(file) {
+    rhdf5::h5read(file, "matrix/shape")
+}
+
 #' @rdname TENxH5
 #' @title Import H5 files from 10X
 #' @aliases TENxH5-class
@@ -36,7 +40,13 @@ TENxH5 <-
 {
     version <- match.arg(version)
     group <- .check_h5_group(resource)
-    .TENxH5(resource = resource, group = group, version = version, ...)
+    dims <- .getDim(resource)
+    .TENxH5(
+        resource = resource, group = group, version = version,
+        rowidx = seq_len(dims[[1L]]),
+        colidx = seq_len(dims[[2L]]),
+        ...
+    )
 }
 
 gene.meta <- data.frame(
@@ -55,8 +65,8 @@ setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
     ]
     gm[] <- Filter(Negate(is.na), gm)
     res <- lapply(gm, function(colval) {
-        readname <- paste0(con@group, colval)
-        rhdf5::h5read(path(con), readname)
+        readname <- paste0(x@group, colval)
+        rhdf5::h5read(path(x), readname)
     })
     as(res, "DataFrame")
 })
@@ -64,7 +74,7 @@ setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
 #' @describeIn TENxH5 Get the dimensions of the data as stored in the file
 #' @export
 setMethod("dim", "TENxH5", function(x) {
-    rhdf5::h5read(path(con), "matrix/shape")
+    c(length(x@rowidx), length(x@colidx))
 })
 
 #' @describeIn TENxH5 Get the dimension names from the file
@@ -74,21 +84,22 @@ setMethod("dimnames", "TENxH5", function(x) {
         x@version == gene.meta[["version"]],
         !names(gene.meta) %in% c("group", "version")
     ]
-    list(
+    IRanges::CharacterList(
         rhdf5::h5read(path(x), file.path(x@group, gm[["ID"]])),
         rhdf5::h5read(path(x), "matrix/barcodes")
     )
 })
+
 #' @describeIn TENxH5 Read genome string from file
 #' @importFrom GenomeInfoDb genome genome<-
 #' @export
 setMethod("genome", "TENxH5", function(x) {
-    intervals <- rhdf5::h5read(path(con), "matrix/features/interval")
+    intervals <- rhdf5::h5read(path(x), "matrix/features/interval")
     splitints <- strsplit(intervals, ":", fixed = TRUE)
     seqnames <- vapply(splitints, `[[`, character(1L), 1L)
     if (any(seqnames == "NA"))
         warning("'seqlevels' contain NA values")
-    gens <- rhdf5::h5read(path(con), "matrix/features/genome")
+    gens <- rhdf5::h5read(path(x), "matrix/features/genome")
     vapply(split(gens, seqnames), unique, character(1L))
 })
 
@@ -99,8 +110,8 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
     interval <- rhdf5::h5read(path(x), "matrix/features/interval")
     interval[interval == "NA"] <- "NA_character_:0"
     gr <- as(as.character(interval), "GRanges")
-    mcols(gr) <- rowData(con)
-    genome(gr) <- genome(con)
+    mcols(gr) <- rowData(x)
+    genome(gr) <- genome(x)
     gr
 })
 
