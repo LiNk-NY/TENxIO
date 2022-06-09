@@ -9,6 +9,7 @@ Authors@R:
   )
 Depends: R (>= 4.2.0), SingleCellExperiment, SummarizedExperiment
 Imports:
+  BiocBaseUtils,
   BiocGenerics,
   BiocIO,
   GenomeInfoDb,
@@ -36,4 +37,13 @@ License: Artistic-2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
-
+Collate: 
+    'TENxFile-class.R'
+    'TENxH5-class.R'
+    'ShellExperiment-class.R'
+    'TENxFile-methods.R'
+    'TENxFileList-class.R'
+    'TENxFragments-class.R'
+    'TENxMTX-class.R'
+    'TENxPeaks-class.R'
+    'utils.R'

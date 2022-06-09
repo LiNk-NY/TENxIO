@@ -1,3 +1,4 @@
+#' @include TENxFile-class.R
 #' @exportClass TENxH5
 .TENxH5 <- setClass(
     Class = "TENxH5",
