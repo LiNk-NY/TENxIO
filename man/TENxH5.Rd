@@ -5,7 +5,7 @@
 \alias{TENxH5-class}
 \title{Import H5 files from 10X}
 \usage{
-TENxH5(resource, version = c("3", "2"), ...)
+TENxH5(resource, version, group, ...)
 }
 \description{
 Import H5 files from 10X
@@ -13,7 +13,7 @@ Import H5 files from 10X
 \examples{
 
 h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
-con <- TENxFile(h5f)
+con <- TENxH5(h5f)
 import(con)
 
 }

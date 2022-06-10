@@ -7,22 +7,26 @@
 )
 
 .get_h5_group <- function(fpath) {
+    .checkPkgsAvail("rhdf5")
     l1 <- rhdf5::h5ls(fpath, recursive = FALSE)
     l1[l1$otype == "H5I_GROUP", "name"]
 }
 
 .KNOWN_H5_GROUPS <- c("matrix", "outs")
+.KNOWN_VERSIONS <- c("3", "2")
 
-.check_h5_group <- function(fpath) {
-    .checkPkgsAvail("rhdf5")
-    gname <- .get_h5_group(fpath)
-    if (!gname %in% .KNOWN_H5_GROUPS)
-        stop("'group' not recognized")
-    gname
+.check_h5_group <- function(group) {
+    g_msg <- paste(.KNOWN_H5_GROUPS, collapse = ", ")
+    if (!group %in% .KNOWN_H5_GROUPS)
+        warning("'group' not in known 10X groups: ", g_msg)
 }
 
-.getDim <- function(file) {
-    rhdf5::h5read(file, "matrix/shape")
+.getDim <- function(file, group) {
+    rhdf5::h5read(file, paste0(group, "/", "shape"))
+}
+
+.get_tenx_version <- function(group) {
+    .KNOWN_VERSIONS[match(group, .KNOWN_H5_GROUPS)]
 }
 
 #' @rdname TENxH5
@@ -32,16 +36,18 @@
 #' @examples
 #'
 #' h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
-#' con <- TENxFile(h5f)
+#' con <- TENxH5(h5f)
 #' import(con)
 #'
 #' @export
 TENxH5 <-
-    function(resource, version = c("3", "2"), ...)
+    function(resource, version, group, ...)
 {
-    version <- match.arg(version)
-    group <- .check_h5_group(resource)
-    dims <- .getDim(resource)
+    group <- .get_h5_group(resource)
+    .check_h5_group(group)
+    if (missing(version))
+        version <- .get_tenx_version(group)
+    dims <- .getDim(resource, group)
     .TENxH5(
         resource = resource, group = group, version = version,
         rowidx = seq_len(dims[[1L]]),
