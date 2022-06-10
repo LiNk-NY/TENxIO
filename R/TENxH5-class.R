@@ -86,8 +86,8 @@ setMethod("dimnames", "TENxH5", function(x) {
         !names(gene.meta) %in% c("group", "version")
     ]
     list(
-        rhdf5::h5read(path(x), file.path(x@group, gm[["ID"]])),
-        rhdf5::h5read(path(x), "matrix/barcodes")
+        rhdf5::h5read(path(x), paste0(x@group, "/", gm[["ID"]])),
+        rhdf5::h5read(path(x), paste0(x@group, "/", "barcodes"))
     )
 })
 
@@ -95,9 +95,10 @@ setMethod("dimnames", "TENxH5", function(x) {
 #' @importFrom GenomeInfoDb genome genome<-
 #' @export
 setMethod("genome", "TENxH5", function(x) {
-    gens <- rhdf5::h5read(path(x), "matrix/features/genome")
+    group <- x@group
+    gens <- rhdf5::h5read(path(x), paste0(group, "/", "features/genome"))
     ugens <- unique(gens)
-    intervals <- rhdf5::h5read(path(x), "matrix/features/interval")
+    intervals <- rhdf5::h5read(path(x), paste0(group, "/", "features/interval"))
     splitints <- strsplit(intervals, ":", fixed = TRUE)
     seqnames <- vapply(splitints, `[[`, character(1L), 1L)
     if (any(seqnames == "NA"))
@@ -113,7 +114,9 @@ setMethod("genome", "TENxH5", function(x) {
 #' @importFrom S4Vectors mcols<-
 #' @export
 setMethod("rowRanges", "TENxH5", function(x, ...) {
-    interval <- rhdf5::h5read(path(x), "matrix/features/interval")
+    group <- x@group
+    interval <- rhdf5::h5read(path(x), paste0(group, "/features/interval"))
+    ## Hack to allow NA ranges for later removal (keeping data parallel)
     interval[interval == "NA"] <- "NA_character_:0"
     gr <- as(as.character(interval), "GRanges")
     mcols(gr) <- rowData(x)
