@@ -13,7 +13,8 @@ ShellExperiment(con)
 The \code{ShellExperiment} function takes a version 2 or 3 HDF5
 dataset typically obtained via the 10x website and provides an intermediate
 representation of the data within the file. Supported methods include
-\code{rowRanges}, \code{dimnames}, and \code{dim}.
+\code{rowRanges}, \code{dimnames}, \code{dim}, \code{rowData}, and \code{genome}. Currently,
+only data with interval information is supported (version 3).
 }
 \examples{
 

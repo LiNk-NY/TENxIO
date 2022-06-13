@@ -50,7 +50,8 @@ setMethod("show", "ShellExperiment", function(object) {
 #' @description The `ShellExperiment` function takes a version 2 or 3 HDF5
 #'   dataset typically obtained via the 10x website and provides an intermediate
 #'   representation of the data within the file. Supported methods include
-#'   `rowRanges`, `dimnames`, and `dim`.
+#'   `rowRanges`, `dimnames`, `dim`, `rowData`, and `genome`. Currently,
+#'   only data with interval information is supported (version 3).
 #'
 #' @param con character(1) A path to an H5 file
 #'
