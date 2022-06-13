@@ -2,13 +2,35 @@
 % Please edit documentation in R/TENxH5-class.R
 \name{TENxH5}
 \alias{TENxH5}
-\alias{TENxH5-class}
-\title{Import H5 files from 10X}
+\title{TENxH5: Import H5 files from 10X}
 \usage{
 TENxH5(resource, version, group, ...)
 }
+\arguments{
+\item{resource}{character(1) The path to the file}
+
+\item{version}{character(1) There are currently two recognized versions
+associated with 10X data, either version "2" or "3". See details for more
+information.}
+
+\item{group}{character(1) The HDF5 group embedded within the file structure,
+this is usually either the "matrix" or "outs" group but other groups are
+supported as well (e.g., "mm10").}
+
+\item{...}{Additional inputs to the low level class generator functions}
+}
 \description{
-Import H5 files from 10X
+This constructor function was developed using the PBMC 3K dataset from 10X
+Genomics (verison 3). Other versions are supported and input arguments
+\code{version} and \code{group} can be overridden.
+}
+\details{
+The data version "3" mainly includes a "matrix" group and "interval"
+information within the file. Version "2" data does not include
+ranged-based information and has a different directory structure compared
+to version "3". See the internal \code{data.frame}: \code{TENxIO:::gene.meta} for
+a map of fields and their corresponding file locations within the H5 file.
+This map is used to create the \code{rowData} structure from the file.
 }
 \examples{
 

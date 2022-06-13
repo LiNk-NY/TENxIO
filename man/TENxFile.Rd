@@ -4,10 +4,27 @@
 \alias{TENxFile}
 \title{TENxFile constructor function}
 \usage{
-TENxFile(resource, ...)
+TENxFile(resource, ext, ...)
+}
+\arguments{
+\item{resource}{character(1) The path to the file}
+
+\item{ext}{character(1) The file extension for the given resource. It can
+usually be obtained from the file path. An override can be provided
+especially for \code{ExperimentHub} resources where the file extension is
+removed.}
+
+\item{...}{Additional inputs to the low level class generator functions}
 }
 \description{
-TENxFile constructor function
+The \code{TENxFile} constructor function serves as the
+auto-recognizer function for 10X files. It can import several different
+file extensions, namely:
+\preformatted{
+    * H5 - on-disk HDF5
+    * MTX - matrix market
+    * .tar.gz - compressed tarball
+}
 }
 \examples{
 

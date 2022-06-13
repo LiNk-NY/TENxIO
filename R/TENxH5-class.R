@@ -1,3 +1,24 @@
+#' TENxH5: The HDF5 file representation class for 10X Data
+#'
+#' @description This class is designed to work with 10x Single Cell datasets.
+#'   It was developed using the PBMC 3k 10X dataset from the CellRanger v2
+#'   pipeline.
+#'
+#' @slot version character(1) There are currently two recognized versions
+#'   associated with 10X data, either version "2" or "3". See details for more
+#'   information.
+#'
+#' @slot group character(1) The HDF5 group embedded within the file structure,
+#'   this is usually either the "matrix" or "outs" group but other groups are
+#'   supported as well.
+#'
+#' @details The data version "3" mainly includes a "matrix" group and "interval"
+#'   information within the file. Version "2" data does not include
+#'   ranged-based information and has a different directory structure compared
+#'   to version "3". See the internal `data.frame`: `TENxIO:::gene.meta` for
+#'   a map of fields and their corresponding file locations within the H5 file.
+#'   This map is used to create the `rowData` structure from the file.
+#'
 #' @include TENxFile-class.R
 #' @exportClass TENxH5
 .TENxH5 <- setClass(
@@ -29,9 +50,28 @@
     .KNOWN_VERSIONS[match(group, .KNOWN_H5_GROUPS)]
 }
 
-#' @rdname TENxH5
-#' @title Import H5 files from 10X
-#' @aliases TENxH5-class
+#' TENxH5: Import H5 files from 10X
+#'
+#' This constructor function was developed using the PBMC 3K dataset from 10X
+#' Genomics (verison 3). Other versions are supported and input arguments
+#' `version` and `group` can be overridden.
+#'
+#' @inheritParams TENxFile
+#'
+#' @param version character(1) There are currently two recognized versions
+#'   associated with 10X data, either version "2" or "3". See details for more
+#'   information.
+#'
+#' @param group character(1) The HDF5 group embedded within the file structure,
+#'   this is usually either the "matrix" or "outs" group but other groups are
+#'   supported as well (e.g., "mm10").
+#'
+#' @details The data version "3" mainly includes a "matrix" group and "interval"
+#'   information within the file. Version "2" data does not include
+#'   ranged-based information and has a different directory structure compared
+#'   to version "3". See the internal `data.frame`: `TENxIO:::gene.meta` for
+#'   a map of fields and their corresponding file locations within the H5 file.
+#'   This map is used to create the `rowData` structure from the file.
 #'
 #' @examples
 #'
@@ -73,7 +113,7 @@ setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
     gm[] <- Filter(Negate(is.na), gm)
     res <- lapply(gm, function(colval) {
         readname <- paste0(x@group, colval)
-        rhdf5::h5read(path(x), readname)
+        as.character(rhdf5::h5read(path(x), readname))
     })
     as(res, "DataFrame")
 })

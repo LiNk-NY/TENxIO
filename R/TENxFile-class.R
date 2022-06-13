@@ -1,3 +1,19 @@
+#' TENxFile: General purpose class for 10X files
+#'
+#' @description The `TENxFile` class is the default representation for
+#'   unrecognized subclasses. It inherits from the BiocFile class and adds a few
+#'   additional slots. The constructor function can handle typical 10X file
+#'   types. For more details, see the constructor function documentation.
+#'
+#' @slot extension character(1) The file extension as extracted from the file
+#'   path or overridden via the `ext` argument in the constructor function.
+#'
+#' @slot colidx integer(1) The column index corresponding to the columns in the
+#'   file that will subsequently be imported
+#'
+#' @slot rowidx integer(1) The row index corresponding to rows in the file that
+#'   will subsequently be imported
+#'
 #' @importClassesFrom BiocIO BiocFile
 #' @importFrom BiocIO import
 #' @importFrom BiocGenerics path
@@ -37,6 +53,24 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 
 #' TENxFile constructor function
 #'
+#' @description The `TENxFile` constructor function serves as the
+#'   auto-recognizer function for 10X files. It can import several different
+#'   file extensions, namely:
+#' \preformatted{
+#'     * H5 - on-disk HDF5
+#'     * MTX - matrix market
+#'     * .tar.gz - compressed tarball
+#' }
+#'
+#' @param resource character(1) The path to the file
+#'
+#' @param ext character(1) The file extension for the given resource. It can
+#'   usually be obtained from the file path. An override can be provided
+#'   especially for `ExperimentHub` resources where the file extension is
+#'   removed.
+#'
+#' @param ... Additional inputs to the low level class generator functions
+#'
 #' @examples
 #'
 #' h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
@@ -49,12 +83,12 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 #' import(comp)
 #'
 #' @export
-TENxFile <- function(resource, ...) {
-    ext <- .get_ext(resource)
+TENxFile <- function(resource, ext, ...) {
+    if (missing(ext))
+        ext <- .get_ext(resource)
     TENxFUN <- switch(
         ext,
         h5 = TENxH5, mtx = .TENxMTX, tar.gz = .TENxFileList, .TENxFile
     )
     TENxFUN(resource = resource,  extension = ext, ...)
 }
-
