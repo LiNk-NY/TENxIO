@@ -111,6 +111,7 @@ setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
         !names(gene.meta) %in% c("group", "version")
     ]
     nrows <- list(...)[["rows"]]
+    ## Implement a smaller index for display purposes only
     mxrow <- max(x@rowidx)
     if (is.null(nrows) && mxrow > 12)
         nrows <- c(1:6, mxrow - 5:0)
@@ -170,8 +171,10 @@ setMethod("genome", "TENxH5", function(x) {
 setMethod("rowRanges", "TENxH5", function(x, ...) {
     group <- x@group
     rows <- list(...)[["rows"]]
-    if (is.null(rows))
-        rows <- c(1:6, max(x@rowidx) - 5:0)
+    ## Implement a smaller index for display purposes only
+    mxrow <- max(x@rowidx)
+    if (is.null(rows) && mxrow > 12)
+        rows <- c(1:6, mxrow - 5:0)
     interval <- rhdf5::h5read(
         path(x), paste0(group, "/features/interval"), list(rows)
     )
