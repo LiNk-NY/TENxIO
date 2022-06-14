@@ -50,11 +50,20 @@
     .KNOWN_VERSIONS[match(group, .KNOWN_H5_GROUPS)]
 }
 
-#' TENxH5: Import H5 files from 10X
+#' TENxH5: Represent H5 files from 10X
 #'
 #' This constructor function was developed using the PBMC 3K dataset from 10X
-#' Genomics (verison 3). Other versions are supported and input arguments
+#' Genomics (version 3). Other versions are supported and input arguments
 #' `version` and `group` can be overridden.
+#'
+#' @details The various `TENxH5` methods including `rowData` and `rowRanges`,
+#'   provide a snapshot of the data using a length 12 head and tail subset for
+#'   efficiency. In contrast, methods such as `dimnames` and `dim` give
+#'   a full view of the dimensions of the data. The `show` method provides
+#'   relevant information regarding the dimensions of the data including
+#'   metadata such as `rowData` and "Type" column, if available. The term
+#'   "projection" refers to the data class that will be provided once the
+#'   data file is `import`ed.
 #'
 #' @inheritParams TENxFile
 #'

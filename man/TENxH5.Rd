@@ -2,7 +2,7 @@
 % Please edit documentation in R/TENxH5-class.R
 \name{TENxH5}
 \alias{TENxH5}
-\title{TENxH5: Import H5 files from 10X}
+\title{TENxH5: Represent H5 files from 10X}
 \usage{
 TENxH5(resource, version, group, ...)
 }
@@ -21,10 +21,19 @@ supported as well (e.g., "mm10").}
 }
 \description{
 This constructor function was developed using the PBMC 3K dataset from 10X
-Genomics (verison 3). Other versions are supported and input arguments
+Genomics (version 3). Other versions are supported and input arguments
 \code{version} and \code{group} can be overridden.
 }
 \details{
+The various \code{TENxH5} methods including \code{rowData} and \code{rowRanges},
+provide a snapshot of the data using a length 12 head and tail subset for
+efficiency. In contrast, methods such as \code{dimnames} and \code{dim} give
+a full view of the dimensions of the data. The \code{show} method provides
+relevant information regarding the dimensions of the data including
+metadata such as \code{rowData} and "Type" column, if available. The term
+"projection" refers to the data class that will be provided once the
+data file is \code{import}ed.
+
 The data version "3" mainly includes a "matrix" group and "interval"
 information within the file. Version "2" data does not include
 ranged-based information and has a different directory structure compared
