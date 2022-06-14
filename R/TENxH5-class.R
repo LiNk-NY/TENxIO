@@ -110,12 +110,20 @@ setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
         x@version == gene.meta[["version"]],
         !names(gene.meta) %in% c("group", "version")
     ]
+    nrows <- list(...)[["rows"]]
+    mxrow <- max(x@rowidx)
+    if (is.null(nrows) && mxrow > 12)
+        nrows <- c(1:6, mxrow - 5:0)
     gm[] <- Filter(Negate(is.na), gm)
     res <- lapply(gm, function(colval) {
         readname <- paste0(x@group, colval)
-        as.character(rhdf5::h5read(path(x), readname))
+        as.character(rhdf5::h5read(path(x), index = list(nrows), readname))
     })
-    as(res, "DataFrame")
+    DF <- as(res, "DataFrame")
+    if ("Type" %in% names(DF))
+        DF[["Type"]] <- as.factor(DF[["Type"]])
+    rownames(DF) <- nrows
+    DF
 })
 
 #' @describeIn TENxH5 Get the dimensions of the data as stored in the file
@@ -161,11 +169,17 @@ setMethod("genome", "TENxH5", function(x) {
 #' @export
 setMethod("rowRanges", "TENxH5", function(x, ...) {
     group <- x@group
-    interval <- rhdf5::h5read(path(x), paste0(group, "/features/interval"))
+    rows <- list(...)[["rows"]]
+    if (is.null(rows))
+        rows <- c(1:6, max(x@rowidx) - 5:0)
+    interval <- rhdf5::h5read(
+        path(x), paste0(group, "/features/interval"), list(rows)
+    )
     ## Hack to allow NA ranges for later removal (keeping data parallel)
     interval[interval == "NA"] <- "NA_character_:0"
     gr <- as(as.character(interval), "GRanges")
-    mcols(gr) <- rowData(x)
+    names(gr) <- rows
+    mcols(gr) <- rowData(x, rows = rows)
     genome(gr) <- genome(x)
     gr
 })
@@ -178,14 +192,47 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     .checkPkgsAvail("HDF5Array")
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
     if (identical(con@version, "3")) {
+        rr <- rowRanges(con, rows = con@rowidx)
         sce <- SingleCellExperiment::SingleCellExperiment(
-            assays = list(counts = matrixdata), rowRanges = rowRanges(con)
+            assays = list(counts = matrixdata),
+            rowRanges = rr
         )
         rownames(sce) <- mcols(sce)[["ID"]]
         ## remove stand-in NA values
-        sce <- sce[seqnames(rowRanges(sce)) != "NA_character_", ]
-        splitAltExps(sce, rowData(sce)[["Type"]], ref = "Gene Expression")
+        sce <- sce[seqnames(rr) != "NA_character_", ]
+        splitAltExps(
+            sce,
+            rowData(sce, rows = con@rowidx)[["Type"]],
+            ref = "Gene Expression"
+        )
     } else {
         stop("Version 2 not supported yet.")
     }
+})
+
+#' @importFrom BiocBaseUtils selectSome
+#' @export
+setMethod("show", "TENxH5", function(object) {
+    rn <- cn <- NULL
+    rno <- rownames(object)
+    cno <- colnames(object)
+    if (length(rno))
+        rn <- selectSome(rno)
+    if (length(cno))
+        cn <- selectSome(cno)
+    rd <- rowData(object)
+    rdn <- selectSome(names(rd))
+
+    cat(
+        "file class:", class(object),
+        "\nprojection:", "SingleCellExperiment",
+        "\nfile path:", path(object),
+        "\ndim:", dim(object),
+        "\nrownames:", rn,
+        paste0("\nrowData names(", length(rd), "):"), rdn,
+        if (length(rd[["Type"]]))
+            "\n  Type:", levels(rd[["Type"]]),
+        "\ncolnames:", cn,
+        "\n", sep = " "
+    )
 })
