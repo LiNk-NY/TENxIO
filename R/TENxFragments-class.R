@@ -43,6 +43,7 @@ S4Vectors::setValidity2("TENxFragments", .validTENxFragments)
 #' @examples
 #'
 #' con <- TENxFile("~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5")
+#' con
 #' sce <- import(con)
 #'
 #' fr <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_atac_fragments.tsv.gz"
@@ -67,7 +68,7 @@ setMethod("import", "TENxFragments", function(con, format, text, ...) {
     .checkPkgsAvail(c("Rsamtools", "RaggedExperiment"))
     roi <- con@roi
     yieldSize <- con@yieldSize
-    tb <- Rsamtools::TabixFile(path(con), tabindex, yieldSize = yieldSize)
+    tb <- Rsamtools::TabixFile(path(con), yieldSize = yieldSize)
     ex <- read.table(
         textConnection(Rsamtools::scanTabix(tb, param = roi)[[1]])
     )
