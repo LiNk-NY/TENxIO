@@ -39,10 +39,9 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
 Collate: 
     'TENxFile-class.R'
-    'TENxH5-class.R'
-    'ShellExperiment-class.R'
     'TENxFileList-class.R'
     'TENxFragments-class.R'
+    'TENxH5-class.R'
     'TENxMTX-class.R'
     'TENxPeaks-class.R'
     'utils.R'
