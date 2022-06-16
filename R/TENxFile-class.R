@@ -64,8 +64,8 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 #'
 #' @param resource character(1) The path to the file
 #'
-#' @param ext character(1) The file extension for the given resource. It can
-#'   usually be obtained from the file path. An override can be provided
+#' @param extension character(1) The file extension for the given resource. It
+#'   can usually be obtained from the file path. An override can be provided
 #'   especially for `ExperimentHub` resources where the file extension is
 #'   removed.
 #'
@@ -77,18 +77,25 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 #' con <- TENxFile(h5f)
 #' import(con)
 #'
+#' ## from ExperimentHub
+#' hub <- ExperimentHub::ExperimentHub()
+#' fname <- hub[["EH1039"]]
+#' TENxH5(fname, group = "mm10", version = "2")
+#' TENxH5(fname, extension = "h5", group = "mm10", version = "2")
+#' TENxFile(fname, extension = "h5", group = "mm10", version = "2")
+#'
 #' ## compressed
 #' h5c <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
 #' comp <- TENxFile(h5c)
 #' import(comp)
 #'
 #' @export
-TENxFile <- function(resource, ext, ...) {
-    if (missing(ext))
-        ext <- .get_ext(resource)
+TENxFile <- function(resource, extension, ...) {
+    if (missing(extension))
+        extension <- .get_ext(resource)
     TENxFUN <- switch(
-        ext,
+        extension,
         h5 = TENxH5, mtx = .TENxMTX, tar.gz = .TENxFileList, .TENxFile
     )
-    TENxFUN(resource = resource,  extension = ext, ...)
+    TENxFUN(resource = resource,  extension = extension, ...)
 }

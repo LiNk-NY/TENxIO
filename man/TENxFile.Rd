@@ -4,13 +4,13 @@
 \alias{TENxFile}
 \title{TENxFile constructor function}
 \usage{
-TENxFile(resource, ext, ...)
+TENxFile(resource, extension, ...)
 }
 \arguments{
 \item{resource}{character(1) The path to the file}
 
-\item{ext}{character(1) The file extension for the given resource. It can
-usually be obtained from the file path. An override can be provided
+\item{extension}{character(1) The file extension for the given resource. It
+can usually be obtained from the file path. An override can be provided
 especially for \code{ExperimentHub} resources where the file extension is
 removed.}
 
@@ -31,6 +31,13 @@ file extensions, namely:
 h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
 con <- TENxFile(h5f)
 import(con)
+
+## from ExperimentHub
+hub <- ExperimentHub::ExperimentHub()
+fname <- hub[["EH1039"]]
+TENxH5(fname, group = "mm10", version = "2")
+TENxH5(fname, extension = "h5", group = "mm10", version = "2")
+TENxFile(fname, extension = "h5", group = "mm10", version = "2")
 
 ## compressed
 h5c <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
