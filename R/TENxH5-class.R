@@ -39,7 +39,7 @@
 .check_h5_group <- function(group) {
     g_msg <- paste(.KNOWN_H5_GROUPS, collapse = ", ")
     if (!group %in% .KNOWN_H5_GROUPS)
-        warning("'group' not in known 10X groups: ", g_msg)
+        warning("'group' not in known 10X groups: ", g_msg, call. = FALSE)
 }
 
 .getDim <- function(file, group) {
@@ -49,6 +49,8 @@
 .get_tenx_version <- function(group) {
     .KNOWN_VERSIONS[match(group, .KNOWN_H5_GROUPS)]
 }
+
+# Constructor -------------------------------------------------------------
 
 #' TENxH5: Represent H5 files from 10X
 #'
@@ -97,11 +99,16 @@ TENxH5 <-
     if (missing(version))
         version <- .get_tenx_version(group)
     dims <- .getDim(resource, group)
+    ext <- list(...)[["extension"]]
+    if (is.null(ext))
+        ext <- .get_ext(resource)
+    if (!identical(tolower(ext), "h5"))
+        warning("File extension is not 'h5'; import may fail", call. = FALSE)
     .TENxH5(
         resource = resource, group = group, version = version,
         rowidx = seq_len(dims[[1L]]),
         colidx = seq_len(dims[[2L]]),
-        ...
+        extension = ext
     )
 }
 
@@ -233,7 +240,8 @@ setMethod("show", "TENxH5", function(object) {
     if (length(cno))
         cn <- selectSome(cno)
     rd <- rowData(object)
-    rdn <- selectSome(names(rd))
+    rdnames <- selectSome(names(rd))
+    rdnamecount <- paste0("names(", length(rd), "):")
 
     cat(
         "file class:", class(object),
@@ -241,9 +249,9 @@ setMethod("show", "TENxH5", function(object) {
         "\nfile path:", path(object),
         "\ndim:", dim(object),
         "\nrownames:", rn,
-        paste0("\nrowData names(", length(rd), "):"), rdn,
+        "\nrowData", rdnamecount, rdnames,
         if (length(rd[["Type"]]))
-            "\n  Type:", levels(rd[["Type"]]),
+            "\n  Type:", selectSome(levels(rd[["Type"]])),
         "\ncolnames:", cn,
         "\n", sep = " "
     )
