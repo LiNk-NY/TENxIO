@@ -52,8 +52,10 @@ S4Vectors::setValidity2("TENxFragments", .validTENxFragments)
 #'
 #' @export
 TENxFragments <- function(resource, yieldSize = 200, roi = GRanges(), ...) {
-    if (missing(yieldSize))
+    if (missing(yieldSize) && missing(roi))
         warning("Using default 'yieldSize' parameter")
+    else if (!missing(roi))
+        yieldSize <- NA_integer_
     if (!is(roi, "GRanges"))
         stop("'roi' input must be 'GenomicRanges'")
     type <- tail(strsplit(resource, "_|_fragments.tsv.gz")[[1]], 1L)
