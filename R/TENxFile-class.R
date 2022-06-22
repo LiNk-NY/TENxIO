@@ -99,7 +99,12 @@ TENxFile <- function(resource, extension, ...) {
         extension <- .get_ext(resource)
     TENxFUN <- switch(
         extension,
-        h5 = TENxH5, mtx = .TENxMTX, tar.gz = .TENxFileList, .TENxFile
+        h5 = TENxH5,
+        mtx = TENxMTX,
+        mtx.gz = TENxMTX,
+        tar.gz = .TENxFileList,
+        tsv.gz = .TSVFile,
+        .TENxFile
     )
     TENxFUN(resource = resource,  extension = extension, ...)
 }
