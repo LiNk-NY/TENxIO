@@ -90,26 +90,35 @@ setMethod("import", "TSVFile", function(con, format, text, ...) {
         object
 }
 
+#' @describeIn TENxFileList-class Obtain file paths for all files in the object
+#'   as a vector
+#'
+#' @export
 setMethod("path", "TENxFileList", function(object, ...) {
     vapply(object, .get_path, character(1L))
 })
 
-.TENxDecompress <- function(con) {
-    res_ext <- .get_ext(path(con))
-    if (!con@compressed)
-        stop("<internal> ", class(con), " not compressed")
-    if (identical(res_ext, "tar.gz")) {
-        tenfolder <- .TENxUntar(con)
-        gfolder <- list.files(tenfolder, full.names = TRUE)
-        if (file.info(gfolder)$isdir)
-            gfiles <- list.files(gfolder, recursive = TRUE, full.names = TRUE)
-        else
-            gfiles <- gfolder
-        lapply(gfiles, TENxFile)
+setGeneric("decompress", function(object, ...) standardGeneric("decompress"))
+
+setMethod("decompress", "TENxFileList", function(object, ...) {
+    res_ext <- .get_ext(path(object))
+    if (object@compressed) {
+        if (identical(res_ext, "tar.gz")) {
+            tenfolder <- .TENxUntar(object)
+            gfolder <- list.files(tenfolder, full.names = TRUE)
+            if (file.info(gfolder)$isdir)
+                gfiles <- list.files(gfolder, recursive = TRUE, full.names = TRUE)
+            else
+                gfiles <- gfolder
+            object <- lapply(gfiles, TENxFile)
+        } else {
+            stop("Extension type: ", res_ext, " not supported")
+        }
     } else {
-        stop("Extension type: ", res_ext, " not supported")
+        object <- object@listData
     }
-}
+    object
+})
 
 .TARFILENAMES <- c("matrix.mtx.gz", "barcodes.tsv.gz", "features.tsv.gz")
 
@@ -121,10 +130,7 @@ setMethod("path", "TENxFileList", function(object, ...) {
 #'
 #' @export
 setMethod("import", "TENxFileList", function(con, format, text, ...) {
-    if (con@compressed)
-        fdata <- .TENxDecompress(con)
-    else
-        fdata <- con@listData
+    fdata <- decompress(con)
     fldata <- TENxFileList(fdata)
     names(fdata) <- basename(path(fldata))
     datalist <- lapply(fdata, import)
