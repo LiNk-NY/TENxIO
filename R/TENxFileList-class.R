@@ -72,7 +72,8 @@ TENxFileList <- function(..., compressed = FALSE) {
 setMethod("import", "TSVFile", function(con, format, text, ...) {
     resource <- path(con)
     df <- readr::read_tsv(
-        resource, col_names = FALSE, show_col_types = FALSE, ...
+        resource, col_names = FALSE, show_col_types = FALSE, progress = FALSE,
+        ...
     )
     fname <- basename(resource)
     if (identical(fname, "features.tsv.gz"))
