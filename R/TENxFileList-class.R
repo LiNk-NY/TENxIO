@@ -139,10 +139,20 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
         colnames(mat) <- unlist(
             datalist[["barcodes.tsv.gz"]], use.names = FALSE
         )
-        warning("Matrix of mixed types; see in rowData(x)$Type")
-        SingleCellExperiment::SingleCellExperiment(
+        feats <- datalist[["features.tsv.gz"]]
+        feats[is.na(feats[["Chr"]]), "Chr"] <- "NA_character_:0"
+        rr <- GenomicRanges::makeGRangesFromDataFrame(
+            feats, keep.extra.columns = TRUE
+        )
+        sce <- SingleCellExperiment::SingleCellExperiment(
             SimpleList(counts = mat),
-            rowData = datalist[["features.tsv.gz"]]
+            rowRanges = rr
+        )
+        sce <- sce[seqnames(rr) != "NA_character_", ]
+        splitAltExps(
+            sce,
+            feats[["Type"]],
+            ref = "Gene Expression"
         )
     } else {
         ## return a list for now
