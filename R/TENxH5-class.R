@@ -244,9 +244,9 @@ setMethod("show", "TENxH5", function(object) {
     rdnamecount <- paste0("names(", length(rd), "):")
 
     cat(
-        "file class:", class(object),
+        class(object), "object",
+        "\nresource:", path(object),
         "\nprojection:", "SingleCellExperiment",
-        "\nfile path:", path(object),
         "\ndim:", dim(object),
         "\nrownames:", rn,
         "\nrowData", rdnamecount, rdnames,
