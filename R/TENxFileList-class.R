@@ -1,3 +1,18 @@
+#' TENxFileList: A list-like representation for TENxFiles
+#'
+#' @description This class was designed to mainly handle tarballs from
+#' 10X Genomics. The typical file extension for these tarballs is `.tar.gz`.
+#'
+#' @details
+#' These tarballs usually contain three files:
+#'   1. `matrix.mtx.gz` - the counts matrix
+#'   2. `features.tsv.gz` - row metadata usually represented as `rowData`
+#'   3. `barcodes.tsv.gz` - column names corresponding to cell barcode identifiers
+#'
+#' @slot listData list() The data in list format
+#' @slot extension character() A vector of file extensions for each file
+#' @slot compressed logical(1) Whether the file is compressed as `.tar.gz`
+#'
 #' @exportClass TENxFileList
 .TENxFileList <- setClass(
     Class = "TENxFileList",
