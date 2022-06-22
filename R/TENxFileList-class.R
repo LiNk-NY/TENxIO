@@ -2,7 +2,9 @@
 .TENxFileList <- setClass(
     Class = "TENxFileList",
     contains = "SimpleList",
-    slots = c(compressed = "logical")
+    slots = c(
+        listData = "list", extension = "character", compressed = "logical"
+    )
 )
 
 .validTENxFileList <- function(object) {
@@ -19,18 +21,28 @@
 
 S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 
+#' @examples
+#'
+#' fl <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
+#' con <- TENxFileList(fl)
+#'
 #' @export
 TENxFileList <- function(..., compressed = FALSE) {
-    dots <- list(...)
-    if (identical(length(dots[[1]]), 1L) && is.character(dots[[1]]))
-        exts <- .get_ext(dots[[1]])
-    else if (is.list(dots[[1]]))
-        exts <- vapply(dots[[1]], .get_ext, character(1L))
-    ## TODO: handle folder and list of files, in addition to tar.gz
+    dots <- S4Vectors::SimpleList(...)
+    undots <- dots[[1L]]
+    if (identical(length(dots), 1L)) {
+        if (is.character(undots))
+            exts <- .get_ext(undots)
+        if (is(undots, "TENxFile"))
+            exts <- undots@extension
+        if (is.list(undots))
+            exts <- vapply(undots, .get_ext, character(1L))
+    } else {
+        exts <- vapply(dots, .get_ext, character(1L))
+    }
     if (identical(exts, "tar.gz"))
         compressed <- TRUE
-    asl <- SimpleList(dots[[1]])
-    .TENxFileList(asl, compressed = compressed)
+    .TENxFileList(dots, extension = exts, compressed = compressed)
 }
 
 #' @importFrom utils untar tail
@@ -40,41 +52,36 @@ TENxFileList <- function(..., compressed = FALSE) {
     tempdir
 }
 
-.readInFuns <- function(files) {
-    file_exts <- .get_ext(files)
-    lapply(.setNames(file_exts, basename(files)), function(ext) {
-        switch(
-            ext,
-            mtx.gz = Matrix::readMM,
-            tsv.gz = function(...)
-                readr::read_tsv(col_names = FALSE, show_col_types = FALSE, ...)
-        )
-    })
+.TSVFile <- setClass(Class = "TSVFile", contains = "TENxFile")
+
+setMethod("import", "TSVFile", function(con, format, text, ...) {
+    resource <- path(con)
+    df <- readr::read_tsv(
+        resource, col_names = FALSE, show_col_types = FALSE, ...
+    )
+    fname <- basename(resource)
+    if (identical(fname, "features.tsv.gz"))
+        names(df) <- c("ID", "Symbol", "Type", "Chr", "Start", "End")
+    else if (identical(fname, "barcodes.tsv.gz"))
+        names(df) <- "barcode"
+    df
+})
+
+.get_path <- function(object) {
+    if (is(object, "TENxFile"))
+        path(object)
+    else
+        object
 }
 
-.cleanUpFuns <- function(datalist) {
-    if (is.null(names(datalist)))
-        stop("'datalist' names must correspond to originating file names")
-    lapply(.setNames(nm = names(datalist)), function(fname) {
-        switch(
-            fname,
-            features.tsv.gz = function(df) {
-                names(df) <- c("ID", "Symbol", "Type", "Chr", "Start", "End")
-                df
-            },
-            barcodes.tsv.gz = function(df) {
-                names(df) <- "barcode"
-                df
-            },
-            matrix.mtx.gz = function(mat) {
-                as(mat, "dgCMatrix")
-            },
-        )
-    })
-}
+setMethod("path", "TENxFileList", function(object, ...) {
+    vapply(object, .get_path, character(1L))
+})
 
 .TENxDecompress <- function(con) {
     res_ext <- .get_ext(path(con))
+    if (!con@compressed)
+        stop("<internal> ", class(con), " not compressed")
     if (identical(res_ext, "tar.gz")) {
         tenfolder <- .TENxUntar(con)
         gfolder <- list.files(tenfolder, full.names = TRUE)
@@ -82,31 +89,41 @@ TENxFileList <- function(..., compressed = FALSE) {
             gfiles <- list.files(gfolder, recursive = TRUE, full.names = TRUE)
         else
             gfiles <- gfolder
-        gdata <- Map(
-            f = function(reader, x) {
-                reader(x)
-            }, reader = .readInFuns(gfiles), x = gfiles
-        )
-        Map(f = function(cleaner, x) {
-                cleaner(x)
-            }, cleaner = .cleanUpFuns(gdata), x = gdata
-        )
+        lapply(gfiles, TENxFile)
     } else {
         stop("Extension type: ", res_ext, " not supported")
     }
 }
 
+.TARFILENAMES <- c("matrix.mtx.gz", "barcodes.tsv.gz", "features.tsv.gz")
+
+#' @examples
+#'
+#' fl <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
+#' con <- TENxFileList(fl)
+#' import(con)
+#'
 #' @export
 setMethod("import", "TENxFileList", function(con, format, text, ...) {
     if (con@compressed)
         fdata <- .TENxDecompress(con)
     else
         fdata <- con@listData
-    mat <- fdata[["matrix.mtx.gz"]]
-    colnames(mat) <- unlist(fdata[["barcodes.tsv.gz"]])
-    warning("Matrix of mixed types; see in rowData(x)")
-    SingleCellExperiment::SingleCellExperiment(
-        SimpleList(counts = mat),
-        rowData = fdata[["features.tsv.gz"]]
-    )
+    fldata <- TENxFileList(fdata)
+    names(fdata) <- basename(path(fldata))
+    datalist <- lapply(fdata, import)
+    if (all(.TARFILENAMES %in% names(datalist))) {
+        mat <- datalist[["matrix.mtx.gz"]]
+        colnames(mat) <- unlist(
+            datalist[["barcodes.tsv.gz"]], use.names = FALSE
+        )
+        warning("Matrix of mixed types; see in rowData(x)$Type")
+        SingleCellExperiment::SingleCellExperiment(
+            SimpleList(counts = mat),
+            rowData = datalist[["features.tsv.gz"]]
+        )
+    } else {
+        ## return a list for now
+        datalist
+    }
 })
