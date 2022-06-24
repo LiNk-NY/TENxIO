@@ -5,9 +5,15 @@
 \alias{TENxFileList-class}
 \alias{.TENxFileList}
 \alias{path,TENxFileList-method}
+\alias{decompress,TENxFileList-method}
+\alias{import,TENxFileList,ANY,ANY-method}
 \title{TENxFileList: A list-like representation for TENxFiles}
 \usage{
 \S4method{path}{TENxFileList}(object, ...)
+
+\S4method{decompress}{TENxFileList}(object, ...)
+
+\S4method{import}{TENxFileList,ANY,ANY}(con, format, text, ...)
 }
 \description{
 This class was designed to mainly handle tarballs from
@@ -18,13 +24,20 @@ These tarballs usually contain three files:
 \enumerate{
 \item \code{matrix.mtx.gz} - the counts matrix
 \item \code{features.tsv.gz} - row metadata usually represented as \code{rowData}
-\item \code{barcodes.tsv.gz} - column names corresponding to cell barcode identifiers
+\item \code{barcodes.tsv.gz} - column names corresponding to cell barcode
+identifiers
 }
 }
 \section{Functions}{
 \itemize{
 \item \code{path,TENxFileList-method}: Obtain file paths for all files in the object
 as a vector
+
+\item \code{decompress,TENxFileList-method}: An intermediate method for decompressing
+(via untar) the contents of a \code{.tar.gz} file list
+
+\item \code{import,TENxFileList,ANY,ANY-method}: Recursively import files within a
+\code{TENxFileList}
 }}
 
 \section{Slots}{
@@ -37,3 +50,10 @@ as a vector
 \item{\code{compressed}}{logical(1) Whether the file is compressed as \code{.tar.gz}}
 }}
 
+\examples{
+
+fl <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
+con <- TENxFileList(fl)
+import(con)
+
+}

@@ -7,11 +7,20 @@
 #' These tarballs usually contain three files:
 #'   1. `matrix.mtx.gz` - the counts matrix
 #'   2. `features.tsv.gz` - row metadata usually represented as `rowData`
-#'   3. `barcodes.tsv.gz` - column names corresponding to cell barcode identifiers
+#'   3. `barcodes.tsv.gz` - column names corresponding to cell barcode
+#'   identifiers
 #'
 #' @slot listData list() The data in list format
+#'
 #' @slot extension character() A vector of file extensions for each file
+#'
 #' @slot compressed logical(1) Whether the file is compressed as `.tar.gz`
+#'
+#' @examples
+#'
+#' fl <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
+#' con <- TENxFileList(fl)
+#' import(con)
 #'
 #' @exportClass TENxFileList
 .TENxFileList <- setClass(
@@ -36,6 +45,30 @@
 
 S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 
+# Constructor -------------------------------------------------------------
+
+#' TENxFileList: Represent groups of files from 10X Genomic
+#'
+#' @description This constructor function is meant to handle `.tar.gz` tarball
+#'   files from 10X Genomics.
+#'
+#' @details
+#' These tarballs usually contain three files:
+#'   1. `matrix.mtx.gz` - the counts matrix
+#'   2. `features.tsv.gz` - row metadata usually represented as `rowData`
+#'   3. `barcodes.tsv.gz` - column names corresponding to cell barcode
+#'   identifiers
+#' If all above files are in the tarball, the import method will provide a
+#' `SingleCellExperiment`. Otherwise, a simple list of imported data is given.
+#'
+#' @param ... A single file path, named arguments corresponding to file paths,
+#'   or a list of named file paths
+#'
+#' @param compressed logical(1) Whether or not the file provided is compressed,
+#'   usually as `tar.gz` (default FALSE)
+#'
+#' @return Either a `SingleCellExperiment` or a list of imported data
+#'
 #' @examples
 #'
 #' fl <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
@@ -100,6 +133,10 @@ setMethod("path", "TENxFileList", function(object, ...) {
 
 setGeneric("decompress", function(object, ...) standardGeneric("decompress"))
 
+#' @describeIn TENxFileList-class An intermediate method for decompressing
+#'   (via untar) the contents of a `.tar.gz` file list
+#'
+#' @export
 setMethod("decompress", "TENxFileList", function(object, ...) {
     res_ext <- .get_ext(path(object))
     if (object@compressed) {
@@ -107,32 +144,30 @@ setMethod("decompress", "TENxFileList", function(object, ...) {
             tenfolder <- .TENxUntar(object)
             gfolder <- list.files(tenfolder, full.names = TRUE)
             if (file.info(gfolder)$isdir)
-                gfiles <- list.files(gfolder, recursive = TRUE, full.names = TRUE)
+                gfiles <- list.files(
+                    gfolder, recursive = TRUE, full.names = TRUE
+                )
             else
                 gfiles <- gfolder
-            object <- lapply(gfiles, TENxFile)
+            newlistdata <- lapply(.setNames(gfiles, basename(gfiles)), TENxFile)
+            object <- BiocGenerics:::replaceSlots(
+                object = object, listData = newlistdata, compressed = FALSE
+            )
         } else {
             stop("Extension type: ", res_ext, " not supported")
         }
-    } else {
-        object <- object@listData
     }
     object
 })
 
 .TARFILENAMES <- c("matrix.mtx.gz", "barcodes.tsv.gz", "features.tsv.gz")
 
-#' @examples
-#'
-#' fl <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
-#' con <- TENxFileList(fl)
-#' import(con)
+#' @describeIn TENxFileList-class Recursively import files within a
+#'   `TENxFileList`
 #'
 #' @export
 setMethod("import", "TENxFileList", function(con, format, text, ...) {
     fdata <- decompress(con)
-    fldata <- TENxFileList(fdata)
-    names(fdata) <- basename(path(fldata))
     datalist <- lapply(fdata, import)
     if (all(.TARFILENAMES %in% names(datalist))) {
         mat <- datalist[["matrix.mtx.gz"]]
