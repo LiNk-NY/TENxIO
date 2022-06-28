@@ -27,10 +27,11 @@
 )
 
 .check_file_exists <- function(object) {
-    if (file.exists(path(object)))
+    op <- path(object)
+    if (file.exists(op) || RCurl::url.exists(op))
         TRUE
     else
-        "Path to the file must be valid"
+        "Path or URL to the file must be valid"
 }
 
 .validTENxFile <- function(object) {

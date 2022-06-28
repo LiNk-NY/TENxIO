@@ -17,6 +17,7 @@ Imports:
   Matrix,
   MatrixGenerics,
   methods,
+  RCurl,
   readr,
   S4Vectors,
   SingleCellMultiModal,
