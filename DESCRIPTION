@@ -45,6 +45,7 @@ Collate:
     'TENxFileList-class.R'
     'TENxFragments-class.R'
     'TENxH5-class.R'
+    'TENxIO-package.R'
     'TENxMTX-class.R'
     'TENxPeaks-class.R'
     'utils.R'

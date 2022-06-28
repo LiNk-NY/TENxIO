@@ -217,7 +217,6 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
 
 #' @describeIn TENxH5 Import TENxH5 data as a SingleCellExperiment
 #' @importFrom MatrixGenerics rowRanges
-#' @import SingleCellExperiment
 #' @export
 setMethod("import", "TENxH5", function(con, format, text, ...) {
     .checkPkgsAvail("HDF5Array")

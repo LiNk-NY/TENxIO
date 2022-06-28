@@ -53,7 +53,6 @@ TENxMTX <- function(resource, compressed = FALSE, ...) {
     .TENxMTX(resource = resource, compressed = compr, extension = ext)
 }
 
-#' @import SummarizedExperiment
 #' @export
 setMethod("import", "TENxMTX", function(con, format, text, ...) {
     mtxf <- Matrix::readMM(path(con))
