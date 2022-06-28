@@ -4,7 +4,7 @@
 \alias{TENxH5}
 \title{TENxH5: Represent H5 files from 10X}
 \usage{
-TENxH5(resource, version, group, ...)
+TENxH5(resource, version, group, ranges, ...)
 }
 \arguments{
 \item{resource}{character(1) The path to the file}
@@ -46,5 +46,8 @@ This map is used to create the \code{rowData} structure from the file.
 h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
 con <- TENxH5(h5f)
 import(con)
+
+h52 <- "~/data/10x/pbmc_10k/10k_pbmc_ATACv2_nextgem_Chromium_Controller_filtered_peak_bc_matrix.h5"
+con <- TENxH5(h52, ranges = "/features/id")
 
 }

@@ -24,7 +24,7 @@
 .TENxH5 <- setClass(
     Class = "TENxH5",
     contains = "TENxFile",
-    slots = c(version = "character", group = "character")
+    slots = c(version = "character", group = "character", ranges = "character")
 )
 
 .get_h5_group <- function(fpath) {
@@ -90,9 +90,12 @@
 #' con <- TENxH5(h5f)
 #' import(con)
 #'
+#' h52 <- "~/data/10x/pbmc_10k/10k_pbmc_ATACv2_nextgem_Chromium_Controller_filtered_peak_bc_matrix.h5"
+#' con <- TENxH5(h52, ranges = "/features/id")
+#'
 #' @export
 TENxH5 <-
-    function(resource, version, group, ...)
+    function(resource, version, group, ranges, ...)
 {
     group <- .get_h5_group(resource)
     .check_h5_group(group)
@@ -104,8 +107,10 @@ TENxH5 <-
         ext <- .get_ext(resource)
     if (!identical(tolower(ext), "h5"))
         warning("File extension is not 'h5'; import may fail", call. = FALSE)
+    if (missing(ranges))
+        ranges <- .selectByVersion(gene.meta, version, "Ranges")
     .TENxH5(
-        resource = resource, group = group, version = version,
+        resource = resource, group = group, version = version, ranges = ranges,
         rowidx = seq_len(dims[[1L]]),
         colidx = seq_len(dims[[2L]]),
         extension = ext
@@ -113,19 +118,23 @@ TENxH5 <-
 }
 
 gene.meta <- data.frame(
-    version = c("3", "2"),
+    Version = c("3", "2"),
     ID = c("/features/id", "/genes"),
     Symbol = c("/features/name", "/gene_names"),
-    Type = c("/features/feature_type", NA_character_)
+    Type = c("/features/feature_type", NA_character_),
+    Ranges = c("/features/interval", NA_character_)
 )
+
+.selectByVersion <-
+    function(df, version, select = !names(df) %in% c("Version", "Ranges"))
+{
+    df[df[["Version"]] == version, select]
+}
 
 #' @describeIn TENxH5 Generate the rowData ad hoc from a TENxH5 file
 #' @export
 setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
-    gm <- gene.meta[
-        x@version == gene.meta[["version"]],
-        !names(gene.meta) %in% c("group", "version")
-    ]
+    gm <- .selectByVersion(gene.meta, x@version)
     nrows <- list(...)[["rows"]]
     ## Implement a smaller index for display purposes only
     mxrow <- max(x@rowidx)
@@ -152,12 +161,9 @@ setMethod("dim", "TENxH5", function(x) {
 #' @describeIn TENxH5 Get the dimension names from the file
 #' @export
 setMethod("dimnames", "TENxH5", function(x) {
-    gm <- gene.meta[
-        x@version == gene.meta[["version"]],
-        !names(gene.meta) %in% c("group", "version")
-    ]
+    id <- .selectByVersion(gene.meta, x@version, "ID")
     list(
-        rhdf5::h5read(path(x), paste0(x@group, "/", gm[["ID"]])),
+        rhdf5::h5read(path(x), paste0(x@group, "/", id)),
         rhdf5::h5read(path(x), paste0(x@group, "/", "barcodes"))
     )
 })
@@ -167,9 +173,12 @@ setMethod("dimnames", "TENxH5", function(x) {
 #' @export
 setMethod("genome", "TENxH5", function(x) {
     group <- x@group
+    version <- x@version
+    if (is.na(x@ranges))
+        stop("'rowRanges' data not available, e.g., in '/features/interval'")
     gens <- rhdf5::h5read(path(x), paste0(group, "/", "features/genome"))
     ugens <- unique(gens)
-    intervals <- rhdf5::h5read(path(x), paste0(group, "/", "features/interval"))
+    intervals <- rhdf5::h5read(path(x), paste0(group, "/", x@ranges))
     splitints <- strsplit(intervals, ":", fixed = TRUE)
     seqnames <- vapply(splitints, `[[`, character(1L), 1L)
     if (any(seqnames == "NA"))
@@ -186,13 +195,16 @@ setMethod("genome", "TENxH5", function(x) {
 #' @export
 setMethod("rowRanges", "TENxH5", function(x, ...) {
     group <- x@group
+    version <- x@version
+    if (is.na(x@ranges))
+        stop("'rowRanges' data not available, e.g., in '/features/interval'")
     rows <- list(...)[["rows"]]
     ## Implement a smaller index for display purposes only
     mxrow <- max(x@rowidx)
     if (is.null(rows) && mxrow > 12)
         rows <- c(1:6, mxrow - 5:0)
     interval <- rhdf5::h5read(
-        path(x), paste0(group, "/features/interval"), list(rows)
+        path(x), paste0(group, x@ranges), list(rows)
     )
     ## Hack to allow NA ranges for later removal (keeping data parallel)
     interval[interval == "NA"] <- "NA_character_:0"
