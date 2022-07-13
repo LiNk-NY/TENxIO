@@ -11,7 +11,7 @@
 \usage{
 \S4method{path}{TENxFileList}(object, ...)
 
-\S4method{decompress}{TENxFileList}(object, ...)
+\S4method{decompress}{TENxFileList}(manager, con, ...)
 
 \S4method{import}{TENxFileList,ANY,ANY}(con, format, text, ...)
 }

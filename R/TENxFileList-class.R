@@ -131,17 +131,17 @@ setMethod("path", "TENxFileList", function(object, ...) {
     vapply(object, .get_path, character(1L))
 })
 
-setGeneric("decompress", function(object, ...) standardGeneric("decompress"))
-
 #' @describeIn TENxFileList-class An intermediate method for decompressing
 #'   (via untar) the contents of a `.tar.gz` file list
 #'
+#' @importFrom BiocIO decompress
+#'
 #' @export
-setMethod("decompress", "TENxFileList", function(object, ...) {
-    res_ext <- .get_ext(path(object))
-    if (object@compressed) {
+setMethod("decompress", "TENxFileList", function(manager, con, ...) {
+    res_ext <- .get_ext(path(con))
+    if (con@compressed) {
         if (identical(res_ext, "tar.gz")) {
-            tenfolder <- .TENxUntar(object)
+            tenfolder <- .TENxUntar(con)
             gfolder <- list.files(tenfolder, full.names = TRUE)
             if (file.info(gfolder)$isdir)
                 gfiles <- list.files(
@@ -150,14 +150,14 @@ setMethod("decompress", "TENxFileList", function(object, ...) {
             else
                 gfiles <- gfolder
             newlistdata <- lapply(.setNames(gfiles, basename(gfiles)), TENxFile)
-            object <- BiocGenerics:::replaceSlots(
-                object = object, listData = newlistdata, compressed = FALSE
+            con <- BiocGenerics:::replaceSlots(
+                object = con, listData = newlistdata, compressed = FALSE
             )
         } else {
             stop("Extension type: ", res_ext, " not supported")
         }
     }
-    object
+    con
 })
 
 .TARFILENAMES <- c("matrix.mtx.gz", "barcodes.tsv.gz", "features.tsv.gz")
