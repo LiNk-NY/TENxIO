@@ -12,6 +12,10 @@
 #'   this is usually either the "matrix" or "outs" group but other groups are
 #'   supported as well.
 #'
+#' @slot ranges character(1) The HDF5 internal folder location embedded within
+#'   the file that points to the ranged data information, e.g.,
+#'   "/features/interval".
+#'
 #' @details The data version "3" mainly includes a "matrix" group and "interval"
 #'   information within the file. Version "2" data does not include
 #'   ranged-based information and has a different directory structure compared

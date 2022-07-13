@@ -62,5 +62,9 @@ information.}
 \item{\code{group}}{character(1) The HDF5 group embedded within the file structure,
 this is usually either the "matrix" or "outs" group but other groups are
 supported as well.}
+
+\item{\code{ranges}}{character(1) The HDF5 internal folder location embedded within
+the file that points to the ranged data information, e.g.,
+"/features/interval".}
 }}
 
