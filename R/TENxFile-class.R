@@ -18,6 +18,7 @@
 #' @importFrom BiocIO import
 #' @importFrom BiocGenerics path
 #' @importFrom S4Vectors mcols
+#' @importFrom methods new is as
 #'
 #' @exportClass TENxFile
 .TENxFile <- setClass(

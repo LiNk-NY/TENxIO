@@ -44,6 +44,7 @@ setMethod("import", "TENxPeaks", function(con, format, ...) {
     makeGRangesFromDataFrame(panno, keep.extra.columns = TRUE)
 })
 
+#' @importFrom S4Vectors metadata metadata<-
 setReplaceMethod("annotation", "SingleCellExperiment",
     function(object, ..., value) {
         if (!is(value, "TENxPeaks"))
