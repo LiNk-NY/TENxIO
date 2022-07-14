@@ -126,6 +126,8 @@ setMethod("import", "TSVFile", function(con, format, text, ...) {
 #' @describeIn TENxFileList-class Obtain file paths for all files in the object
 #'   as a vector
 #'
+#' @inheritParams BiocGenerics::path
+#'
 #' @export
 setMethod("path", "TENxFileList", function(object, ...) {
     vapply(object, .get_path, character(1L))

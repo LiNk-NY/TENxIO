@@ -15,6 +15,17 @@
 
 \S4method{import}{TENxFileList,ANY,ANY}(con, format, text, ...)
 }
+\arguments{
+\item{object}{
+    An object containing paths. Even though it will typically contain
+    a single path, \code{object} can actually contain an arbitrary
+    number of paths.
+  }
+
+\item{...}{
+    Additional arguments, for use in specific methods.
+  }
+}
 \description{
 This class was designed to mainly handle tarballs from
 10X Genomics. The typical file extension for these tarballs is \code{.tar.gz}.
