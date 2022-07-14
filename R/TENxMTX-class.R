@@ -59,7 +59,7 @@ setMethod("import", "TENxMTX", function(con, format, text, ...) {
     mtxf <- Matrix::readMM(path(con))
     ## coerce to common use class
     mtxf <- as(mtxf, "dgCMatrix")
-    SummarizedExperiment::SummarizedExperiment(
-        assays = SimpleList(counts = mtxf)
+    SummarizedExperiment(
+        assays = S4Vectors::SimpleList(counts = mtxf)
     )
 })

@@ -179,8 +179,8 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
         rr <- GenomicRanges::makeGRangesFromDataFrame(
             feats, keep.extra.columns = TRUE
         )
-        sce <- SingleCellExperiment::SingleCellExperiment(
-            SimpleList(counts = mat),
+        sce <- SingleCellExperiment(
+            S4Vectors::SimpleList(counts = mat),
             rowRanges = rr
         )
         sce <- sce[seqnames(rr) != "NA_character_", ]

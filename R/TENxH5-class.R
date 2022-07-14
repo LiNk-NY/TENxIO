@@ -227,7 +227,7 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
     if (identical(con@version, "3")) {
         rr <- rowRanges(con, rows = con@rowidx)
-        sce <- SingleCellExperiment::SingleCellExperiment(
+        sce <- SingleCellExperiment(
             assays = list(counts = matrixdata),
             rowRanges = rr
         )
