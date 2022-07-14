@@ -84,6 +84,7 @@ setReplaceMethod("annotation", "SingleCellExperiment",
     }
 )
 
+#' @importFrom BiocGenerics annotation
 #' @export
 setMethod("annotation", "SingleCellExperiment", function(object, ...) {
     metadata(object)[["annotation"]]
