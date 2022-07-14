@@ -65,6 +65,7 @@ TENxFragments <- function(resource, yieldSize = 200, roi = GRanges(), ...) {
     )
 }
 
+#' @importFrom utils read.table
 #' @export
 setMethod("import", "TENxFragments", function(con, format, text, ...) {
     .checkPkgsAvail(c("Rsamtools", "RaggedExperiment"))

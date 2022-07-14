@@ -53,6 +53,7 @@ TENxMTX <- function(resource, compressed = FALSE, ...) {
     .TENxMTX(resource = resource, compressed = compr, extension = ext)
 }
 
+#' @importFrom S4Vectors SimpleList
 #' @export
 setMethod("import", "TENxMTX", function(con, format, text, ...) {
     mtxf <- Matrix::readMM(path(con))
