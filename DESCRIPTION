@@ -20,7 +20,6 @@ Imports:
   RCurl,
   readr,
   S4Vectors,
-  SingleCellMultiModal,
   utils
 Suggests:
   BiocStyle,
