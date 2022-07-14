@@ -24,6 +24,7 @@
 #'   This map is used to create the `rowData` structure from the file.
 #'
 #' @include TENxFile-class.R
+#'
 #' @exportClass TENxH5
 .TENxH5 <- setClass(
     Class = "TENxH5",
@@ -71,6 +72,13 @@
 #'   "projection" refers to the data class that will be provided once the
 #'   data file is `import`ed.
 #'
+#'   The data version "3" mainly includes a "matrix" group and "interval"
+#'   information within the file. Version "2" data does not include
+#'   ranged-based information and has a different directory structure compared
+#'   to version "3". See the internal `data.frame`: `TENxIO:::gene.meta` for
+#'   a map of fields and their corresponding file locations within the H5 file.
+#'   This map is used to create the `rowData` structure from the file.
+#'
 #' @inheritParams TENxFile
 #'
 #' @param version character(1) There are currently two recognized versions
@@ -81,12 +89,9 @@
 #'   this is usually either the "matrix" or "outs" group but other groups are
 #'   supported as well (e.g., "mm10").
 #'
-#' @details The data version "3" mainly includes a "matrix" group and "interval"
-#'   information within the file. Version "2" data does not include
-#'   ranged-based information and has a different directory structure compared
-#'   to version "3". See the internal `data.frame`: `TENxIO:::gene.meta` for
-#'   a map of fields and their corresponding file locations within the H5 file.
-#'   This map is used to create the `rowData` structure from the file.
+#' @param ranges character(1) The HDF5 internal folder location embedded within
+#'   the file that points to the ranged data information, e.g.,
+#'   "/features/interval".
 #'
 #' @examples
 #'
@@ -220,7 +225,11 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
 })
 
 #' @describeIn TENxH5 Import TENxH5 data as a SingleCellExperiment
+#'
 #' @importFrom MatrixGenerics rowRanges
+#'
+#' @inheritParams BiocIO::import
+#'
 #' @export
 setMethod("import", "TENxH5", function(con, format, text, ...) {
     .checkPkgsAvail("HDF5Array")
@@ -244,6 +253,11 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     }
 })
 
+#' @describeIn TENxH5 Display a snapshot of the contents within a TENxH5 file
+#'   before import
+#'
+#' @param object A `TENxH5` class object
+#'
 #' @importFrom BiocBaseUtils selectSome
 #' @export
 setMethod("show", "TENxH5", function(object) {

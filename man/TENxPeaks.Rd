@@ -6,6 +6,11 @@
 \usage{
 TENxPeaks(resource, ...)
 }
+\arguments{
+\item{resource}{character(1) The path to the file}
+
+\item{...}{Additional inputs to the low level class generator functions}
+}
 \value{
 A \code{TENxPeak} class object
 }

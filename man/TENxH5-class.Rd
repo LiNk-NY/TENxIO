@@ -10,6 +10,7 @@
 \alias{genome,TENxH5-method}
 \alias{rowRanges,TENxH5-method}
 \alias{import,TENxH5,ANY,ANY-method}
+\alias{show,TENxH5-method}
 \title{TENxH5: The HDF5 file representation class for 10X Data}
 \usage{
 \S4method{rowData}{TENxH5}(x, use.names = TRUE, ...)
@@ -23,6 +24,32 @@
 \S4method{rowRanges}{TENxH5}(x, ...)
 
 \S4method{import}{TENxH5,ANY,ANY}(con, format, text, ...)
+
+\S4method{show}{TENxH5}(object)
+}
+\arguments{
+\item{...}{ Parameters to pass to the format-specific method.
+  }
+
+\item{con}{ The connection from which data is loaded or to which data
+    is saved. If this is a character vector, it is assumed to be a
+    filename and a corresponding file connection is created and then
+    closed after exporting the object. If a \code{\linkS4class{BiocFile}}
+    derivative, the data is loaded from or saved to the underlying
+    resource. If missing, the function will return the output as a
+    character vector, rather than writing to a connection.
+  }
+
+\item{format}{ The format of the output. If missing and \code{con} is
+    a filename, the format is derived from the file extension. This
+    argument is unnecessary when \code{con} is a derivative of
+    \code{\linkS4class{BiocFile}}.
+  }
+
+\item{text}{ If \code{con} is missing, this can be a character vector
+    directly providing the string data to import. }
+
+\item{object}{A \code{TENxH5} class object}
 }
 \description{
 This class is designed to work with 10x Single Cell datasets.
@@ -50,6 +77,9 @@ This map is used to create the \code{rowData} structure from the file.
 \item \code{rowRanges}: Read interval data and represent as GRanges
 
 \item \code{import}: Import TENxH5 data as a SingleCellExperiment
+
+\item \code{show}: Display a snapshot of the contents within a TENxH5 file
+before import
 }}
 
 \section{Slots}{

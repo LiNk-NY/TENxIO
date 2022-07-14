@@ -1,10 +1,24 @@
+#' TENxFragments: A class to represent fragments data as `GRanges`
+#'
+#' This class is designed to work mainly with `fragments.tsv.gz` files from
+#' 10x pipelines.
+#'
+#' @details Fragments data from 10x can be quite large. In order to speed up
+#' the initial exploration of the data, we use a default of **200** records
+#' for loading. Users can change this default value by specifying a new one
+#' via the `yieldSize` argument in the constructor function.
+#'
+#' @slot roi GRanges() A GRanges indicating the regions of interest. This
+#'   get sent to `RSamtools` as the `param` input.
+#'
+#' @slot yieldSize numeric() The number of records to read by default, 200
+#'   records will be imported. A warning will be emitted if not modified.
+#'
 #' @exportClass TENxFragments
 .TENxFragments <- setClass(
     Class = "TENxFragments",
     contains = "TENxFile",
-    slots = c(
-        dataType = "character", roi = "GenomicRanges", yieldSize = "numeric"
-    )
+    slots = c(roi = "GenomicRanges", yieldSize = "numeric")
 )
 
 .check_fragments <- function(object) {
@@ -21,9 +35,7 @@
 
 S4Vectors::setValidity2("TENxFragments", .validTENxFragments)
 
-#' @rdname TENxFragments
-#' @title Import fragments files from 10X
-#' @aliases TENxFragments-class
+#' TENxFragments: Import fragments files from 10X
 #'
 #' @param resource character(1) The file path to the fragments resource, usually
 #'   a compressed tabix file with extension `.tsv.gz`.
@@ -32,7 +44,7 @@ S4Vectors::setValidity2("TENxFragments", .validTENxFragments)
 #'   get sent to `RSamtools` as the `param` input.
 #'
 #' @param yieldSize numeric() The number of records to read by default, 200
-#'   records will be imported. A warning will be emmitted if not modified.
+#'   records will be imported. A warning will be emitted if not modified.
 #'
 #' @param ... Further arguments to the class generator function (currently not
 #'   used)
@@ -58,14 +70,19 @@ TENxFragments <- function(resource, yieldSize = 200, roi = GRanges(), ...) {
         yieldSize <- NA_integer_
     if (!is(roi, "GRanges"))
         stop("'roi' input must be 'GenomicRanges'")
-    type <- tail(strsplit(resource, "_|_fragments.tsv.gz")[[1]], 1L)
     .TENxFragments(
-        resource = resource, dataType = type, yieldSize = yieldSize, roi = roi,
+        resource = resource, yieldSize = yieldSize, roi = roi,
         ...
     )
 }
 
+#' @describeIn TENxFragments Import method for representing fragments.tsv.gz
+#'   data from 10x via `Rsamtools` and `RaggedExperiment`
+#'
 #' @importFrom utils read.table
+#'
+#' @inheritParams BiocIO::import
+#'
 #' @export
 setMethod("import", "TENxFragments", function(con, format, text, ...) {
     .checkPkgsAvail(c("Rsamtools", "RaggedExperiment"))

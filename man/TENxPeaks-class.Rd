@@ -4,7 +4,45 @@
 \name{TENxPeaks-class}
 \alias{TENxPeaks-class}
 \alias{.TENxPeaks}
+\alias{import,TENxPeaks,ANY,ANY-method}
+\alias{annotation<-,SingleCellExperiment,ANY-method}
+\alias{annotation,SingleCellExperiment-method}
 \title{TENxPeaks: The class to represent 10x Peaks files}
+\usage{
+\S4method{import}{TENxPeaks,ANY,ANY}(con, format, text, ...)
+
+\S4method{annotation}{SingleCellExperiment,ANY}(object, ...) <- value
+
+\S4method{annotation}{SingleCellExperiment}(object, ...)
+}
+\arguments{
+\item{con}{ The connection from which data is loaded or to which data
+    is saved. If this is a character vector, it is assumed to be a
+    filename and a corresponding file connection is created and then
+    closed after exporting the object. If a \code{\linkS4class{BiocFile}}
+    derivative, the data is loaded from or saved to the underlying
+    resource. If missing, the function will return the output as a
+    character vector, rather than writing to a connection.
+  }
+
+\item{format}{ The format of the output. If missing and \code{con} is
+    a filename, the format is derived from the file extension. This
+    argument is unnecessary when \code{con} is a derivative of
+    \code{\linkS4class{BiocFile}}.
+  }
+
+\item{text}{ If \code{con} is missing, this can be a character vector
+    directly providing the string data to import. }
+
+\item{...}{ Parameters to pass to the format-specific method.
+  }
+
+\item{object}{ The object to export. }
+
+\item{value}{
+    The annotation information to set on \code{object}.
+  }
+}
 \description{
 This class is designed to work with the files denoted with "peak_annotation"
 in the file name. These are usually produced as tab separated value files,
@@ -16,3 +54,15 @@ be used in conjunction with the \code{annotation} method on a
 \code{SingleCellExperiment} to add peak information to the experiment. The
 ranged data is represented as a \code{GRanges} class object.
 }
+\section{Functions}{
+\itemize{
+\item \code{import,TENxPeaks,ANY,ANY-method}: Import a peaks_annotation file from 10x as a
+\code{GRanges} representation
+
+\item \code{annotation<-,SingleCellExperiment,ANY-method}: Replacement method to add annotation data to a
+\code{SingleCellExperiment}
+
+\item \code{annotation,SingleCellExperiment-method}: Extraction method to obtain annotation data from
+a \code{SingleCellExperiment} representation
+}}
+

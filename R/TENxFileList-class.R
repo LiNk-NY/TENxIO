@@ -100,8 +100,21 @@ TENxFileList <- function(..., compressed = FALSE) {
     tempdir
 }
 
+#' TSVFile: A class to represent 10x tab separated values files
+#'
+#' This class is general purpose for reading in tabular data from the
+#' 10x Genomics website with the `.tsv` file extension. The class also supports
+#' compressed files, i.e., those with the `.tsv.gz` extension.
+#'
+#' @keywords internal
 .TSVFile <- setClass(Class = "TSVFile", contains = "TENxFile")
 
+#' @describeIn TSVFile General import function for `tsv` files from 10x;
+#'   using `readr::read_tsv` and returning a `tibble` representation
+#'
+#' @inheritParams BiocIO::import
+#'
+#' @keywords internal
 setMethod("import", "TSVFile", function(con, format, text, ...) {
     resource <- path(con)
     df <- readr::read_tsv(
@@ -138,6 +151,8 @@ setMethod("path", "TENxFileList", function(object, ...) {
 #'
 #' @importFrom BiocIO decompress
 #'
+#' @inheritParams BiocIO::decompress
+#'
 #' @export
 setMethod("decompress", "TENxFileList", function(manager, con, ...) {
     res_ext <- .get_ext(path(con))
@@ -166,6 +181,8 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
 
 #' @describeIn TENxFileList-class Recursively import files within a
 #'   `TENxFileList`
+#'
+#' @inheritParams BiocIO::import
 #'
 #' @export
 setMethod("import", "TENxFileList", function(con, format, text, ...) {

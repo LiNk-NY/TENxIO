@@ -2,8 +2,7 @@
 % Please edit documentation in R/TENxFragments-class.R
 \name{TENxFragments}
 \alias{TENxFragments}
-\alias{TENxFragments-class}
-\title{Import fragments files from 10X}
+\title{TENxFragments: Import fragments files from 10X}
 \usage{
 TENxFragments(resource, yieldSize = 200, roi = GRanges(), ...)
 }
@@ -12,7 +11,7 @@ TENxFragments(resource, yieldSize = 200, roi = GRanges(), ...)
 a compressed tabix file with extension \code{.tsv.gz}.}
 
 \item{yieldSize}{numeric() The number of records to read by default, 200
-records will be imported. A warning will be emmitted if not modified.}
+records will be imported. A warning will be emitted if not modified.}
 
 \item{roi}{GRanges() A GRanges indicating the regions of interest. This
 get sent to \code{RSamtools} as the \code{param} input.}
@@ -21,7 +20,7 @@ get sent to \code{RSamtools} as the \code{param} input.}
 used)}
 }
 \description{
-Import fragments files from 10X
+TENxFragments: Import fragments files from 10X
 }
 \examples{
 

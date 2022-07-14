@@ -17,6 +17,10 @@ information.}
 this is usually either the "matrix" or "outs" group but other groups are
 supported as well (e.g., "mm10").}
 
+\item{ranges}{character(1) The HDF5 internal folder location embedded within
+the file that points to the ranged data information, e.g.,
+"/features/interval".}
+
 \item{...}{Additional inputs to the low level class generator functions}
 }
 \description{

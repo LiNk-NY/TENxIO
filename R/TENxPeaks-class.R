@@ -40,6 +40,8 @@ S4Vectors::setValidity2("TENxPeaks", .validPeaksFile)
 #'   peak information to the experiment. The ranged data is represented as a
 #'   `GRanges` class object.
 #'
+#' @inheritParams TENxFile
+#'
 #' @return A `TENxPeak` class object
 #'
 #' @examples
@@ -52,10 +54,16 @@ S4Vectors::setValidity2("TENxPeaks", .validPeaksFile)
 #' sce <- import(con)
 #' annotation(sce, name = "peak_annotation") <- peak_file
 #'
+#' @export
 TENxPeaks <- function(resource, ...) {
     .TENxPeaks(resource = resource, ...)
 }
 
+#' @describeIn TENxPeaks-class Import a peaks_annotation file from 10x as a
+#'   `GRanges` representation
+#'
+#' @inheritParams BiocIO::import
+#'
 #' @export
 setMethod("import", "TENxPeaks", function(con, format, ...) {
     .checkPkgsAvail("readr")
@@ -65,7 +73,15 @@ setMethod("import", "TENxPeaks", function(con, format, ...) {
     makeGRangesFromDataFrame(panno, keep.extra.columns = TRUE)
 })
 
+#' @describeIn TENxPeaks-class Replacement method to add annotation data to a
+#'   `SingleCellExperiment`
+#'
+#' @inheritParams BiocGenerics::annotation
+#'
 #' @importFrom S4Vectors metadata metadata<-
+#' @importFrom BiocGenerics annotation<-
+#'
+#' @export
 setReplaceMethod("annotation", "SingleCellExperiment",
     function(object, ..., value) {
         if (!is(value, "TENxPeaks"))
@@ -84,7 +100,11 @@ setReplaceMethod("annotation", "SingleCellExperiment",
     }
 )
 
+#' @describeIn TENxPeaks-class Extraction method to obtain annotation data from
+#'   a `SingleCellExperiment` representation
+#'
 #' @importFrom BiocGenerics annotation
+#'
 #' @export
 setMethod("annotation", "SingleCellExperiment", function(object, ...) {
     metadata(object)[["annotation"]]

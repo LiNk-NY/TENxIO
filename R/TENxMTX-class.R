@@ -53,7 +53,12 @@ TENxMTX <- function(resource, compressed = FALSE, ...) {
     .TENxMTX(resource = resource, compressed = compr, extension = ext)
 }
 
+#' @describeIn TENxMTX Import method mainly for mtx.gz files from 10x
+#'
 #' @importFrom S4Vectors SimpleList
+#'
+#' @inheritParams BiocIO::import
+#'
 #' @export
 setMethod("import", "TENxMTX", function(con, format, text, ...) {
     mtxf <- Matrix::readMM(path(con))
