@@ -2,12 +2,23 @@
 % Please edit documentation in R/TENxPeaks-class.R
 \name{TENxPeaks}
 \alias{TENxPeaks}
-\title{Importing peak-annotation files}
+\title{Import 10x peak annotation files from 10x}
 \usage{
 TENxPeaks(resource, ...)
 }
+\value{
+A \code{TENxPeak} class object
+}
 \description{
-Importing peak-annotation files
+This constructor function is designed to work with the files denoted with
+"peak_annotation" in the file name. These are usually produced as tab
+separated value files, i.e., \code{.tsv}.
+}
+\details{
+The output class allows handling of peak data. It can be used in
+conjunction with the \code{annotation} method on a \code{SingleCellExperiment} to add
+peak information to the experiment. The ranged data is represented as a
+\code{GRanges} class object.
 }
 \examples{
 

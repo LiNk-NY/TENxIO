@@ -1,3 +1,14 @@
+#' TENxPeaks: The class to represent 10x Peaks files
+#'
+#' This class is designed to work with the files denoted with "peak_annotation"
+#' in the file name. These are usually produced as tab separated value files,
+#' i.e., `.tsv`.
+#'
+#' @details This class is a straightforward class for handling peak data. It can
+#'   be used in conjunction with the `annotation` method on a
+#'   `SingleCellExperiment` to add peak information to the experiment. The
+#'   ranged data is represented as a `GRanges` class object.
+#'
 #' @exportClass TENxPeaks
 .TENxPeaks <- setClass(
     Class = "TENxPeaks",
@@ -18,9 +29,18 @@
 
 S4Vectors::setValidity2("TENxPeaks", .validPeaksFile)
 
-#' @rdname TENxPeaks
+#' Import 10x peak annotation files from 10x
 #'
-#' @title Importing peak-annotation files
+#' This constructor function is designed to work with the files denoted with
+#' "peak_annotation" in the file name. These are usually produced as tab
+#' separated value files, i.e., `.tsv`.
+#'
+#' @details The output class allows handling of peak data. It can be used in
+#'   conjunction with the `annotation` method on a `SingleCellExperiment` to add
+#'   peak information to the experiment. The ranged data is represented as a
+#'   `GRanges` class object.
+#'
+#' @return A `TENxPeak` class object
 #'
 #' @examples
 #'
@@ -36,6 +56,7 @@ TENxPeaks <- function(resource, ...) {
     .TENxPeaks(resource = resource, ...)
 }
 
+#' @export
 setMethod("import", "TENxPeaks", function(con, format, ...) {
     .checkPkgsAvail("readr")
     panno <- readr::read_tsv(
@@ -63,6 +84,7 @@ setReplaceMethod("annotation", "SingleCellExperiment",
     }
 )
 
+#' @export
 setMethod("annotation", "SingleCellExperiment", function(object, ...) {
     metadata(object)[["annotation"]]
 })
