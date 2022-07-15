@@ -77,9 +77,12 @@ S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 #' @export
 TENxFileList <- function(..., compressed = FALSE) {
     dots <- S4Vectors::SimpleList(...)
+    exts <- dots[["extension"]]
+    if (length(names(dots)))
+        dots <- dots[names(dots) != "extension"]
     undots <- dots[[1L]]
     if (identical(length(dots), 1L)) {
-        if (is.character(undots))
+        if (is.character(undots) && is.null(exts))
             exts <- .get_ext(undots)
         if (is(undots, "TENxFile"))
             exts <- undots@extension
@@ -153,6 +156,8 @@ setMethod("path", "TENxFileList", function(object, ...) {
 #'
 #' @inheritParams BiocIO::decompress
 #'
+#' @param manager A `ConnectionManager` internal instance; currently not used.
+#'
 #' @export
 setMethod("decompress", "TENxFileList", function(manager, con, ...) {
     res_ext <- .get_ext(path(con))
@@ -186,7 +191,7 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
 #'
 #' @export
 setMethod("import", "TENxFileList", function(con, format, text, ...) {
-    fdata <- decompress(con)
+    fdata <- decompress(con = con)
     datalist <- lapply(fdata, import)
     if (all(.TARFILENAMES %in% names(datalist))) {
         mat <- datalist[["matrix.mtx.gz"]]

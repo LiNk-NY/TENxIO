@@ -28,7 +28,33 @@
 \S4method{show}{TENxH5}(object)
 }
 \arguments{
-\item{...}{ Parameters to pass to the format-specific method.
+\item{x}{
+    A SummarizedExperiment object.
+  }
+
+\item{use.names}{
+    For \code{rowData}: Like \code{\link[S4Vectors]{mcols}(x)}, by default
+    \code{rowData(x)} propagates the rownames of \code{x} to the returned
+    \link[S4Vectors]{DataFrame} object (note that for a SummarizedExperiment
+    object, the rownames are also the names i.e. \code{rownames(x)} is
+    always the same as \code{names(x)}). Setting \code{use.names=FALSE}
+    suppresses this propagation i.e. it returns a \link[S4Vectors]{DataFrame}
+    object with no rownames. Use this when \code{rowData(x)} fails,
+    which can happen when the rownames contain NAs (because the rownames
+    of a SummarizedExperiment object can contain NAs, but the rownames of
+    a \link[S4Vectors]{DataFrame} object cannot).
+
+    For \code{combineRows} and \code{combineCols}: See Combining section
+    below.
+  }
+
+\item{...}{
+    For \code{assay}, arguments in \code{...} are forwarded to \code{assays}.
+
+    For \code{rbind}, \code{cbind}, \code{...} contains SummarizedExperiment
+    objects to be combined.
+
+    For other accessors, ignored.
   }
 
 \item{con}{ The connection from which data is loaded or to which data

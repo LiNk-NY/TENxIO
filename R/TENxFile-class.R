@@ -104,7 +104,7 @@ TENxFile <- function(resource, extension, ...) {
         h5 = TENxH5,
         mtx = TENxMTX,
         mtx.gz = TENxMTX,
-        tar.gz = .TENxFileList,
+        tar.gz = TENxFileList,
         tsv.gz = .TSVFile,
         .TENxFile
     )

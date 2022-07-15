@@ -141,6 +141,9 @@ gene.meta <- data.frame(
 }
 
 #' @describeIn TENxH5 Generate the rowData ad hoc from a TENxH5 file
+#'
+#' @inheritParams SummarizedExperiment::rowData
+#'
 #' @export
 setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
     gm <- .selectByVersion(gene.meta, x@version)

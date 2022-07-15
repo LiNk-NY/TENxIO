@@ -48,7 +48,7 @@ S4Vectors::setValidity2("TENxPeaks", .validPeaksFile)
 #'
 #' fi <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_atac_peak_annotation.tsv"
 #' peak_file <- TENxPeaks(fi)
-#' peak_anno <- import(pa)
+#' peak_anno <- import(peak_file)
 #'
 #' con <- TENxFile("~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5")
 #' sce <- import(con)

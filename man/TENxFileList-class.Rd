@@ -26,6 +26,8 @@
     Additional arguments, for use in specific methods.
   }
 
+\item{manager}{A \code{ConnectionManager} internal instance; currently not used.}
+
 \item{con}{ The connection from which data is loaded or to which data
     is saved. If this is a character vector, it is assumed to be a
     filename and a corresponding file connection is created and then
