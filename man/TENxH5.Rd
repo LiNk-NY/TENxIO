@@ -47,9 +47,14 @@ This map is used to create the \code{rowData} structure from the file.
 }
 \examples{
 
-h5f <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5"
-con <- TENxH5(h5f)
-import(con)
+h5f <- system.file(
+    "extdata", "pbmc_granulocyte_ff_bc_ex.h5",
+    package = "TENxIO", mustWork = TRUE
+)
+
+TENxH5(h5f)
+
+import(TENxH5(h5f))
 
 h52 <- "~/data/10x/pbmc_10k/10k_pbmc_ATACv2_nextgem_Chromium_Controller_filtered_peak_bc_matrix.h5"
 con <- TENxH5(h52, ranges = "/features/id")
