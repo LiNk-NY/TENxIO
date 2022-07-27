@@ -29,10 +29,10 @@ Suggests:
   rhdf5,
   rmarkdown,
   Rsamtools
-Description: The package exports methods for working with version 2 and 3 of
-    10X Genomics files. It simplifies importing by creating a class with
-    slots for version and group in the H5 file. Currently only H5 files are
-    supported.
+Description: Provides a structured S4 approach to importing data files from
+  the 10X pipelines. It mainly supports Single Cell Multiome ATAC + Gene
+  Expresssion data among other data types. The main Bioconductor data
+  representations used are SingleCellExperiment and RaggedExperiment.
 License: Artistic-2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
