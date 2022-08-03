@@ -23,6 +23,7 @@ Imports:
   utils
 Suggests:
   BiocStyle,
+  ExperimentHub,
   HDF5Array,
   knitr,
   RaggedExperiment,
