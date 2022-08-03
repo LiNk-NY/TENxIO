@@ -207,10 +207,7 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
         rr <- GenomicRanges::makeGRangesFromDataFrame(
             feats, keep.extra.columns = TRUE
         )
-        sce <- SingleCellExperiment(
-            S4Vectors::SimpleList(counts = mat),
-            rowRanges = rr
-        )
+        sce <- SingleCellExperiment(mat, rowRanges = rr)
         sce <- sce[seqnames(rr) != "NA_character_", ]
         splitAltExps(
             sce,
