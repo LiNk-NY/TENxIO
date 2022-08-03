@@ -27,12 +27,26 @@ peak information to the experiment. The ranged data is represented as a
 }
 \examples{
 
-fi <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_atac_peak_annotation.tsv"
+fi <- system.file(
+    "extdata", "pbmc_granulocyte_sorted_3k_ex_atac_peak_annotation.tsv",
+    package = "TENxIO", mustWork = TRUE
+)
 peak_file <- TENxPeaks(fi)
 peak_anno <- import(peak_file)
+peak_anno
 
-con <- TENxFile("~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5")
+example(TENxH5)
+
+## Add peaks to an existing SCE
+## First, import the SCE from an example H5 file
+h5f <- system.file(
+    "extdata", "pbmc_granulocyte_ff_bc_ex.h5",
+    package = "TENxIO", mustWork = TRUE
+)
+con <- TENxH5(h5f)
 sce <- import(con)
+## auto-import peaks when using annotation<-
 annotation(sce, name = "peak_annotation") <- peak_file
+annotation(sce)
 
 }
