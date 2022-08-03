@@ -37,8 +37,13 @@
 #'
 #' @examples
 #'
-#' mtxf <-"~/data/10x/pbmc_3k/filtered_feature_bc_matrix/matrix.mtx.gz"
+#' mtxf <- system.file(
+#'     "extdata", "pbmc_3k_ff_bc_ex.mtx",
+#'     package = "TENxIO", mustWork = TRUE
+#' )
+#'
 #' con <- TENxMTX(mtxf)
+#'
 #' import(con)
 #'
 #' @export
