@@ -43,9 +43,9 @@ formats, please open an issue on GitHub.
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{import}: Import method mainly for mtx.gz files from 10x
-}}
+\item \code{import(con = TENxMTX, format = ANY, text = ANY)}: Import method mainly for mtx.gz files from 10x
 
+}}
 \section{Slots}{
 
 \describe{

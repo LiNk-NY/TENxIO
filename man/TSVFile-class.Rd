@@ -38,8 +38,8 @@ compressed files, i.e., those with the \code{.tsv.gz} extension.
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{import}: General import function for \code{tsv} files from 10x;
+\item \code{import(con = TSVFile, format = ANY, text = ANY)}: General import function for \code{tsv} files from 10x;
 using \code{readr::read_tsv} and returning a \code{tibble} representation
-}}
 
+}}
 \keyword{internal}

@@ -92,22 +92,22 @@ This map is used to create the \code{rowData} structure from the file.
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{rowData}: Generate the rowData ad hoc from a TENxH5 file
+\item \code{rowData(TENxH5)}: Generate the rowData ad hoc from a TENxH5 file
 
-\item \code{dim}: Get the dimensions of the data as stored in the file
+\item \code{dim(TENxH5)}: Get the dimensions of the data as stored in the file
 
-\item \code{dimnames}: Get the dimension names from the file
+\item \code{dimnames(TENxH5)}: Get the dimension names from the file
 
-\item \code{genome}: Read genome string from file
+\item \code{genome(TENxH5)}: Read genome string from file
 
-\item \code{rowRanges}: Read interval data and represent as GRanges
+\item \code{rowRanges(TENxH5)}: Read interval data and represent as GRanges
 
-\item \code{import}: Import TENxH5 data as a SingleCellExperiment
+\item \code{import(con = TENxH5, format = ANY, text = ANY)}: Import TENxH5 data as a SingleCellExperiment
 
-\item \code{show}: Display a snapshot of the contents within a TENxH5 file
+\item \code{show(TENxH5)}: Display a snapshot of the contents within a TENxH5 file
 before import
-}}
 
+}}
 \section{Slots}{
 
 \describe{

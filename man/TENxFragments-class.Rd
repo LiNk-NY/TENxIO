@@ -43,10 +43,10 @@ via the \code{yieldSize} argument in the constructor function.
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{import}: Import method for representing fragments.tsv.gz
+\item \code{import(con = TENxFragments, format = ANY, text = ANY)}: Import method for representing fragments.tsv.gz
 data from 10x via \code{Rsamtools} and \code{RaggedExperiment}
-}}
 
+}}
 \section{Slots}{
 
 \describe{

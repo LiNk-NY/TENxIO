@@ -61,16 +61,16 @@ identifiers
 }
 \section{Functions}{
 \itemize{
-\item \code{path,TENxFileList-method}: Obtain file paths for all files in the object
+\item \code{path(TENxFileList)}: Obtain file paths for all files in the object
 as a vector
 
-\item \code{decompress,TENxFileList-method}: An intermediate method for decompressing
+\item \code{decompress(TENxFileList)}: An intermediate method for decompressing
 (via untar) the contents of a \code{.tar.gz} file list
 
-\item \code{import,TENxFileList,ANY,ANY-method}: Recursively import files within a
+\item \code{import(con = TENxFileList, format = ANY, text = ANY)}: Recursively import files within a
 \code{TENxFileList}
-}}
 
+}}
 \section{Slots}{
 
 \describe{

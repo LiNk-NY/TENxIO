@@ -56,13 +56,13 @@ ranged data is represented as a \code{GRanges} class object.
 }
 \section{Functions}{
 \itemize{
-\item \code{import,TENxPeaks,ANY,ANY-method}: Import a peaks_annotation file from 10x as a
+\item \code{import(con = TENxPeaks, format = ANY, text = ANY)}: Import a peaks_annotation file from 10x as a
 \code{GRanges} representation
 
-\item \code{annotation<-,SingleCellExperiment,ANY-method}: Replacement method to add annotation data to a
+\item \code{annotation(object = SingleCellExperiment) <- value}: Replacement method to add annotation data to a
 \code{SingleCellExperiment}
 
-\item \code{annotation,SingleCellExperiment-method}: Extraction method to obtain annotation data from
+\item \code{annotation(SingleCellExperiment)}: Extraction method to obtain annotation data from
 a \code{SingleCellExperiment} representation
-}}
 
+}}
