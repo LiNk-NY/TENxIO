@@ -71,8 +71,12 @@ S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 #'
 #' @examples
 #'
-#' fl <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
-#' con <- TENxFileList(fl)
+#' fl <- system.file(
+#'     "extdata", "pbmc_granulocyte_sorted_3k_ff_bc_ex_matrix.tar.gz",
+#'     package = "TENxIO", mustWork = TRUE
+#' )
+#'
+#' import(TENxFileList(fl))
 #'
 #' @export
 TENxFileList <- function(..., compressed = FALSE) {

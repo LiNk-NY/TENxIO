@@ -33,7 +33,11 @@ If all above files are in the tarball, the import method will provide a
 }
 \examples{
 
-fl <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
-con <- TENxFileList(fl)
+fl <- system.file(
+    "extdata", "pbmc_granulocyte_sorted_3k_ff_bc_ex_matrix.tar.gz",
+    package = "TENxIO", mustWork = TRUE
+)
+
+import(TENxFileList(fl))
 
 }
