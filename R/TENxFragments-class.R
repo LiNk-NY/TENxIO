@@ -23,8 +23,9 @@
 
 .check_fragments <- function(object) {
     fpath <- path(object)
-    if (!endsWith(fpath, "_fragments.tsv.gz"))
-        "Provide a 10X fragments file ending in '_fragments.tsv.gz'"
+    fragex <- endsWith(fpath, c("_fragments.tsv.gz", "_fragments.tsv"))
+    if (!any(fragex))
+        "Provide a 10X fragments file ending in '_fragments.tsv*'"
     else
         TRUE
 }
@@ -54,12 +55,13 @@ S4Vectors::setValidity2("TENxFragments", .validTENxFragments)
 #'
 #' @examples
 #'
-#' con <- TENxFile("~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5")
-#' con
-#' sce <- import(con)
+#' fr <- system.file(
+#'     "extdata", "pbmc_3k_atac_ex_fragments.tsv.gz",
+#'     package = "TENxIO", mustWork = TRUE
+#' )
 #'
-#' fr <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_atac_fragments.tsv.gz"
 #' tfr <- TENxFragments(fr)
+#'
 #' fra <- import(tfr)
 #'
 #' @export
