@@ -12,7 +12,7 @@ TENxPeaks(resource, ...)
 \item{...}{Additional inputs to the low level class generator functions}
 }
 \value{
-A \code{TENxPeak} class object
+A \code{TENxPeaks} class object
 }
 \description{
 This constructor function is designed to work with the files denoted with

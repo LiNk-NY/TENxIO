@@ -42,7 +42,7 @@ S4Vectors::setValidity2("TENxPeaks", .validPeaksFile)
 #'
 #' @inheritParams TENxFile
 #'
-#' @return A `TENxPeak` class object
+#' @return A `TENxPeaks` class object
 #'
 #' @examples
 #'
