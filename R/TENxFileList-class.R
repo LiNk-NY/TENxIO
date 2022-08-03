@@ -16,12 +16,6 @@
 #'
 #' @slot compressed logical(1) Whether the file is compressed as `.tar.gz`
 #'
-#' @examples
-#'
-#' fl <- "~/data/10x/pbmc_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.tar.gz"
-#' con <- TENxFileList(fl)
-#' import(con)
-#'
 #' @exportClass TENxFileList
 .TENxFileList <- setClass(
     Class = "TENxFileList",
