@@ -38,6 +38,10 @@ metadata such as \code{rowData} and "Type" column, if available. The term
 "projection" refers to the data class that will be provided once the
 data file is \code{import}ed.
 
+An additional \code{ref} argument can be provided when the file contains
+multiple \code{feature_type} in the file or "Type" in the \code{rowData}. By
+default, the most frequent type is represented.
+
 The data version "3" mainly includes a "matrix" group and "interval"
 information within the file. Version "2" data does not include
 ranged-based information and has a different directory structure compared
@@ -56,7 +60,15 @@ TENxH5(h5f)
 
 import(TENxH5(h5f))
 
-h52 <- "~/data/10x/pbmc_10k/10k_pbmc_ATACv2_nextgem_Chromium_Controller_filtered_peak_bc_matrix.h5"
-con <- TENxH5(h52, ranges = "/features/id")
+h5f <- system.file(
+    "extdata", "10k_pbmc_ATACv2_f_bc_ex.h5",
+    package = "TENxIO", mustWork = TRUE
+)
+
+## Optional ref input, most frequent Type used by default
+th5 <- TENxH5(h5f, ranges = "/features/id", ref = "Peaks")
+th5
+TENxH5(h5f, ranges = "/features/id")
+import(th5)
 
 }
