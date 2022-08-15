@@ -19,6 +19,7 @@ Imports:
   methods,
   RCurl,
   readr,
+  R.utils,
   S4Vectors,
   utils
 Suggests:

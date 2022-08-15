@@ -22,5 +22,8 @@ file that will subsequently be imported}
 
 \item{\code{rowidx}}{integer(1) The row index corresponding to rows in the file that
 will subsequently be imported}
+
+\item{\code{remote}}{logical(1) Whether the file exists on the web, i.e., the
+\code{resource} is a URL}
 }}
 

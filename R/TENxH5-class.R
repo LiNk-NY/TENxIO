@@ -32,9 +32,9 @@
     slots = c(version = "character", group = "character", ranges = "character")
 )
 
-.get_h5_group <- function(fpath) {
+.get_h5_group <- function(fpath, remote) {
     .checkPkgsAvail("rhdf5")
-    l1 <- rhdf5::h5ls(fpath, recursive = FALSE)
+    l1 <- rhdf5::h5ls(fpath, recursive = FALSE, s3 = remote)
     l1[l1$otype == "H5I_GROUP", "name"]
 }
 
@@ -47,8 +47,8 @@
         warning("'group' not in known 10X groups: ", g_msg, call. = FALSE)
 }
 
-.getDim <- function(file, group) {
-    rhdf5::h5read(file, paste0(group, "/", "shape"))
+.getDim <- function(file, group, remote) {
+    rhdf5::h5read(file, paste0(group, "/", "shape"), s3 = remote)
 }
 
 .get_tenx_version <- function(group) {
@@ -123,11 +123,12 @@
 TENxH5 <-
     function(resource, version, group, ranges, ...)
 {
-    group <- .get_h5_group(resource)
+    remote <- R.utils::isUrl(resource)
+    group <- .get_h5_group(resource, remote)
     .check_h5_group(group)
     if (missing(version))
         version <- .get_tenx_version(group)
-    dims <- .getDim(resource, group)
+    dims <- .getDim(resource, group, remote)
     ext <- list(...)[["extension"]]
     if (is.null(ext))
         ext <- .get_ext(resource)
@@ -139,6 +140,7 @@ TENxH5 <-
         resource = resource, group = group, version = version, ranges = ranges,
         rowidx = seq_len(dims[[1L]]),
         colidx = seq_len(dims[[2L]]),
+        remote = remote,
         extension = ext
     )
 }
@@ -164,6 +166,7 @@ gene.meta <- data.frame(
 #' @export
 setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
     gm <- .selectByVersion(gene.meta, x@version)
+    remote <- x@remote
     nrows <- list(...)[["rows"]]
     ## Implement a smaller index for display purposes only
     mxrow <- max(x@rowidx)
@@ -172,7 +175,9 @@ setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
     gm[] <- Filter(Negate(is.na), gm)
     res <- lapply(gm, function(colval) {
         readname <- paste0(x@group, colval)
-        as.character(rhdf5::h5read(path(x), index = list(nrows), readname))
+        as.character(
+            rhdf5::h5read(path(x), index = list(nrows), readname, s3 = remote)
+        )
     })
     DF <- as(res, "DataFrame")
     if ("Type" %in% names(DF))
@@ -192,8 +197,8 @@ setMethod("dim", "TENxH5", function(x) {
 setMethod("dimnames", "TENxH5", function(x) {
     id <- .selectByVersion(gene.meta, x@version, "ID")
     list(
-        rhdf5::h5read(path(x), paste0(x@group, "/", id)),
-        rhdf5::h5read(path(x), paste0(x@group, "/", "barcodes"))
+        rhdf5::h5read(path(x), paste0(x@group, "/", id), s3 = x@remote),
+        rhdf5::h5read(path(x), paste0(x@group, "/", "barcodes"), s3 = x@remote)
     )
 })
 
@@ -203,11 +208,16 @@ setMethod("dimnames", "TENxH5", function(x) {
 setMethod("genome", "TENxH5", function(x) {
     group <- x@group
     version <- x@version
+    remote <- x@remote
     if (is.na(x@ranges))
         stop("'rowRanges' data not available, e.g., in '/features/interval'")
-    gens <- rhdf5::h5read(path(x), paste0(group, "/", "features/genome"))
+    gens <- rhdf5::h5read(
+        path(x), paste0(group, "/", "features/genome"), s3 = remote
+    )
     ugens <- unique(gens)
-    intervals <- rhdf5::h5read(path(x), paste0(group, "/", x@ranges))
+    intervals <- rhdf5::h5read(
+        path(x), paste0(group, "/", x@ranges), s3 = remote
+    )
     splitints <- strsplit(intervals, ":", fixed = TRUE)
     seqnames <- vapply(splitints, `[[`, character(1L), 1L)
     if (any(seqnames == "NA"))
@@ -225,6 +235,7 @@ setMethod("genome", "TENxH5", function(x) {
 setMethod("rowRanges", "TENxH5", function(x, ...) {
     group <- x@group
     version <- x@version
+    remote <- x@remote
     if (is.na(x@ranges))
         stop("'rowRanges' data not available, e.g., in '/features/interval'")
     rows <- list(...)[["rows"]]
@@ -233,7 +244,7 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
     if (is.null(rows) && mxrow > 12)
         rows <- c(1:6, mxrow - 5:0)
     interval <- rhdf5::h5read(
-        path(x), paste0(group, x@ranges), list(rows)
+        path(x), paste0(group, x@ranges), list(rows), s3 = remote
     )
     ## Hack to allow NA ranges for later removal (keeping data parallel)
     interval[interval == "NA"] <- "NA_character_:0"

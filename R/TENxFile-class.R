@@ -14,6 +14,9 @@
 #' @slot rowidx integer(1) The row index corresponding to rows in the file that
 #'   will subsequently be imported
 #'
+#' @slot remote logical(1) Whether the file exists on the web, i.e., the
+#'   `resource` is a URL
+#'
 #' @importClassesFrom BiocIO BiocFile
 #' @importFrom BiocIO import
 #' @importFrom BiocGenerics path
@@ -24,7 +27,11 @@
 .TENxFile <- setClass(
     Class = "TENxFile",
     contains = "BiocFile",
-    slots = c(extension = "character", colidx = "integer", rowidx = "integer")
+    slots = c(
+        extension = "character",
+        colidx = "integer", rowidx = "integer",
+        remote = "logical"
+    )
 )
 
 .check_file_exists <- function(object) {
@@ -43,10 +50,15 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 
 # TENxFile constructor ----------------------------------------------------
 
+.remove_query <- function(fname) {
+    vapply(strsplit(fname, "\\?"), `[[`, character(1L), 1L)
+}
+
 .get_ext <- function(fname) {
     if (is(fname, "TENxFile"))
         fname@extension
     else {
+        fname <- .remove_query(fname)
         split_files <- strsplit(basename(fname), "\\.")
         vapply(split_files, function(file) {
             paste0(
