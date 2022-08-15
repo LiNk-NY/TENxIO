@@ -7,9 +7,9 @@ expect_warning(
     tfr <- TENxFragments(fr)
 )
 
-tfr <- TENxFragments(fr, extension = ".tsv.gz")
+tfr <- TENxFragments(fr, extension = "tsv.gz")
 expect_identical(
-    tfr@extension, ".tsv.gz"
+    tfr@extension, "tsv.gz"
 )
 expect_silent(
     tfr <- TENxFragments(fr, yieldSize = 250)
