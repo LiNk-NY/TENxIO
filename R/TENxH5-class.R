@@ -257,11 +257,11 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     dots <- list(...)
     if (identical(con@version, "3")) {
         rr <- rowRanges(con, rows = con@rowidx)
+        names(rr) <- mcols(rr)[["ID"]]
         sce <- SingleCellExperiment(
             assays = list(counts = matrixdata),
             rowRanges = rr
         )
-        rownames(sce) <- mcols(sce)[["ID"]]
         ## remove stand-in NA values
         sce <- sce[seqnames(rr) != "NA_character_", ]
         types <- rowData(sce, rows = con@rowidx)[["Type"]]
