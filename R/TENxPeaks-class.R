@@ -69,8 +69,10 @@ S4Vectors::setValidity2("TENxPeaks", .validPeaksFile)
 #' annotation(sce)
 #'
 #' @export
-TENxPeaks <- function(resource, ...) {
-    .TENxPeaks(resource = resource, ...)
+TENxPeaks <- function(resource, extension, ...) {
+    if (missing(extension))
+        extension <- .get_ext(resource)
+    .TENxPeaks(resource = resource, extension = extension, ...)
 }
 
 #' @describeIn TENxPeaks-class Import a peaks_annotation file from 10x as a

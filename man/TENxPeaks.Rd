@@ -4,10 +4,15 @@
 \alias{TENxPeaks}
 \title{Import 10x peak annotation files from 10x}
 \usage{
-TENxPeaks(resource, ...)
+TENxPeaks(resource, extension, ...)
 }
 \arguments{
 \item{resource}{character(1) The path to the file}
+
+\item{extension}{character(1) The file extension for the given resource. It
+can usually be obtained from the file path. An override can be provided
+especially for \code{ExperimentHub} resources where the file extension is
+removed.}
 
 \item{...}{Additional inputs to the low level class generator functions}
 }
