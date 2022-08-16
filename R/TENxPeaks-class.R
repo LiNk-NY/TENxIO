@@ -104,14 +104,22 @@ setReplaceMethod("annotation", "SingleCellExperiment",
             stop("'value' must be of class 'TENxPeaks'")
         args <- list(...)
         append <- isTRUE(args[["append"]])
+        anno_name <- args[["name"]]
+        if (is.null(anno_name))
+            anno_name <- "peak_annotation"
         meta <- metadata(object)
         annotated <- "annotation" %in% names(meta)
         if (annotated && !append)
-            warning("'append = FALSE'; replacing annotation in metadata")
+            warning(
+                "'append = FALSE'; replacing annotation in metadata",
+                call. = FALSE
+            )
         vlist <- structure(
-            list(import(value)), .Names = args[["name"]]
+            list(import(value)), .Names = anno_name
         )
-        metadata(object) <- append(meta, list(annotation = vlist))
+        if (append)
+            vlist <- append(meta[["annotation"]], vlist)
+        metadata(object)[["annotation"]] <- vlist
         object
     }
 )
