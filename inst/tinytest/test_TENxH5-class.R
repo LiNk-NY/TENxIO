@@ -6,6 +6,22 @@ tenxh5 <- TENxH5(h5f)
 expect_true(
     is(tenxh5, "TENxH5")
 )
+
+expect_identical(
+    genome(tenxh5),
+    c(chr1 = "GRCh38")
+)
+
+# set to NA_character_ to test
+tenxh5@ranges <- NA_character_
+expect_error(
+    genome(tenxh5)
+)
+expect_error(
+    rowRanges(tenxh5)
+)
+tenxh5@ranges <- "/features/interval"
+
 sceh5 <- import(tenxh5)
 expect_true(
     is(sceh5, "SingleCellExperiment")
