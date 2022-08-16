@@ -11,7 +11,7 @@ expect_true(
 )
 
 expect_identical(
-    resource(tenxfile), test_file
+    tenxfile@resource, test_file
 )
 
 expect_identical(
