@@ -11,6 +11,8 @@
 #'   Currently, it only supports return types of `dgCMatrix`. To request other
 #'   formats, please open an issue on GitHub.
 #'
+#' @return A `TENxMTX` class object
+#'
 #' @exportClass TENxMTX
 .TENxMTX <- setClass(
     Class = "TENxMTX",
@@ -33,7 +35,7 @@
 #' @param compressed logical(1) Whether the resource file is compressed (default
 #'   FALSE)
 #'
-#' @return An instance of the `TENxMTX` class
+#' @return A `SummarizedExperiment` instance
 #'
 #' @examples
 #'

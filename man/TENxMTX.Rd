@@ -15,7 +15,7 @@ FALSE)}
 \item{...}{Additional inputs to the low level class generator functions}
 }
 \value{
-An instance of the \code{TENxMTX} class
+A \code{SummarizedExperiment} instance
 }
 \description{
 This constructor function accepts \code{.mtx} and \code{.mtx.gz} compressed formats

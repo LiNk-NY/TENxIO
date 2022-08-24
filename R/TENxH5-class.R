@@ -23,6 +23,8 @@
 #'   a map of fields and their corresponding file locations within the H5 file.
 #'   This map is used to create the `rowData` structure from the file.
 #'
+#' @return A `TENxH5` class object
+#'
 #' @include TENxFile-class.R
 #'
 #' @exportClass TENxH5
@@ -96,6 +98,8 @@
 #' @param ranges character(1) The HDF5 internal folder location embedded within
 #'   the file that points to the ranged data information, e.g.,
 #'   "/features/interval".
+#'
+#' @return Usually, a `SingleCellExperiment` instance
 #'
 #' @examples
 #'

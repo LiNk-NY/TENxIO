@@ -89,6 +89,8 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 #'
 #' @param ... Additional inputs to the low level class generator functions
 #'
+#' @return A subclass of `TENxFile` according to the input file extension
+#'
 #' @examples
 #'
 #' ## from ExperimentHub

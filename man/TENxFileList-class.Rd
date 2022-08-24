@@ -46,6 +46,9 @@
 \item{text}{ If \code{con} is missing, this can be a character vector
     directly providing the string data to import. }
 }
+\value{
+A \code{TENxFileList} class object
+}
 \description{
 This class was designed to mainly handle tarballs from
 10X Genomics. The typical file extension for these tarballs is \code{.tar.gz}.

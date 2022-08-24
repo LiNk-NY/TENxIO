@@ -77,6 +77,9 @@
 
 \item{object}{A \code{TENxH5} class object}
 }
+\value{
+A \code{TENxH5} class object
+}
 \description{
 This class is designed to work with 10x Single Cell datasets.
 It was developed using the PBMC 3k 10X dataset from the CellRanger v2

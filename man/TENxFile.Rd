@@ -16,6 +16,9 @@ removed.}
 
 \item{...}{Additional inputs to the low level class generator functions}
 }
+\value{
+A subclass of \code{TENxFile} according to the input file extension
+}
 \description{
 The \code{TENxFile} constructor function serves as the
 auto-recognizer function for 10X files. It can import several different

@@ -9,6 +9,8 @@
 #'   `SingleCellExperiment` to add peak information to the experiment. The
 #'   ranged data is represented as a `GRanges` class object.
 #'
+#' @return A `TENxPeaks` class object
+#'
 #' @exportClass TENxPeaks
 .TENxPeaks <- setClass(
     Class = "TENxPeaks",
@@ -42,7 +44,7 @@ S4Vectors::setValidity2("TENxPeaks", .validPeaksFile)
 #'
 #' @inheritParams TENxFile
 #'
-#' @return A `TENxPeaks` class object
+#' @return A `GRanges` class object of peak locations
 #'
 #' @examples
 #'

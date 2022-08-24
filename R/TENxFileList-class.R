@@ -16,6 +16,8 @@
 #'
 #' @slot compressed logical(1) Whether the file is compressed as `.tar.gz`
 #'
+#' @return A `TENxFileList` class object
+#'
 #' @exportClass TENxFileList
 .TENxFileList <- setClass(
     Class = "TENxFileList",
@@ -106,6 +108,8 @@ TENxFileList <- function(..., compressed = FALSE) {
 #' This class is general purpose for reading in tabular data from the
 #' 10x Genomics website with the `.tsv` file extension. The class also supports
 #' compressed files, i.e., those with the `.tsv.gz` extension.
+#'
+#' @return A `TSVFile` class object; a `tibble` for the import method
 #'
 #' @keywords internal
 .TSVFile <- setClass(Class = "TSVFile", contains = "TENxFile")

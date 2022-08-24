@@ -31,6 +31,9 @@
 \item{...}{ Parameters to pass to the format-specific method.
   }
 }
+\value{
+A \code{TENxMTX} class object
+}
 \description{
 This class is designed to work with 10x MTX datasets,
 particularly from the multiome pipelines.

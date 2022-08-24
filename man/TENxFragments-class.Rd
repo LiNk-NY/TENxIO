@@ -31,6 +31,9 @@
 \item{...}{ Parameters to pass to the format-specific method.
   }
 }
+\value{
+A \code{TENxFragments} class object
+}
 \description{
 This class is designed to work mainly with \code{fragments.tsv.gz} files from
 10x pipelines.

@@ -17,7 +17,7 @@ removed.}
 \item{...}{Additional inputs to the low level class generator functions}
 }
 \value{
-A \code{TENxPeaks} class object
+A \code{GRanges} class object of peak locations
 }
 \description{
 This constructor function is designed to work with the files denoted with

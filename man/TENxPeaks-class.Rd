@@ -43,6 +43,9 @@
     The annotation information to set on \code{object}.
   }
 }
+\value{
+A \code{TENxPeaks} class object
+}
 \description{
 This class is designed to work with the files denoted with "peak_annotation"
 in the file name. These are usually produced as tab separated value files,

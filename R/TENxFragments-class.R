@@ -14,6 +14,8 @@
 #' @slot yieldSize numeric() The number of records to read by default, 200
 #'   records will be imported. A warning will be emitted if not modified.
 #'
+#' @return A `TENxFragments` class object
+#'
 #' @exportClass TENxFragments
 .TENxFragments <- setClass(
     Class = "TENxFragments",
@@ -52,6 +54,8 @@ S4Vectors::setValidity2("TENxFragments", .validTENxFragments)
 #'
 #' @importFrom GenomicRanges GRanges makeGRangesFromDataFrame
 #' @importFrom S4Vectors splitAsList mcols
+#'
+#' @return A `RaggedExperiment` object class
 #'
 #' @examples
 #'

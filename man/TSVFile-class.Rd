@@ -31,6 +31,9 @@
 \item{...}{ Parameters to pass to the format-specific method.
   }
 }
+\value{
+A \code{TSVFile} class object; a \code{tibble} for the import method
+}
 \description{
 This class is general purpose for reading in tabular data from the
 10x Genomics website with the \code{.tsv} file extension. The class also supports

@@ -23,6 +23,9 @@ the file that points to the ranged data information, e.g.,
 
 \item{...}{Additional inputs to the low level class generator functions}
 }
+\value{
+Usually, a \code{SingleCellExperiment} instance
+}
 \description{
 This constructor function was developed using the PBMC 3K dataset from 10X
 Genomics (version 3). Other versions are supported and input arguments

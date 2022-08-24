@@ -19,6 +19,9 @@ get sent to \code{RSamtools} as the \code{param} input.}
 \item{...}{Further arguments to the class generator function (currently not
 used)}
 }
+\value{
+A \code{RaggedExperiment} object class
+}
 \description{
 TENxFragments: Import fragments files from 10X
 }
