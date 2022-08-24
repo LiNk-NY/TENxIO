@@ -37,6 +37,7 @@ Description: Provides a structured S4 approach to importing data files from
   Expresssion data among other data types. The main Bioconductor data
   representations used are SingleCellExperiment and RaggedExperiment.
 biocViews: Software, Infrastructure, DataImport, SingleCell
+VignetteBuilder: knitr
 License: Artistic-2.0
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
