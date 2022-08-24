@@ -30,7 +30,8 @@ Suggests:
   RaggedExperiment,
   rhdf5,
   rmarkdown,
-  Rsamtools
+  Rsamtools,
+  tinytest
 Description: Provides a structured S4 approach to importing data files from
   the 10X pipelines. It mainly supports Single Cell Multiome ATAC + Gene
   Expresssion data among other data types. The main Bioconductor data

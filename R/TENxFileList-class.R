@@ -151,6 +151,7 @@ setMethod("path", "TENxFileList", function(object, ...) {
 #'   (via untar) the contents of a `.tar.gz` file list
 #'
 #' @importFrom BiocIO decompress
+#' @importFrom BiocBaseUtils setSlots
 #'
 #' @inheritParams BiocIO::decompress
 #'
@@ -170,7 +171,7 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
             else
                 gfiles <- gfolder
             newlistdata <- lapply(.setNames(gfiles, basename(gfiles)), TENxFile)
-            con <- BiocGenerics:::replaceSlots(
+            con <- setSlots(
                 object = con, listData = newlistdata, compressed = FALSE
             )
         } else {
