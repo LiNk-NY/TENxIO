@@ -1,0 +1,214 @@
+---
+title: "TENxIO: Import Single Cell Data Files"
+author: "Marcel Ramos"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{TENxIO Quick Start Guide}
+  %\VignetteEncoding{UTF-8}
+output:
+  BiocStyle::html_document:
+    number_sections: no
+    toc: yes
+    toc_depth: 4
+Package: TENxIO
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+# Installation
+
+```{r,eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("waldronlab/TENxIO")
+```
+
+# Load the package
+
+```{r,include=TRUE,results="hide",message=FALSE,warning=FALSE}
+library(TENxIO)
+```
+
+# Description
+
+`TENxIO` offers an set of classes that allow users to easily work with files
+typically obtained from the 10X Genomics website. These are commonly outputs
+of the Cell Ranger pipeline.
+
+# Supported Formats
+
+| **Extension**       | **Class**     | **Imported as**      |
+|---------------------|---------------|----------------------|
+| .h5                 | TENxH5        | SingleCellExperiment |
+| .mtx / .mtx.gz      | TENxMTX       | dgCMatrix            |
+| .tar.gz             | TENxFileList  | SingleCellExperiment |
+| peak_annotation.tsv | TENxPeaks     | GRanges              |
+| fragments.tsv.gz    | TENxFragments | RaggedExperiment     |
+| .tsv / .tsv.gz      | TSVFile\*     | tibble               |
+
+**Note** (\*). The `TSVFile` class is used internally and not exported.
+
+# TENxFile
+
+The `TENxFile` class is the catch-all class superclass that allows transition
+to subclasses pertinent to specific files. It inherits from the `BiocFile`
+class and allows for easy dispatching `import` methods.
+
+```{r}
+showClass("TENxFile")
+```
+
+## `ExperimentHub` resources
+
+`TENxFile` can handle resources from `ExperimentHub` with careful inputs. 
+For example, one can import a `TENxBrainData` dataset via the appropriate
+`ExperimentHub` identifier (`EH1039`):
+
+```{r}
+hub <- ExperimentHub::ExperimentHub()
+hub["EH1039"]
+```
+
+Currently, `ExperimentHub` resources do not have an extension and it is best to
+provide that to the `TENxFile` constructor function.
+
+```{r}
+fname <- hub[["EH1039"]]
+TENxFile(fname, extension = "h5", group = "mm10", version = "2")
+```
+
+## TENxH5
+
+One of the main data formats provided by the 10X website are HDF5 files.
+To import those files, we use the TENxH5 contructor function.
+
+```{r}
+h5f <- system.file(
+    "extdata", "pbmc_granulocyte_ff_bc_ex.h5",
+    package = "TENxIO", mustWork = TRUE
+) 
+h5f
+```
+
+Here we provide a bespoke show method for such files given that we have some
+idea of the structure to expect within these files:
+
+```{r}
+con <- TENxH5(h5f)
+con
+```
+
+### import TENxH5 method
+
+We can simply use the import method to convert the file representation to
+a Bioconductor class representation, typically a `SingleCellExperiment`.
+
+```{r}
+import(con)
+```
+
+**Note**. Future versions of the package could support alternative
+representations to `SingleCellExperiment`
+
+# TENxMTX
+
+Matrix Market formats are also supported (`.mtx` extension). These are typically
+imported as SummarizedExperiment as they usually contain count data.
+
+```{r}
+mtxf <- system.file(
+    "extdata", "pbmc_3k_ff_bc_ex.mtx",
+    package = "TENxIO", mustWork = TRUE
+)
+con <- TENxMTX(mtxf)
+con
+import(con)
+```
+
+# TENxFileList
+
+The `TENxFileList` class easily allows importing multiple files within a
+`tar.gz` archive. The `untar` function can list the files compressed within the
+tarball.
+
+```{r}
+fl <- system.file(
+    "extdata", "pbmc_granulocyte_sorted_3k_ff_bc_ex_matrix.tar.gz",
+    package = "TENxIO", mustWork = TRUE
+)
+untar(fl, list = TRUE)
+```
+
+Using a similar import process accross all file types, one can easily obtain
+a Bioconductor representation that is ready for analysis. `TENxFileList` can be
+imported to `SingleCellExperiment`.
+
+```{r}
+con <- TENxFileList(fl)
+import(con)
+```
+
+# TENxPeaks
+
+Peak files can be handled with the `TENxPeaks` class. These files are usually
+named `*peak_annotation` files with a `.tsv` extension. Peak files are
+represented as `GRanges`.
+
+```{r}
+pfl <- system.file(
+    "extdata", "pbmc_granulocyte_sorted_3k_ex_atac_peak_annotation.tsv",
+    package = "TENxIO", mustWork = TRUE
+)
+tenxp <- TENxPeaks(pfl)
+peak_anno <- import(tenxp)
+peak_anno
+```
+
+# TENxFragments
+
+Fragment files are quite large and we make use of the `Rsamtools` package to
+import them with the `yieldSize` parameter. By default, we use a `yieldSize` of
+200.
+
+```{r}
+fr <- system.file(
+    "extdata", "pbmc_3k_atac_ex_fragments.tsv.gz",
+    package = "TENxIO", mustWork = TRUE
+)
+```
+
+Internally, we use the `TabixFile` constructor function to work with indexed
+`tsv.gz` files.
+
+**Note**. A warning is emitted whenever a `yieldSize` parameter is not set.
+
+```{r}
+tfr <- TENxFragments(fr)
+tfr
+```
+
+Because there may be a variable number of fragments per barcode, we use a
+`RaggedExperiment` representation for this file type.
+
+```{r}
+fra <- import(tfr)
+fra
+```
+
+Similar operations to those used with SummarizedExperiment are supported. For
+example, the genomic ranges can be displayed via `rowRanges`:
+
+```{r}
+rowRanges(fra)
+```
+
+# Session Information
+
+```{r}
+sessionInfo()
+```
+
