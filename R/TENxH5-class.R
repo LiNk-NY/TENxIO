@@ -171,7 +171,7 @@ setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
     ## Implement a smaller index for display purposes only
     mxrow <- max(x@rowidx)
     if (is.null(nrows) && mxrow > 12)
-        nrows <- c(1:6, mxrow - 5:0)
+        nrows <- c(seq(6), mxrow - 5:0)
     gm[] <- Filter(Negate(is.na), gm)
     res <- lapply(gm, function(colval) {
         readname <- paste0(x@group, colval)
@@ -242,7 +242,7 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
     ## Implement a smaller index for display purposes only
     mxrow <- max(x@rowidx)
     if (is.null(rows) && mxrow > 12)
-        rows <- c(1:6, mxrow - 5:0)
+        rows <- c(seq(6), mxrow - 5:0)
     interval <- rhdf5::h5read(
         path(x), paste0(group, x@ranges), list(rows), s3 = remote
     )
