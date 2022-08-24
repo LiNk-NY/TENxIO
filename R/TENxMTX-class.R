@@ -61,6 +61,7 @@ TENxMTX <- function(resource, compressed = FALSE, ...) {
 #' @describeIn TENxMTX Import method mainly for mtx.gz files from 10x
 #'
 #' @importFrom S4Vectors SimpleList
+#' @importFrom Matrix readMM
 #'
 #' @inheritParams BiocIO::import
 #'

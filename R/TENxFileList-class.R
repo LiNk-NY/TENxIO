@@ -115,6 +115,8 @@ TENxFileList <- function(..., compressed = FALSE) {
 #'
 #' @inheritParams BiocIO::import
 #'
+#' @importFrom readr read_tsv
+#'
 #' @keywords internal
 setMethod("import", "TSVFile", function(con, format, text, ...) {
     resource <- path(con)
