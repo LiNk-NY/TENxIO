@@ -140,6 +140,8 @@ TENxH5 <-
         warning("File extension is not 'h5'; import may fail", call. = FALSE)
     if (missing(ranges))
         ranges <- .selectByVersion(gene.meta, version, "Ranges")
+    else if ((!is.character(ranges) && is.na(ranges)) || !nzchar(ranges))
+        ranges <- NA_character_
     .TENxH5(
         resource = resource, group = group, version = version, ranges = ranges,
         rowidx = seq_len(dims[[1L]]),
@@ -150,11 +152,11 @@ TENxH5 <-
 }
 
 gene.meta <- data.frame(
-    Version = c("3b", "3a", "2"),
-    ID = c("/features/id", "/features/id", "/genes"),
-    Symbol = c("/features/name", "/features/name", "/gene_names"),
-    Type = c("/features/feature_type", "/features/feature_type", NA_character_),
-    Ranges = c("/features/interval", NA_character_, NA_character_)
+    Version = c("3", "2"),
+    ID = c("/features/id", "/genes"),
+    Symbol = c("/features/name", "/gene_names"),
+    Type = c("/features/feature_type", NA_character_),
+    Ranges = c("/features/interval", NA_character_)
 )
 
 .selectByVersion <-
@@ -273,11 +275,11 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     .checkPkgsAvail("HDF5Array")
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
     dots <- list(...)
-    if (con@version %in% c("3a", "3b")) {
+    if (identical(con@version, "3")) {
         sce <- SingleCellExperiment(
             assays = list(counts = matrixdata)
         )
-        if (identical(con@version, "3b")) {
+        if (!is.na(con@ranges)) {
             rr <- rowRanges(con, rows = con@rowidx)
             names(rr) <- mcols(rr)[["ID"]]
             rowRanges(sce) <- rr
