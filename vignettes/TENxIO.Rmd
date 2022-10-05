@@ -21,6 +21,14 @@ Package: TENxIO
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
+# Introduction
+
+`TENxIO` allows users to import 10X pipeline files into known Bioconductor
+classes. The package is not comprehensive, there are files that are not
+supported. It currently does not support Visium datasets. It does replace
+some functionality in `DropletUtils`. If you would like a file format to be
+supported. Please open an issue at https://github.com/waldronlab/TENxIO.
+
 # Installation
 
 ```{r,eval=FALSE}
@@ -79,26 +87,44 @@ hub["EH1039"]
 Currently, `ExperimentHub` resources do not have an extension and it is best to
 provide that to the `TENxFile` constructor function.
 
-```{r}
+```{r,eval=FALSE}
 fname <- hub[["EH1039"]]
 TENxFile(fname, extension = "h5", group = "mm10", version = "2")
 ```
 
+Note. `EH1039` is a large ~ 4GB file.
+
 ## TENxH5
 
-One of the main data formats provided by the 10X website are HDF5 files.
-To import those files, we use the TENxH5 contructor function.
+`TENxIO` mainly supports version 3 and 2 type of H5 files. These are files
+with specific groups and names as seen in `h5.version.map`, an internal
+`data.frame` map that guides the import operations.
+
+```{r}
+TENxIO:::h5.version.map
+```
+
+In the case that, there is a file without genomic coordinate information, the
+constructor function can take an `NA_character_` input for the `ranges`
+argument.
+
+The `TENxH5` constructor function can be used on either version of these H5
+files. In this example, we use a subset of the PBMC granulocyte
+H5 file obtained from the [10X website](https://cf.10xgenomics.com/samples/cell-arc/2.0.0/pbmc_granulocyte_sorted_3k/pbmc_granulocyte_sorted_3k_filtered_feature_bc_matrix.h5).
 
 ```{r}
 h5f <- system.file(
     "extdata", "pbmc_granulocyte_ff_bc_ex.h5",
     package = "TENxIO", mustWork = TRUE
-) 
-h5f
+)
+library(rhdf5)
+h5ls(h5f)
 ```
 
-Here we provide a bespoke show method for such files given that we have some
-idea of the structure to expect within these files:
+Note. The `h5ls` function gives you an overview of the structure of the file.
+It matches version 3 in our version map. 
+
+The show method gives an overview of the data components in the file:
 
 ```{r}
 con <- TENxH5(h5f)
