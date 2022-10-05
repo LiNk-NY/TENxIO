@@ -4,11 +4,13 @@
 \alias{TENxFileList}
 \title{TENxFileList: Represent groups of files from 10X Genomic}
 \usage{
-TENxFileList(..., compressed = FALSE)
+TENxFileList(..., version, compressed = FALSE)
 }
 \arguments{
 \item{...}{A single file path, named arguments corresponding to file paths,
 or a list of named file paths}
+
+\item{version}{character(1) The version in the tarball. See details.}
 
 \item{compressed}{logical(1) Whether or not the file provided is compressed,
 usually as \code{tar.gz} (default FALSE)}
@@ -29,6 +31,9 @@ These tarballs usually contain three files:
 identifiers
 If all above files are in the tarball, the import method will provide a
 \code{SingleCellExperiment}. Otherwise, a simple list of imported data is given.
+Note that version "3" uses 'features.tsv.gz' and version "2" uses
+'genes.tsv.gz'. If known, indicate the version argument in the \code{TENxFileList}
+constructor function.
 }
 }
 \examples{

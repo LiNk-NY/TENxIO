@@ -23,7 +23,10 @@
     Class = "TENxFileList",
     contains = "SimpleList",
     slots = c(
-        listData = "list", extension = "character", compressed = "logical"
+        listData = "list",
+        extension = "character",
+        compressed = "logical",
+        version = "character"
     )
 )
 
@@ -38,6 +41,11 @@
             "Some files are not of class 'TENxFile'"
     }
 }
+
+file.list.map <- data.frame(
+    version = c("2", "3"),
+    features = c("features.tsv.gz", "genes.tsv.gz")
+)
 
 S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 
@@ -56,9 +64,14 @@ S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 #'   identifiers
 #' If all above files are in the tarball, the import method will provide a
 #' `SingleCellExperiment`. Otherwise, a simple list of imported data is given.
+#' Note that version "3" uses 'features.tsv.gz' and version "2" uses
+#' 'genes.tsv.gz'. If known, indicate the `version` argument in the
+#' `TENxFileList` constructor function.
 #'
 #' @param ... A single file path, named arguments corresponding to file paths,
 #'   or a list of named file paths
+#'
+#' @param version character(1) The version in the tarball. See details.
 #'
 #' @param compressed logical(1) Whether or not the file provided is compressed,
 #'   usually as `tar.gz` (default FALSE)
@@ -75,7 +88,7 @@ S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 #' import(TENxFileList(fl))
 #'
 #' @export
-TENxFileList <- function(..., compressed = FALSE) {
+TENxFileList <- function(..., version, compressed = FALSE) {
     dots <- S4Vectors::SimpleList(...)
     exts <- dots[["extension"]]
     if (length(names(dots)))
@@ -84,16 +97,25 @@ TENxFileList <- function(..., compressed = FALSE) {
     if (identical(length(dots), 1L)) {
         if (is.character(undots) && is.null(exts))
             exts <- .get_ext(undots)
-        if (is(undots, "TENxFile"))
+        if (missing(version) && is.character(undots))
+            version <- .get_filelist_version(undots)
+        if (is(undots, "TENxFile")) {
             exts <- undots@extension
-        if (is.list(undots))
+            version <- undots@version
+        }
+        if (is.list(undots)) {
             exts <- vapply(undots, .get_ext, character(1L))
+            version <- .version_from_fnames(unlist(undots, use.names = FALSE))
+        }
     } else {
         exts <- vapply(dots, .get_ext, character(1L))
+        version <- .version_from_fnames(dots)
     }
     if (identical(exts, "tar.gz"))
         compressed <- TRUE
-    .TENxFileList(dots, extension = exts, compressed = compressed)
+    .TENxFileList(
+        dots, extension = exts, compressed = compressed, version = version
+    )
 }
 
 #' @importFrom utils untar tail
@@ -187,7 +209,20 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
     con
 })
 
-.TARFILENAMES <- c("matrix.mtx.gz", "barcodes.tsv.gz", "features.tsv.gz")
+.version_from_fnames <- function(fnames) {
+    fnames <- basename(fnames)
+    if ("features.tsv.gz" %in% fnames)
+        version <- "3"
+    else if ("genes.tsv.gz" %in% fnames)
+        version <- "2"
+    else
+        NA_character_
+}
+
+.version_from_filelist <- function(tarball) {
+    flist <- untar(tarball, list = TRUE)
+    .get_version_from_fnames(flist)
+}
 
 #' @describeIn TENxFileList-class Recursively import files within a
 #'   `TENxFileList`
@@ -198,12 +233,14 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
 setMethod("import", "TENxFileList", function(con, format, text, ...) {
     fdata <- decompress(con = con)
     datalist <- lapply(fdata, import)
-    if (all(.TARFILENAMES %in% names(datalist))) {
+    features <-
+        .selectByVersion(file.list.map, version = con@version, "features")
+    if (con@version %in% c("2", "3")) {
         mat <- datalist[["matrix.mtx.gz"]]
         colnames(mat) <- unlist(
             datalist[["barcodes.tsv.gz"]], use.names = FALSE
         )
-        feats <- datalist[["features.tsv.gz"]]
+        feats <- datalist[[features]]
         feats[is.na(feats[["Chr"]]), "Chr"] <- "NA_character_:0"
         rr <- GenomicRanges::makeGRangesFromDataFrame(
             feats, keep.extra.columns = TRUE
