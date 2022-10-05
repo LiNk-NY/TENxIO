@@ -150,17 +150,20 @@ TENxH5 <-
 }
 
 gene.meta <- data.frame(
-    Version = c("3", "2"),
-    ID = c("/features/id", "/genes"),
-    Symbol = c("/features/name", "/gene_names"),
-    Type = c("/features/feature_type", NA_character_),
-    Ranges = c("/features/interval", NA_character_)
+    Version = c("3b", "3a", "2"),
+    ID = c("/features/id", "/features/id", "/genes"),
+    Symbol = c("/features/name", "/features/name", "/gene_names"),
+    Type = c("/features/feature_type", "/features/feature_type", NA_character_),
+    Ranges = c("/features/interval", NA_character_, NA_character_)
 )
 
 .selectByVersion <-
     function(df, version, select = !names(df) %in% c("Version", "Ranges"))
 {
-    df[df[["Version"]] == version, select]
+    if (missing(version) || is.na(version))
+        NA_character_
+    else
+        df[df[["Version"]] == version, select]
 }
 
 #' @describeIn TENxH5 Generate the rowData ad hoc from a TENxH5 file
@@ -270,16 +273,18 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     .checkPkgsAvail("HDF5Array")
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
     dots <- list(...)
-    if (identical(con@version, "3")) {
-        rr <- rowRanges(con, rows = con@rowidx)
-        names(rr) <- mcols(rr)[["ID"]]
+    if (con@version %in% c("3a", "3b")) {
         sce <- SingleCellExperiment(
-            assays = list(counts = matrixdata),
-            rowRanges = rr
+            assays = list(counts = matrixdata)
         )
-        ## remove stand-in NA values
-        sce <- sce[seqnames(rr) != "NA_character_", ]
-        types <- rowData(sce, rows = con@rowidx)[["Type"]]
+        if (identical(con@version, "3b")) {
+            rr <- rowRanges(con, rows = con@rowidx)
+            names(rr) <- mcols(rr)[["ID"]]
+            rowRanges(sce) <- rr
+            ## remove stand-in NA values
+            sce <- sce[seqnames(rr) != "NA_character_", ]
+        }
+        types <- rowData(con, rows = con@rowidx)[["Type"]]
         if (is.null(dots[["ref"]]))
             ref <- names(which.max(table(types)))
         splitAltExps(sce, types, ref = ref)
