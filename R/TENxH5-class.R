@@ -170,6 +170,8 @@ h5.version.map <- data.frame(
 
 #' @describeIn TENxH5 Generate the rowData ad hoc from a TENxH5 file
 #'
+#' @param x A `TENxH5` object
+#'
 #' @inheritParams SummarizedExperiment::rowData
 #'
 #' @export

@@ -28,9 +28,7 @@
 \S4method{show}{TENxH5}(object)
 }
 \arguments{
-\item{x}{
-    A SummarizedExperiment object.
-  }
+\item{x}{A \code{TENxH5} object}
 
 \item{use.names}{
     For \code{rowData}: Like \code{\link[S4Vectors]{mcols}(x)}, by default
