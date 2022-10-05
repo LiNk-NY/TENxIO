@@ -4,7 +4,7 @@
 \alias{TENxFragments}
 \title{TENxFragments: Import fragments files from 10X}
 \usage{
-TENxFragments(resource, yieldSize = 200, roi = GRanges(), ...)
+TENxFragments(resource, yieldSize = 200, which = GRanges(), ...)
 }
 \arguments{
 \item{resource}{character(1) The file path to the fragments resource, usually
@@ -13,7 +13,7 @@ a compressed tabix file with extension \code{.tsv.gz}.}
 \item{yieldSize}{numeric() The number of records to read by default, 200
 records will be imported. A warning will be emitted if not modified.}
 
-\item{roi}{GRanges() A GRanges indicating the regions of interest. This
+\item{which}{GRanges() A GRanges indicating the regions of interest. This
 get sent to \code{RSamtools} as the \code{param} input.}
 
 \item{...}{Further arguments to the class generator function (currently not

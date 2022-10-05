@@ -8,7 +8,7 @@
 #' for loading. Users can change this default value by specifying a new one
 #' via the `yieldSize` argument in the constructor function.
 #'
-#' @slot roi GRanges() A GRanges indicating the regions of interest. This
+#' @slot which GRanges() A GRanges indicating the regions of interest. This
 #'   get sent to `RSamtools` as the `param` input.
 #'
 #' @slot yieldSize numeric() The number of records to read by default, 200
@@ -20,7 +20,7 @@
 .TENxFragments <- setClass(
     Class = "TENxFragments",
     contains = "TENxFile",
-    slots = c(roi = "GenomicRanges", yieldSize = "numeric")
+    slots = c(which = "GenomicRanges", yieldSize = "numeric")
 )
 
 .check_fragments <- function(object) {
@@ -43,7 +43,7 @@ S4Vectors::setValidity2("TENxFragments", .validTENxFragments)
 #' @param resource character(1) The file path to the fragments resource, usually
 #'   a compressed tabix file with extension `.tsv.gz`.
 #'
-#' @param roi GRanges() A GRanges indicating the regions of interest. This
+#' @param which GRanges() A GRanges indicating the regions of interest. This
 #'   get sent to `RSamtools` as the `param` input.
 #'
 #' @param yieldSize numeric() The number of records to read by default, 200
@@ -69,15 +69,15 @@ S4Vectors::setValidity2("TENxFragments", .validTENxFragments)
 #' fra <- import(tfr)
 #'
 #' @export
-TENxFragments <- function(resource, yieldSize = 200, roi = GRanges(), ...) {
-    if (missing(yieldSize) && missing(roi))
+TENxFragments <- function(resource, yieldSize = 200, which = GRanges(), ...) {
+    if (missing(yieldSize) && missing(which))
         warning("Using default 'yieldSize' parameter")
-    else if (!missing(roi))
+    else if (!missing(which))
         yieldSize <- NA_integer_
-    if (!is(roi, "GRanges"))
-        stop("'roi' input must be 'GenomicRanges'")
+    if (!is(which, "GRanges"))
+        stop("'which' input must be 'GenomicRanges'")
     .TENxFragments(
-        resource = resource, yieldSize = yieldSize, roi = roi,
+        resource = resource, yieldSize = yieldSize, which = which,
         ...
     )
 }
@@ -92,11 +92,11 @@ TENxFragments <- function(resource, yieldSize = 200, roi = GRanges(), ...) {
 #' @export
 setMethod("import", "TENxFragments", function(con, format, text, ...) {
     .checkPkgsAvail(c("Rsamtools", "RaggedExperiment"))
-    roi <- con@roi
+    which <- con@which
     yieldSize <- con@yieldSize
     tb <- Rsamtools::TabixFile(path(con), yieldSize = yieldSize)
     ex <- read.table(
-        textConnection(Rsamtools::scanTabix(tb, param = roi)[[1]])
+        textConnection(Rsamtools::scanTabix(tb, param = which)[[1]])
     )
     ## https://support.10xgenomics.com/single-cell-atac/
     ## software/pipelines/latest/output/fragments

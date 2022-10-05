@@ -53,7 +53,7 @@ data from 10x via \code{Rsamtools} and \code{RaggedExperiment}
 \section{Slots}{
 
 \describe{
-\item{\code{roi}}{GRanges() A GRanges indicating the regions of interest. This
+\item{\code{which}}{GRanges() A GRanges indicating the regions of interest. This
 get sent to \code{RSamtools} as the \code{param} input.}
 
 \item{\code{yieldSize}}{numeric() The number of records to read by default, 200
