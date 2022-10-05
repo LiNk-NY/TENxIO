@@ -140,8 +140,10 @@ a Bioconductor class representation, typically a `SingleCellExperiment`.
 import(con)
 ```
 
-**Note**. Future versions of the package could support alternative
-representations to `SingleCellExperiment`
+**Note**. Although the main representation in the package is
+`SingleCellExperiment`, there could be a need for alternative data class
+representations of the data. The `projection` field in the `TENxH5` show method
+is an initial attempt to allow alternative representations.
 
 # TENxMTX
 
