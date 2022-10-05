@@ -8,8 +8,8 @@
 #'
 #' @details The `TENxMTX` class is a straightforward implementation that allows
 #'   the user to import a Matrix Market file format using `Matrix::readMM`.
-#'   Currently, it only supports return types of `dgCMatrix`. To request other
-#'   formats, please open an issue on GitHub.
+#'   Currently, it returns a `SummarizedExperiment` with an internal `dgCMatrix`
+#'   assay. To request other formats, please open an issue on GitHub.
 #'
 #' @return A `TENxMTX` class object
 #'
@@ -25,17 +25,17 @@
 #' This constructor function accepts `.mtx` and `.mtx.gz` compressed formats
 #' for eventual importing. It is mainly used with tarball files from 10X
 #' Genomics, where more annotation data is included. Importing solely the
-#' `.mtx` format will provide users with a sparse matrix of `dgCMatrix` class
-#' from the `Matrix` package. Currently, other formats are not supported but
-#' if you'd like to request support for a format, please open an issue on
-#' GitHub.
+#' `.mtx` format will provide users with a `SummarizedExperiment` with an assay
+#' of class `dgCMatrix` from the `Matrix` package. Currently, other formats are
+#' not supported but if you'd like to request support for a format, please open
+#' an issue on GitHub.
 #'
 #' @inheritParams TENxFile
 #'
 #' @param compressed logical(1) Whether the resource file is compressed (default
 #'   FALSE)
 #'
-#' @return A `SummarizedExperiment` instance
+#' @return A `SummarizedExperiment` instance with a `dgCMatrix` in the assay
 #'
 #' @examples
 #'
@@ -71,7 +71,7 @@ TENxMTX <- function(resource, compressed = FALSE, ...) {
 setMethod("import", "TENxMTX", function(con, format, text, ...) {
     mtxf <- Matrix::readMM(path(con))
     ## coerce to common use class
-    mtxf <- as(mtxf, "dgCMatrix")
+    mtxf <- as(mtxf, "CsparseMatrix")
     SummarizedExperiment(
         assays = S4Vectors::SimpleList(counts = mtxf)
     )
