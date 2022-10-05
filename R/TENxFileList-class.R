@@ -98,7 +98,7 @@ TENxFileList <- function(..., version, compressed = FALSE) {
         if (is.character(undots) && is.null(exts))
             exts <- .get_ext(undots)
         if (missing(version) && is.character(undots))
-            version <- .get_filelist_version(undots)
+            version <- .version_from_filelist(undots)
         if (is(undots, "TENxFile")) {
             exts <- undots@extension
             version <- undots@version
