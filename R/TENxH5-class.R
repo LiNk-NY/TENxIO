@@ -275,10 +275,13 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     .checkPkgsAvail("HDF5Array")
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
     dots <- list(...)
-    if (identical(con@version, "3")) {
+    if (con@version %in% c("2", "3"))
         sce <- SingleCellExperiment(
             assays = list(counts = matrixdata)
         )
+    else
+        stop("Version not supported.")
+    if (identical(con@version, "3")) {
         if (!is.na(con@ranges)) {
             rr <- rowRanges(con, rows = con@rowidx)
             names(rr) <- mcols(rr)[["ID"]]
@@ -289,10 +292,9 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
         types <- rowData(con, rows = con@rowidx)[["Type"]]
         if (is.null(dots[["ref"]]))
             ref <- names(which.max(table(types)))
-        splitAltExps(sce, types, ref = ref)
-    } else {
-        stop("Version 2 not supported yet.")
+        sce <- splitAltExps(sce, types, ref = ref)
     }
+    sce
 })
 
 #' @describeIn TENxH5 Display a snapshot of the contents within a TENxH5 file
