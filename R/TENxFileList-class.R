@@ -221,7 +221,7 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
 
 .version_from_filelist <- function(tarball) {
     flist <- untar(tarball, list = TRUE)
-    .get_version_from_fnames(flist)
+    .version_from_fnames(flist)
 }
 
 #' @describeIn TENxFileList-class Recursively import files within a
