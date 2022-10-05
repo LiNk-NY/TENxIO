@@ -48,9 +48,9 @@ default, the most frequent type is represented.
 The data version "3" mainly includes a "matrix" group and "interval"
 information within the file. Version "2" data does not include
 ranged-based information and has a different directory structure compared
-to version "3". See the internal \code{data.frame}: \code{TENxIO:::gene.meta} for
-a map of fields and their corresponding file locations within the H5 file.
-This map is used to create the \code{rowData} structure from the file.
+to version "3". See the internal \code{data.frame}: \code{TENxIO:::h5.version.map}
+for a map of fields and their corresponding file locations within the H5
+file. This map is used to create the \code{rowData} structure from the file.
 }
 \examples{
 

@@ -19,7 +19,7 @@
 #' @details The data version "3" mainly includes a "matrix" group and "interval"
 #'   information within the file. Version "2" data does not include
 #'   ranged-based information and has a different directory structure compared
-#'   to version "3". See the internal `data.frame`: `TENxIO:::gene.meta` for
+#'   to version "3". See the internal `data.frame`: `TENxIO:::h5.version.map` for
 #'   a map of fields and their corresponding file locations within the H5 file.
 #'   This map is used to create the `rowData` structure from the file.
 #'
@@ -81,9 +81,9 @@
 #'   The data version "3" mainly includes a "matrix" group and "interval"
 #'   information within the file. Version "2" data does not include
 #'   ranged-based information and has a different directory structure compared
-#'   to version "3". See the internal `data.frame`: `TENxIO:::gene.meta` for
-#'   a map of fields and their corresponding file locations within the H5 file.
-#'   This map is used to create the `rowData` structure from the file.
+#'   to version "3". See the internal `data.frame`: `TENxIO:::h5.version.map`
+#'   for a map of fields and their corresponding file locations within the H5
+#'   file. This map is used to create the `rowData` structure from the file.
 #'
 #' @inheritParams TENxFile
 #'
@@ -139,7 +139,7 @@ TENxH5 <-
     if (!identical(tolower(ext), "h5"))
         warning("File extension is not 'h5'; import may fail", call. = FALSE)
     if (missing(ranges))
-        ranges <- .selectByVersion(gene.meta, version, "Ranges")
+        ranges <- .selectByVersion(h5.version.map, version, "Ranges")
     else if ((!is.character(ranges) && is.na(ranges)) || !nzchar(ranges))
         ranges <- NA_character_
     .TENxH5(
@@ -151,7 +151,7 @@ TENxH5 <-
     )
 }
 
-gene.meta <- data.frame(
+h5.version.map <- data.frame(
     Version = c("3", "2"),
     ID = c("/features/id", "/genes"),
     Symbol = c("/features/name", "/gene_names"),
@@ -174,7 +174,7 @@ gene.meta <- data.frame(
 #'
 #' @export
 setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
-    gm <- .selectByVersion(gene.meta, x@version)
+    gm <- .selectByVersion(h5.version.map, x@version)
     remote <- x@remote
     nrows <- list(...)[["rows"]]
     ## Implement a smaller index for display purposes only
@@ -204,7 +204,7 @@ setMethod("dim", "TENxH5", function(x) {
 #' @describeIn TENxH5 Get the dimension names from the file
 #' @export
 setMethod("dimnames", "TENxH5", function(x) {
-    id <- .selectByVersion(gene.meta, x@version, "ID")
+    id <- .selectByVersion(h5.version.map, x@version, "ID")
     list(
         rhdf5::h5read(path(x), paste0(x@group, "/", id), s3 = x@remote),
         rhdf5::h5read(path(x), paste0(x@group, "/", "barcodes"), s3 = x@remote)
