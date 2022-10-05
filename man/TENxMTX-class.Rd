@@ -41,8 +41,8 @@ particularly from the multiome pipelines.
 \details{
 The \code{TENxMTX} class is a straightforward implementation that allows
 the user to import a Matrix Market file format using \code{Matrix::readMM}.
-Currently, it only supports return types of \code{dgCMatrix}. To request other
-formats, please open an issue on GitHub.
+Currently, it returns a \code{SummarizedExperiment} with an internal \code{dgCMatrix}
+assay. To request other formats, please open an issue on GitHub.
 }
 \section{Methods (by generic)}{
 \itemize{
