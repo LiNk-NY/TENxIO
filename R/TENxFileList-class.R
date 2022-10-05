@@ -43,7 +43,7 @@
 }
 
 file.list.map <- data.frame(
-    version = c("2", "3"),
+    Version = c("3", "2"),
     features = c("features.tsv.gz", "genes.tsv.gz")
 )
 
