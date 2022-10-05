@@ -32,8 +32,8 @@ identifiers
 If all above files are in the tarball, the import method will provide a
 \code{SingleCellExperiment}. Otherwise, a simple list of imported data is given.
 Note that version "3" uses 'features.tsv.gz' and version "2" uses
-'genes.tsv.gz'. If known, indicate the version argument in the \code{TENxFileList}
-constructor function.
+'genes.tsv.gz'. If known, indicate the \code{version} argument in the
+\code{TENxFileList} constructor function.
 }
 }
 \examples{

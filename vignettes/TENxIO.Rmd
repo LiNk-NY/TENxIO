@@ -174,7 +174,7 @@ fl <- system.file(
 untar(fl, list = TRUE)
 ```
 
-Using a similar import process accross all file types, one can easily obtain
+Using a similar import process across all file types, one can easily obtain
 a Bioconductor representation that is ready for analysis. `TENxFileList` can be
 imported to `SingleCellExperiment`.
 
