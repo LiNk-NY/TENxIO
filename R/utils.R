@@ -3,13 +3,25 @@
     object
 }
 
-.checkPkgsAvail <- function(pkgnames, walkback = -3L) {
-    vapply(pkgnames, function(pkgname) {
-        func <- as.character(sys.call(walkback)[[1L]])
-        func <- tail(func, 1L)
-        if (!requireNamespace(pkgname, quietly = TRUE))
-            stop("Install '", pkgname, "' to use '", func, "'", call. = FALSE)
-        else
-            TRUE
-    }, logical(1L))
+.checkPkgsAvail <- function(pkgnames) {
+    toinst <- pkgnames[!pkgnames %in% rownames(utils::installed.packages())]
+    if (length(toinst))
+        .install_suggestion(toinst)
+    else
+        TRUE
+}
+
+.install_suggestion <- function(pkgs) {
+    n <- length(pkgs)
+    txt <- if (identical(n, 1L)) '"%s"' else 'c(\n    "%s"\n  )'
+    fmt <-'  BiocManager::install(%s)'
+    fmt <- sprintf(fmt, txt)
+    pkgs <- paste(strwrap(
+        paste(pkgs, collapse='", "'),
+        width = getOption("width") - 4L
+    ), collapse="\n    ")
+    stop("Enable this functionality with",
+        "\n\n", sprintf(fmt, pkgs), "\n\n",
+        sep = "", call. = FALSE
+    )
 }
