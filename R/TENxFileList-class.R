@@ -9,12 +9,17 @@
 #'   2. `features.tsv.gz` - row metadata usually represented as `rowData`
 #'   3. `barcodes.tsv.gz` - column names corresponding to cell barcode
 #'   identifiers
+#' Note that version '2' includes `genes.tsv.gz` instead of `features.tsv.gz` in
+#' version '3'.
 #'
 #' @slot listData list() The data in list format
 #'
 #' @slot extension character() A vector of file extensions for each file
 #'
 #' @slot compressed logical(1) Whether the file is compressed as `.tar.gz`
+#' 
+#' @slot version character(1) The version number of the tarball usually either
+#'   '2' or '3'
 #'
 #' @return A `TENxFileList` class object
 #'

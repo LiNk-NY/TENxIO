@@ -82,5 +82,8 @@ as a vector
 \item{\code{extension}}{character() A vector of file extensions for each file}
 
 \item{\code{compressed}}{logical(1) Whether the file is compressed as \code{.tar.gz}}
+
+\item{\code{version}}{character(1) The version number of the tarball usually either
+'2' or '3'}
 }}
 
