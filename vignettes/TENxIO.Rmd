@@ -29,6 +29,30 @@ supported. It currently does not support Visium datasets. It does replace
 some functionality in `DropletUtils`. If you would like a file format to be
 supported. Please open an issue at https://github.com/waldronlab/TENxIO.
 
+# Supported Formats
+
+| **Extension**       | **Class**     | **Imported as**      |
+|---------------------|---------------|----------------------|
+| .h5                 | TENxH5        | SingleCellExperiment w/ TENxMatrix |
+| .mtx / .mtx.gz      | TENxMTX       | SingleCellExperiment w/ dgCMatrix |
+| .tar.gz             | TENxFileList  | SingleCellExperiment w/ dgCMatrix |
+| peak_annotation.tsv | TENxPeaks     | GRanges              |
+| fragments.tsv.gz    | TENxFragments | RaggedExperiment     |
+| .tsv / .tsv.gz      | TSVFile\*     | tibble               |
+
+# Tested 10X Products
+
+We have tested these functions with some
+[datasets](https://www.10xgenomics.com/resources/datasets) from 10x Genomics
+including those from:
+
+* Single Cell Gene Expression
+* Single Cell ATAC
+* Single Cell Multiome ATAC + Gene Expression
+
+Note. That extensive testing has not been performed and may require some 
+adaptation to ensure compatibility.
+
 # Installation
 
 ```{r,eval=FALSE}
@@ -49,17 +73,6 @@ library(TENxIO)
 `TENxIO` offers an set of classes that allow users to easily work with files
 typically obtained from the 10X Genomics website. These are commonly outputs
 of the Cell Ranger pipeline.
-
-# Supported Formats
-
-| **Extension**       | **Class**     | **Imported as**      |
-|---------------------|---------------|----------------------|
-| .h5                 | TENxH5        | SingleCellExperiment |
-| .mtx / .mtx.gz      | TENxMTX       | dgCMatrix            |
-| .tar.gz             | TENxFileList  | SingleCellExperiment |
-| peak_annotation.tsv | TENxPeaks     | GRanges              |
-| fragments.tsv.gz    | TENxFragments | RaggedExperiment     |
-| .tsv / .tsv.gz      | TSVFile\*     | tibble               |
 
 **Note** (\*). The `TSVFile` class is used internally and not exported.
 
