@@ -246,14 +246,20 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
             datalist[["barcodes.tsv.gz"]], use.names = FALSE
         )
         feats <- datalist[[features]]
-        feats[is.na(feats[["Chr"]]), "Chr"] <- "NA_character_:0"
-        rr <- GenomicRanges::makeGRangesFromDataFrame(
-            feats, keep.extra.columns = TRUE
-        )
-        sce <- SingleCellExperiment(
-            assays = SimpleList(counts = mat), rowRanges = rr
-        )
-        sce <- sce[seqnames(rr) != "NA_character_", ]
+        if ("Chr" %in% names(feats)) {
+            feats[is.na(feats[["Chr"]]), "Chr"] <- "NA_character_:0"
+            rr <- GenomicRanges::makeGRangesFromDataFrame(
+                feats, keep.extra.columns = TRUE
+            )
+            sce <- SingleCellExperiment(
+                assays = SimpleList(counts = mat), rowRanges = rr
+            )
+            sce <- sce[seqnames(rr) != "NA_character_", ]
+        } else {
+            sce <- SingleCellExperiment(
+                assays = SimpleList(counts = mat), rowData = feats
+            )
+        }
         splitAltExps(
             sce,
             feats[["Type"]],
