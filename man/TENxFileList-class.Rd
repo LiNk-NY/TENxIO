@@ -60,6 +60,8 @@ These tarballs usually contain three files:
 \item \code{features.tsv.gz} - row metadata usually represented as \code{rowData}
 \item \code{barcodes.tsv.gz} - column names corresponding to cell barcode
 identifiers
+Note that version '2' includes \code{genes.tsv.gz} instead of \code{features.tsv.gz} in
+version '3'.
 }
 }
 \section{Functions}{
