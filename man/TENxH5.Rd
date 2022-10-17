@@ -19,7 +19,8 @@ supported as well (e.g., "mm10").}
 
 \item{ranges}{character(1) The HDF5 internal folder location embedded within
 the file that points to the ranged data information, e.g.,
-"/features/interval".}
+"/features/interval". Set to \code{NA_character_} if range information is not
+present.}
 
 \item{...}{Additional inputs to the low level class generator functions}
 }
@@ -44,6 +45,9 @@ data file is \code{import}ed.
 An additional \code{ref} argument can be provided when the file contains
 multiple \code{feature_type} in the file or "Type" in the \code{rowData}. By
 default, the most frequent type is represented.
+
+For data that do not contain genomic coordinate information, one can
+set the \code{ranges} argument to \code{NA_character_}.
 
 The data version "3" mainly includes a "matrix" group and "interval"
 information within the file. Version "2" data does not include
@@ -74,4 +78,7 @@ th5
 TENxH5(h5f, ranges = "/features/id")
 import(th5)
 
+}
+\seealso{
+\code{import} section in \linkS4class{TENxH5}
 }

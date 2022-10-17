@@ -23,7 +23,20 @@
 #'   a map of fields and their corresponding file locations within the H5 file.
 #'   This map is used to create the `rowData` structure from the file.
 #'
+#' @section import: 
+#'   The `import` method uses `DelayedArray::TENxMatrix` to represent matrix
+#'   data. Generally, version 3 datasets contain associated genomic coordinates.
+#'   The associated feature data, as displayed by the `rowData` method, is
+#'   queried for the "Type" column which will indicate that a `splitAltExps`
+#'   operation is appropriate. If a `ref` input is provided to the constructor
+#'   function `TENxH5`, it will be used as the main experiment; otherwise, the
+#'   most frequent category in the "Type" column will be used. For example,
+#'   the Multiome ATAC + Gene Expression feature data contains both 'Gene
+#'   Expression' and 'Peaks' labels in the "Type" column.
+#'
 #' @return A `TENxH5` class object
+#'
+#' @seealso [TENxH5]
 #'
 #' @include TENxFile-class.R
 #'
@@ -77,6 +90,9 @@
 #'   An additional `ref` argument can be provided when the file contains
 #'   multiple `feature_type` in the file or "Type" in the `rowData`. By
 #'   default, the most frequent type is represented.
+#' 
+#'   For data that do not contain genomic coordinate information, one can
+#'   set the `ranges` argument to `NA_character_`. 
 #'
 #'   The data version "3" mainly includes a "matrix" group and "interval"
 #'   information within the file. Version "2" data does not include
@@ -97,9 +113,12 @@
 #'
 #' @param ranges character(1) The HDF5 internal folder location embedded within
 #'   the file that points to the ranged data information, e.g.,
-#'   "/features/interval".
+#'   "/features/interval". Set to `NA_character_` if range information is not
+#'   present.
 #'
 #' @return Usually, a `SingleCellExperiment` instance
+#'
+#' @seealso `import` section in [TENxH5-class]
 #'
 #' @examples
 #'
@@ -266,7 +285,8 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
     gr
 })
 
-#' @describeIn TENxH5 Import TENxH5 data as a SingleCellExperiment
+#' @describeIn TENxH5 Import TENxH5 data as a SingleCellExperiment; see section
+#'   below
 #'
 #' @importFrom MatrixGenerics rowRanges
 #'
@@ -277,12 +297,11 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     .checkPkgsAvail("HDF5Array")
     matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
     dots <- list(...)
-    if (con@version %in% c("2", "3"))
-        sce <- SingleCellExperiment(
-            assays = list(counts = matrixdata)
-        )
-    else
+    if (!con@version %in% c("2", "3"))
         stop("Version not supported.")
+    sce <- SingleCellExperiment(
+        assays = list(counts = matrixdata)
+    )
     if (identical(con@version, "3")) {
         if (!is.na(con@ranges)) {
             rr <- rowRanges(con, rows = con@rowidx)
@@ -291,7 +310,9 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
             ## remove stand-in NA values
             sce <- sce[seqnames(rr) != "NA_character_", ]
         }
-        types <- rowData(con, rows = con@rowidx)[["Type"]]
+    }
+    types <- rowData(con, rows = con@rowidx)[["Type"]]
+    if (!is.null(types)) {
         if (is.null(dots[["ref"]]))
             ref <- names(which.max(table(types)))
         sce <- splitAltExps(sce, types, ref = ref)

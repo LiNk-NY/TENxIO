@@ -103,7 +103,8 @@ This map is used to create the \code{rowData} structure from the file.
 
 \item \code{rowRanges(TENxH5)}: Read interval data and represent as GRanges
 
-\item \code{import(con = TENxH5, format = ANY, text = ANY)}: Import TENxH5 data as a SingleCellExperiment
+\item \code{import(con = TENxH5, format = ANY, text = ANY)}: Import TENxH5 data as a SingleCellExperiment; see section
+below
 
 \item \code{show(TENxH5)}: Display a snapshot of the contents within a TENxH5 file
 before import
@@ -125,3 +126,19 @@ the file that points to the ranged data information, e.g.,
 "/features/interval".}
 }}
 
+\section{import}{
+
+The \code{import} method uses \code{DelayedArray::TENxMatrix} to represent matrix
+data. Generally, version 3 datasets contain associated genomic coordinates.
+The associated feature data, as displayed by the \code{rowData} method, is
+queried for the "Type" column which will indicate that a \code{splitAltExps}
+operation is appropriate. If a \code{ref} input is provided to the constructor
+function \code{TENxH5}, it will be used as the main experiment; otherwise, the
+most frequent category in the "Type" column will be used. For example,
+the Multiome ATAC + Gene Expression feature data contains both 'Gene
+Expression' and 'Peaks' labels in the "Type" column.
+}
+
+\seealso{
+\link{TENxH5}
+}
