@@ -42,7 +42,7 @@ supported. Please open an issue at https://github.com/waldronlab/TENxIO.
 
 # Tested 10X Products
 
-We have tested these functions with some
+We have tested these functions with _some_
 [datasets](https://www.10xgenomics.com/resources/datasets) from 10x Genomics
 including those from:
 
@@ -52,6 +52,10 @@ including those from:
 
 Note. That extensive testing has not been performed and may require some 
 adaptation to ensure compatibility.
+
+# Currently not supported
+
+* Spatial Gene Expression
 
 # Installation
 
@@ -105,7 +109,10 @@ fname <- hub[["EH1039"]]
 TENxFile(fname, extension = "h5", group = "mm10", version = "2")
 ```
 
-Note. `EH1039` is a large ~ 4GB file.
+Note. `EH1039` is a large ~ 4GB file and files without extension as those
+obtained from `ExperimentHub` will emit a warning so that the user is aware that
+the import operation may fail, esp. if the internal structure of the file is
+modified.
 
 ## TENxH5
 
