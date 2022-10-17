@@ -4,7 +4,7 @@
 \alias{TENxH5}
 \title{TENxH5: Represent H5 files from 10X}
 \usage{
-TENxH5(resource, version, group, ranges, ...)
+TENxH5(resource, version, group, ranges, rowidx, colidx, ...)
 }
 \arguments{
 \item{resource}{character(1) The path to the file}
@@ -21,6 +21,11 @@ supported as well (e.g., "mm10").}
 the file that points to the ranged data information, e.g.,
 "/features/interval". Set to \code{NA_character_} if range information is not
 present.}
+
+\item{rowidx, colidx}{numeric() A vector of indices corresponding to either
+rows or columns that will dictate the data imported from the file. The
+indices will be passed on to the \code{[} method of the \code{TENxMatrix}
+representation.}
 
 \item{...}{Additional inputs to the low level class generator functions}
 }

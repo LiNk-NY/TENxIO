@@ -116,6 +116,11 @@
 #'   "/features/interval". Set to `NA_character_` if range information is not
 #'   present.
 #'
+#' @param rowidx,colidx numeric() A vector of indices corresponding to either
+#'   rows or columns that will dictate the data imported from the file. The
+#'   indices will be passed on to the `[` method of the `TENxMatrix`
+#'   representation.
+#'
 #' @return Usually, a `SingleCellExperiment` instance
 #'
 #' @seealso `import` section in [TENxH5-class]
@@ -144,7 +149,7 @@
 #'
 #' @export
 TENxH5 <-
-    function(resource, version, group, ranges, ...)
+    function(resource, version, group, ranges, rowidx, colidx, ...)
 {
     remote <- R.utils::isUrl(resource)
     group <- .get_h5_group(resource, remote)
@@ -161,10 +166,14 @@ TENxH5 <-
         ranges <- .selectByVersion(h5.version.map, version, "Ranges")
     else if ((!is.character(ranges) && is.na(ranges)) || !nzchar(ranges))
         ranges <- NA_character_
+    if (missing(rowidx))
+        rowidx <- seq_len(dims[[1L]])
+    if (missing(colidx))
+        colidx <- seq_len(dims[[2L]])
     .TENxH5(
         resource = resource, group = group, version = version, ranges = ranges,
-        rowidx = seq_len(dims[[1L]]),
-        colidx = seq_len(dims[[2L]]),
+        rowidx = rowidx,
+        colidx = colidx,
         remote = remote,
         extension = ext
     )
@@ -295,7 +304,8 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
 #' @export
 setMethod("import", "TENxH5", function(con, format, text, ...) {
     .checkPkgsAvail("HDF5Array")
-    matrixdata <- HDF5Array::TENxMatrix(path(con), con@group)
+    matrixdata <-
+        HDF5Array::TENxMatrix(path(con), con@group)[con@rowidx, con@colidx]
     dots <- list(...)
     if (!con@version %in% c("2", "3"))
         stop("Version not supported.")
@@ -315,7 +325,8 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     if (!is.null(types)) {
         if (is.null(dots[["ref"]]))
             ref <- names(which.max(table(types)))
-        sce <- splitAltExps(sce, types, ref = ref)
+        if (!is.na(dots[["ref"]]))
+            sce <- splitAltExps(sce, types, ref = ref)
     }
     sce
 })
