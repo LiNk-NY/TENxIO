@@ -24,6 +24,7 @@ Imports:
   utils
 Suggests:
   BiocStyle,
+  DropletTestFiles,
   ExperimentHub,
   HDF5Array,
   knitr,
