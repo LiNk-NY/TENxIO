@@ -298,6 +298,7 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
 #'   below
 #'
 #' @importFrom MatrixGenerics rowRanges
+#' @importFrom BiocBaseUtils isScalarCharacter
 #'
 #' @inheritParams BiocIO::import
 #'
@@ -323,9 +324,10 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     }
     types <- rowData(con, rows = con@rowidx)[["Type"]]
     if (!is.null(types)) {
-        if (is.null(dots[["ref"]]))
+        dotref <- dots[["ref"]]
+        if (!isScalarCharacter(dotref))
             ref <- names(which.max(table(types)))
-        if (!is.na(dots[["ref"]]))
+        if (!is.na(dotref))
             sce <- splitAltExps(sce, types, ref = ref)
     }
     sce
