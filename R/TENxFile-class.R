@@ -17,6 +17,8 @@
 #' @slot remote logical(1) Whether the file exists on the web, i.e., the
 #'   `resource` is a URL
 #'
+#' @slot compressed logical(1) Whether the file is compressed with, e.g., `.gz`
+#'
 #' @importClassesFrom BiocIO BiocFile
 #' @importFrom BiocIO import
 #' @importFrom BiocGenerics path
@@ -30,7 +32,7 @@
     slots = c(
         extension = "character",
         colidx = "integer", rowidx = "integer",
-        remote = "logical"
+        remote = "logical", compressed = "logical"
     )
 )
 
@@ -108,7 +110,8 @@ TENxFile <- function(resource, extension, ...) {
         mtx = TENxMTX,
         mtx.gz = TENxMTX,
         tar.gz = TENxFileList,
-        tsv.gz = .TSVFile,
+        tsv.gz = TSVFile,
+        tsv = TSVFile,
         .TENxFile
     )
     TENxFUN(resource = resource,  extension = extension, ...)

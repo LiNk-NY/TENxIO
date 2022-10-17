@@ -49,7 +49,7 @@
 
 file.list.map <- data.frame(
     Version = c("3", "2"),
-    features = c("features.tsv.gz", "genes.tsv.gz")
+    features = c("features.tsv", "genes.tsv")
 )
 
 S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
@@ -141,6 +141,12 @@ TENxFileList <- function(..., version, compressed = FALSE) {
 #' @keywords internal
 .TSVFile <- setClass(Class = "TSVFile", contains = "TENxFile")
 
+TSVFile <- function(resource, compressed, ...) {
+    if (missing(compressed))
+        compressed <- !endsWith(resource, "tsv")
+    .TSVFile(resource = resource, compressed = compressed, ...)
+}
+
 #' @describeIn TSVFile General import function for `tsv` files from 10x;
 #'   using `readr::read_tsv` and returning a `tibble` representation
 #'
@@ -151,14 +157,17 @@ TENxFileList <- function(..., version, compressed = FALSE) {
 #' @keywords internal
 setMethod("import", "TSVFile", function(con, format, text, ...) {
     resource <- path(con)
+    csuff <- if (con@compressed) ".gz" else ""
     df <- readr::read_tsv(
         resource, col_names = FALSE, show_col_types = FALSE, progress = FALSE,
         ...
     )
     fname <- basename(resource)
-    if (identical(fname, "features.tsv.gz"))
+    if (identical(fname, paste0("features.tsv", csuff)))
         names(df) <- c("ID", "Symbol", "Type", "Chr", "Start", "End")
-    else if (identical(fname, "barcodes.tsv.gz"))
+    if (identical(fname, paste0("genes.tsv", csuff)))
+        names(df) <- c("ID", "Symbol")
+    else if (identical(fname, paste0("barcodes.tsv", csuff)))
         names(df) <- "barcode"
     df
 })
@@ -192,7 +201,9 @@ setMethod("path", "TENxFileList", function(object, ...) {
 #'
 #' @export
 setMethod("decompress", "TENxFileList", function(manager, con, ...) {
-    res_ext <- .get_ext(path(con))
+    res_ext <- con@extension
+    if (is.na(res_ext))
+        res_ext <- .get_ext(path(con))
     if (con@compressed) {
         if (identical(res_ext, "tar.gz")) {
             tenfolder <- .TENxUntar(con)
@@ -216,9 +227,9 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
 
 .version_from_fnames <- function(fnames) {
     fnames <- basename(fnames)
-    if ("features.tsv.gz" %in% fnames)
+    if (any(grepl("features.tsv[\\.gz]*", fnames)))
         version <- "3"
-    else if ("genes.tsv.gz" %in% fnames)
+    else if (any(grepl("genes.tsv[\\.gz]*", fnames)))
         version <- "2"
     else
         NA_character_
@@ -240,10 +251,13 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
     datalist <- lapply(fdata, import)
     features <-
         .selectByVersion(file.list.map, version = con@version, "features")
+    features <- grep(features, names(fdata), fixed = TRUE, value = TRUE)
+    matrix <- grep("matrix.mtx", names(fdata), fixed = TRUE, value = TRUE)
+    barcodes <- grep("barcodes.tsv", names(fdata), fixed = TRUE, value = TRUE)
     if (con@version %in% c("2", "3")) {
-        mat <- datalist[["matrix.mtx.gz"]]
+        mat <- datalist[[matrix]]
         colnames(mat) <- unlist(
-            datalist[["barcodes.tsv.gz"]], use.names = FALSE
+            datalist[[barcodes]], use.names = FALSE
         )
         feats <- datalist[[features]]
         if ("Chr" %in% names(feats)) {
@@ -260,11 +274,14 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
                 assays = SimpleList(counts = mat), rowData = feats
             )
         }
-        splitAltExps(
-            sce,
-            feats[["Type"]],
-            ref = "Gene Expression"
-        )
+        if (!is.null(feats[["Type"]]) && length(feats[["Type"]]))
+            splitAltExps(
+                sce,
+                feats[["Type"]],
+                ref = "Gene Expression"
+            )
+        else
+            sce
     } else {
         ## return a list for now
         datalist

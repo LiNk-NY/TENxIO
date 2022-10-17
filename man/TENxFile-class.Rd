@@ -25,5 +25,7 @@ will subsequently be imported}
 
 \item{\code{remote}}{logical(1) Whether the file exists on the web, i.e., the
 \code{resource} is a URL}
+
+\item{\code{compressed}}{logical(1) Whether the file is compressed with, e.g., \code{.gz}}
 }}
 
