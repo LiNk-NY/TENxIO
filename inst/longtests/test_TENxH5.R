@@ -19,6 +19,10 @@ expect_true(
 )
 
 path <- eh[["EH3688"]]
+expect_error(
+    TENxFileList(path, compressed = TRUE),
+    "No extension present"
+)
 expect_true(
     is(
         res <- TENxFileList(path, extension = "tar.gz", compressed = TRUE),
