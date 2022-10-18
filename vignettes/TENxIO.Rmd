@@ -59,6 +59,15 @@ some adaptation to ensure compatibility with all pipeline outputs.
 
 * Spatial Gene Expression
 
+# Bioconductor implementations
+
+We are aware of existing functionality in both `DropletUtils` and
+`SpatialExperiment`. We are working with the authors of those packages to cover
+the use cases in both those packages and possibly port I/O functionality into
+`TENxIO`. We are using long tests and the `DropletTestFiles` package to
+cover example datasets on `ExperimentHub`, if you would like to know more, see
+the `longtests` directory on GitHub.
+
 # Installation
 
 ```{r,eval=FALSE}
