@@ -324,10 +324,10 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     }
     types <- rowData(con, rows = con@rowidx)[["Type"]]
     if (!is.null(types)) {
-        dotref <- dots[["ref"]]
-        if (!isScalarCharacter(dotref))
+        ref <- dots[["ref"]]
+        if (is.null(ref) || is.na(ref))
             ref <- names(which.max(table(types)))
-        if (!is.na(dotref))
+        if (isScalarCharacter(ref))
             sce <- splitAltExps(sce, types, ref = ref)
     }
     sce
