@@ -72,6 +72,16 @@ library(TENxIO)
 files typically obtained from the 10X Genomics website. These are
 commonly outputs of the Cell Ranger pipeline.
 
+# Dataset versioning
+
+The versioning schema in the package mostly applies to HDF5 resources
+and is loosely based on versions of 10X datasets. For the most part,
+version 3 datasets usually contain ranged information at specific
+locations in the data file. Version 2 datasets will usually contain a
+`genes.tsv` file, rather than `features.tsv` as in version 3. If the
+file version is unknown, the software will attempt to derive the version
+from the data where possible.
+
 # TENxFile
 
 The `TENxFile` class is the catch-all class superclass that allows
@@ -179,7 +189,7 @@ h5ls(h5f)
 #> 12          /matrix         shape H5I_DATASET INTEGER   2
 ```
 
-Note. The `h5ls` function gives you an overview of the structure of the
+Note. The `h5ls` function gives an overview of the structure of the
 file. It matches version 3 in our version map.
 
 The show method gives an overview of the data components in the file:
