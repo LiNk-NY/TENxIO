@@ -58,17 +58,20 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 
 .get_ext <- function(fname) {
     if (is(fname, "TENxFile"))
-        fname@extension
+        ext <- fname@extension
     else {
         fname <- .remove_query(fname)
         split_files <- strsplit(basename(fname), "\\.")
-        vapply(split_files, function(file) {
+        ext <- vapply(split_files, function(file) {
             paste0(
                 utils::tail(file, -1),
                 collapse = "."
             )
         }, character(1L))
     }
+    if (identical(ext, ""))
+        stop("No extension present, provide an 'extension' input")
+    ext
 }
 
 #' TENxFile constructor function
