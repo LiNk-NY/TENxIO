@@ -4,10 +4,20 @@ expect_error(
 
 test_file <- tempfile()
 file.create(test_file)
-
-tenxfile <- TENxFile(test_file)
+expect_error(
+    tenxfile <- TENxFile(test_file)
+)
+tenxfile <- TENxFile(test_file, ".tsv")
 expect_true(
-    is(tenxfile, "TENxFile")
+    validObject(tenxfile)
+)
+
+file.remove(test_file)
+
+test_file <- tempfile(fileext = ".tsv")
+file.create(test_file)
+expect_true(
+    is(tenxfile <- TENxFile(test_file), "TENxFile")
 )
 
 expect_identical(
@@ -15,7 +25,7 @@ expect_identical(
 )
 
 expect_identical(
-    tenxfile@extension, ""
+    tenxfile@extension, "tsv"
 )
 
 file.remove(test_file)
