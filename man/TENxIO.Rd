@@ -15,9 +15,9 @@ extensions found in the 10X Genomics website.
 Here is a table of supported file and file extensions and their imported
 classes:\tabular{lll}{
    \strong{Extension} \tab \strong{Class} \tab \strong{Imported as} \cr
-   .h5 \tab TENxH5 \tab SingleCellExperiment \cr
-   .mtx / .mtx.gz \tab TENxMTX \tab dgCMatrix \cr
-   .tar.gz \tab TENxFileList \tab SingleCellExperiment \cr
+   .h5 \tab TENxH5 \tab SingleCellExperiment w/ TENxMatrix \cr
+   .mtx / .mtx.gz \tab TENxMTX \tab SingleCellExperiment w/ dgCMatrix \cr
+   .tar.gz \tab TENxFileList \tab SingleCellExperiment w/ dgCMatrix \cr
    peak_annotation.tsv \tab TENxPeaks \tab GRanges \cr
    fragments.tsv.gz \tab TENxFragments \tab RaggedExperiment \cr
    .tsv / .tsv.gz \tab TSVFile* \tab tibble \cr
