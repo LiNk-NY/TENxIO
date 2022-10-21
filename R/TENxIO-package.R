@@ -10,7 +10,7 @@
 #' | **Extension**       | **Class**     | **Imported as**      |
 #' |---------------------|---------------|----------------------|
 #' | .h5                 | TENxH5        | SingleCellExperiment w/ TENxMatrix |
-#' | .mtx / .mtx.gz      | TENxMTX       | SingleCellExperiment w/ dgCMatrix |
+#' | .mtx / .mtx.gz      | TENxMTX       | SummarizedExperiment w/ dgCMatrix |
 #' | .tar.gz             | TENxFileList  | SingleCellExperiment w/ dgCMatrix |
 #' | peak_annotation.tsv | TENxPeaks     | GRanges              |
 #' | fragments.tsv.gz    | TENxFragments | RaggedExperiment     |
