@@ -86,8 +86,19 @@ library(TENxIO)
 # Description
 
 `TENxIO` offers an set of classes that allow users to easily work with files
-typically obtained from the 10X Genomics website. These are commonly outputs
-of the Cell Ranger pipeline.
+typically obtained from the 10X Genomics website. Generally, these are outputs
+from the Cell Ranger pipeline. 
+
+# Procedure 
+
+Loading the data into a Bioconductor class is a two step process. First, the
+file must be identified by either the user or the `TENxFile` function. The
+appropriate function will be evoked to provide a `TENxIO` class representation,
+e.g., `TENxH5` for HDF5 files with an `.h5` extension. Secondly, the `import`
+method for that particular file class will render a common Bioconductor class
+representation for the user. The main representations used by the package are
+`SingleCellExperiment`, `SummarizedExperiment`, `GRanges`, and
+`RaggedExperiment`.
 
 # Dataset versioning
 
@@ -98,7 +109,9 @@ Version 2 datasets will usually contain a `genes.tsv` file, rather than
 `features.tsv` as in version 3. If the file version is unknown, the software
 will attempt to derive the version from the data where possible.
 
-# TENxFile
+# File classes
+
+## TENxFile
 
 The `TENxFile` class is the catch-all class superclass that allows transition
 to subclasses pertinent to specific files. It inherits from the `BiocFile`
@@ -108,7 +121,7 @@ class and allows for easy dispatching `import` methods.
 showClass("TENxFile")
 ```
 
-## `ExperimentHub` resources
+### `ExperimentHub` resources
 
 `TENxFile` can handle resources from `ExperimentHub` with careful inputs. 
 For example, one can import a `TENxBrainData` dataset via the appropriate
@@ -132,7 +145,7 @@ obtained from `ExperimentHub` will emit a warning so that the user is aware that
 the import operation may fail, esp. if the internal structure of the file is
 modified.
 
-## TENxH5
+### TENxH5
 
 `TENxIO` mainly supports version 3 and 2 type of H5 files. These are files
 with specific groups and names as seen in `h5.version.map`, an internal
@@ -183,7 +196,7 @@ import(con)
 representations of the data. The `projection` field in the `TENxH5` show method
 is an initial attempt to allow alternative representations.
 
-# TENxMTX
+## TENxMTX
 
 Matrix Market formats are also supported (`.mtx` extension). These are typically
 imported as SummarizedExperiment as they usually contain count data.
@@ -195,14 +208,28 @@ mtxf <- system.file(
 )
 con <- TENxMTX(mtxf)
 con
+```
+
+## import MTX method
+
+The `import` method yields a `SummarizedExperiment` without colnames or
+rownames. 
+
+```{r}
 import(con)
 ```
 
-# TENxFileList
+## TENxFileList
 
-The `TENxFileList` class easily allows importing multiple files within a
-`tar.gz` archive. The `untar` function can list the files compressed within the
-tarball.
+Generally, the 10X website will provide tarballs (with a `.tar.gz`
+extension) which can be imported with the `TENxFileList` class. The tarball
+can contain components of a gene expression experiment including the matrix
+data, row data (aka 'features') expressed as Ensembl identifiers, gene symbols,
+etc. and barcode information for the columns.
+
+The `TENxFileList` class allows importing multiple files within a `tar.gz`
+archive. The `untar` function with the `list = TRUE` argument shows all the file
+names in the tarball.
 
 ```{r}
 fl <- system.file(
@@ -212,16 +239,16 @@ fl <- system.file(
 untar(fl, list = TRUE)
 ```
 
-Using a similar import process across all file types, one can easily obtain
-a Bioconductor representation that is ready for analysis. `TENxFileList` can be
-imported to `SingleCellExperiment`.
+We then use the `import` method across all file types to obtain an integrated
+Bioconductor representation that is ready for analysis. Files in `TENxFileList`
+can be represented as a `SingleCellExperiment` with row names and column names.
 
 ```{r}
 con <- TENxFileList(fl)
 import(con)
 ```
 
-# TENxPeaks
+## TENxPeaks
 
 Peak files can be handled with the `TENxPeaks` class. These files are usually
 named `*peak_annotation` files with a `.tsv` extension. Peak files are
@@ -237,7 +264,7 @@ peak_anno <- import(tenxp)
 peak_anno
 ```
 
-# TENxFragments
+## TENxFragments
 
 Fragment files are quite large and we make use of the `Rsamtools` package to
 import them with the `yieldSize` parameter. By default, we use a `yieldSize` of
