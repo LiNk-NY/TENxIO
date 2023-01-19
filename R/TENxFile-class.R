@@ -85,6 +85,9 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 #'     * .tar.gz - compressed tarball
 #' }
 #'
+#' @details **Note** that the example below includes the use of a large ~ 4 GB
+#'   `ExperimentHub` resource obtained from the 10X website.
+#'
 #' @param resource character(1) The path to the file
 #'
 #' @param extension character(1) The file extension for the given resource. It
@@ -97,12 +100,14 @@ S4Vectors::setValidity2("TENxFile", .validTENxFile)
 #' @return A subclass of `TENxFile` according to the input file extension
 #'
 #' @examples
+#' if (interactive()) {
 #'
-#' ## from ExperimentHub
-#' hub <- ExperimentHub::ExperimentHub()
-#' fname <- hub[["EH1039"]]
-#' TENxFile(fname, extension = "h5", group = "mm10", version = "2")
+#'     ## from ExperimentHub
+#'     hub <- ExperimentHub::ExperimentHub()
+#'     fname <- hub[["EH1039"]]
+#'     TENxFile(fname, extension = "h5", group = "mm10", version = "2")
 #'
+#' }
 #' @export
 TENxFile <- function(resource, extension, ...) {
     if (missing(extension))

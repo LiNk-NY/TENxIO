@@ -29,11 +29,17 @@ file extensions, namely:
     * .tar.gz - compressed tarball
 }
 }
+\details{
+\strong{Note} that the example below includes the use of a large ~ 4 GB
+\code{ExperimentHub} resource obtained from the 10X website.
+}
 \examples{
+if (interactive()) {
 
-## from ExperimentHub
-hub <- ExperimentHub::ExperimentHub()
-fname <- hub[["EH1039"]]
-TENxFile(fname, extension = "h5", group = "mm10", version = "2")
+    ## from ExperimentHub
+    hub <- ExperimentHub::ExperimentHub()
+    fname <- hub[["EH1039"]]
+    TENxFile(fname, extension = "h5", group = "mm10", version = "2")
 
+}
 }
