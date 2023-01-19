@@ -53,4 +53,5 @@ Collate:
     'TENxIO-package.R'
     'TENxMTX-class.R'
     'TENxPeaks-class.R'
+    'TENxTSV-class.R'
     'utils.R'

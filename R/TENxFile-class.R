@@ -118,8 +118,8 @@ TENxFile <- function(resource, extension, ...) {
         mtx = TENxMTX,
         mtx.gz = TENxMTX,
         tar.gz = TENxFileList,
-        tsv.gz = TSVFile,
-        tsv = TSVFile,
+        tsv.gz = TENxTSV,
+        tsv = TENxTSV,
         .TENxFile
     )
     TENxFUN(resource = resource,  extension = extension, ...)

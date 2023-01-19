@@ -38,9 +38,7 @@ supported. Please open an issue at https://github.com/waldronlab/TENxIO.
 | .tar.gz             | TENxFileList  | SingleCellExperiment w/ dgCMatrix |
 | peak_annotation.tsv | TENxPeaks     | GRanges              |
 | fragments.tsv.gz    | TENxFragments | RaggedExperiment     |
-| .tsv / .tsv.gz      | TSVFile\*     | tibble               |
-
-**Note** (\*). The `TSVFile` class is used internally and not exported.
+| .tsv / .tsv.gz      | TENxTSV       | tibble               |
 
 # Tested 10X Products
 

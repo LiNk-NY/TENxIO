@@ -130,48 +130,6 @@ TENxFileList <- function(..., version, compressed = FALSE) {
     tempdir
 }
 
-#' TSVFile: A class to represent 10x tab separated values files
-#'
-#' This class is general purpose for reading in tabular data from the
-#' 10x Genomics website with the `.tsv` file extension. The class also supports
-#' compressed files, i.e., those with the `.tsv.gz` extension.
-#'
-#' @return A `TSVFile` class object; a `tibble` for the import method
-#'
-#' @keywords internal
-.TSVFile <- setClass(Class = "TSVFile", contains = "TENxFile")
-
-TSVFile <- function(resource, compressed, ...) {
-    if (missing(compressed))
-        compressed <- !endsWith(resource, "tsv")
-    .TSVFile(resource = resource, compressed = compressed, ...)
-}
-
-#' @describeIn TSVFile General import function for `tsv` files from 10x;
-#'   using `readr::read_tsv` and returning a `tibble` representation
-#'
-#' @inheritParams BiocIO::import
-#'
-#' @importFrom readr read_tsv
-#'
-#' @keywords internal
-setMethod("import", "TSVFile", function(con, format, text, ...) {
-    resource <- path(con)
-    csuff <- if (con@compressed) ".gz" else ""
-    df <- readr::read_tsv(
-        resource, col_names = FALSE, show_col_types = FALSE, progress = FALSE,
-        ...
-    )
-    fname <- basename(resource)
-    if (identical(fname, paste0("features.tsv", csuff)))
-        names(df) <- c("ID", "Symbol", "Type", "Chr", "Start", "End")
-    if (identical(fname, paste0("genes.tsv", csuff)))
-        names(df) <- c("ID", "Symbol")
-    else if (identical(fname, paste0("barcodes.tsv", csuff)))
-        names(df) <- "barcode"
-    df
-})
-
 .get_path <- function(object) {
     if (is(object, "TENxFile"))
         path(object)

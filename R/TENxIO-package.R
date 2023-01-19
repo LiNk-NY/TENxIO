@@ -14,9 +14,7 @@
 #' | .tar.gz             | TENxFileList  | SingleCellExperiment w/ dgCMatrix |
 #' | peak_annotation.tsv | TENxPeaks     | GRanges              |
 #' | fragments.tsv.gz    | TENxFragments | RaggedExperiment     |
-#' | .tsv / .tsv.gz      | TSVFile*     | tibble               |
-#'
-#' Note (*). The `TSVFile` class is used internally and not exported.
+#' | .tsv / .tsv.gz      | TENxTSV       | tibble               |
 #'
 #' @import SummarizedExperiment SingleCellExperiment
 #'

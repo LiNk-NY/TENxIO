@@ -20,11 +20,8 @@ classes:\tabular{lll}{
    .tar.gz \tab TENxFileList \tab SingleCellExperiment w/ dgCMatrix \cr
    peak_annotation.tsv \tab TENxPeaks \tab GRanges \cr
    fragments.tsv.gz \tab TENxFragments \tab RaggedExperiment \cr
-   .tsv / .tsv.gz \tab TSVFile* \tab tibble \cr
+   .tsv / .tsv.gz \tab TENxTSV \tab tibble \cr
 }
-
-
-Note (*). The \code{TSVFile} class is used internally and not exported.
 }
 
 \seealso{
