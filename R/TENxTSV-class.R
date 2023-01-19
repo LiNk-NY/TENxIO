@@ -32,9 +32,9 @@ setMethod("import", "TENxTSV", function(con, format, text, ...) {
         ...
     )
     fname <- basename(resource)
-    if (identical(fname, "features.tsv.gz"))
+    if (startsWith(fname, "features.tsv"))
         names(df) <- c("ID", "Symbol", "Type", "Chr", "Start", "End")
-    else if (identical(fname, "barcodes.tsv.gz"))
+    else if (startsWith(fname, "barcodes.tsv"))
         names(df) <- "barcode"
     df
 })
