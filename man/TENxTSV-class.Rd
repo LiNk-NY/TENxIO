@@ -42,6 +42,11 @@ This class is general purpose for reading in tabular data from
 the 10x Genomics website with the \code{.tsv} file extension. The class also
 supports compressed files, i.e., those with the \code{.tsv.gz} extension.
 }
+\details{
+Typical \code{.tsv} files obtained from the 10X website are compressed
+and contain information relevant to 'barcodes' and 'features'. Currently,
+the code only supports files such as \verb{features.tsv.*} and \verb{barcodes.tsv.*}.
+}
 \section{Functions}{
 \itemize{
 \item \code{import(con = TENxTSV, format = ANY, text = ANY)}: General import method for \code{tsv} files from 10x;

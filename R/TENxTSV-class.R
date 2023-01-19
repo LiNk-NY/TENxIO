@@ -5,6 +5,10 @@
 #' @description This class is general purpose for reading in tabular data from
 #'   the 10x Genomics website with the `.tsv` file extension. The class also
 #'   supports compressed files, i.e., those with the `.tsv.gz` extension.
+#'
+#' @details Typical `.tsv` files obtained from the 10X website are compressed
+#'   and contain information relevant to 'barcodes' and 'features'. Currently,
+#'   the code only supports files such as `features.tsv.*` and `barcodes.tsv.*`.
 #' 
 #' @inheritParams TENxMTX-class
 #' 
