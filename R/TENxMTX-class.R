@@ -14,11 +14,7 @@
 #' @return A `TENxMTX` class object
 #'
 #' @exportClass TENxMTX
-.TENxMTX <- setClass(
-    Class = "TENxMTX",
-    contains = "TENxFile",
-    slots = c(compressed = "logical")
-)
+.TENxMTX <- setClass(Class = "TENxMTX", contains = "TENxFile")
 
 #' TENxMTX: Represent Matrix Market Format Files from 10X
 #'
