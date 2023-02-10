@@ -23,6 +23,10 @@ expect_true(
     is(fli, "SingleCellExperiment")
 )
 
+expect_true(
+    is(assay(fli, i = "counts"), "Matrix")
+)
+
 expect_identical(
     dim(fli), c(10L, 10L)
 )
