@@ -218,19 +218,16 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
             datalist[[barcodes]], use.names = FALSE
         )
         feats <- datalist[[features]]
+        sce <- as(mat, "SingleCellExperiment")
         if ("Chr" %in% names(feats)) {
             feats[is.na(feats[["Chr"]]), "Chr"] <- "NA_character_:0"
             rr <- GenomicRanges::makeGRangesFromDataFrame(
                 feats, keep.extra.columns = TRUE
             )
-            sce <- SingleCellExperiment(
-                assays = SimpleList(counts = mat), rowRanges = rr
-            )
+            rowRanges(sce) <- rr
             sce <- sce[seqnames(rr) != "NA_character_", ]
         } else {
-            sce <- SingleCellExperiment(
-                assays = SimpleList(counts = mat), rowData = feats
-            )
+            rowData(sce) <- feats
         }
         if (!is.null(feats[["Type"]]) && length(feats[["Type"]]))
             splitAltExps(
