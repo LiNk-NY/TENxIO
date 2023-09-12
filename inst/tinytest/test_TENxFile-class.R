@@ -39,15 +39,23 @@ expect_identical(
     tenxfile@extension, "bed"
 )
 
-pbmc_url <-
-    "https://raw.githubusercontent.com/waldronlab/TENxIO/devel/inst/extdata/10k_pbmc_ATACv2_f_bc_ex.h5"
+HDF5_conf <- system.file("include", "H5pubconf.h", package  = "Rhdf5lib")
+configLine <-
+    grepl(".*H5_HAVE_ROS3_VFD\\s+1", suppressWarnings(readLines(HDF5_conf)))
 
-remoteh5 <- TENxFile(pbmc_url)
-
-expect_true(
-    is(remoteh5, "TENxH5")
-)
-
-expect_true(
-    remoteh5@remote
-)
+if (any(configLine)) {
+    pbmc_url <- paste0(
+        "https://raw.githubusercontent.com/waldronlab/TENxIO/",
+        "devel/inst/extdata/10k_pbmc_ATACv2_f_bc_ex.h5"
+    )
+    
+    remoteh5 <- TENxFile(pbmc_url)
+    
+    expect_true(
+        is(remoteh5, "TENxH5")
+    )
+    
+    expect_true(
+        remoteh5@remote
+    )
+}
