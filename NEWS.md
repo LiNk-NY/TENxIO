@@ -1,3 +1,9 @@
+## Changes in version 1.4.0
+
+### Bug fixes and minor improvements
+
+* Skip unit tests when remote H5 access is not configured.
+
 ## Changes in version 1.2.0
 
 ### New features
