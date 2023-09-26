@@ -322,7 +322,7 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
             sce <- sce[seqnames(rr) != "NA_character_", ]
         }
     }
-    types <- rowData(con, rows = con@rowidx)[["Type"]]
+    types <- rowData(sce)[["Type"]]
     if (!is.null(types)) {
         ref <- dots[["ref"]]
         if (is.null(ref) || is.na(ref))
