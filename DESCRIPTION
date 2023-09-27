@@ -54,4 +54,5 @@ Collate:
     'TENxMTX-class.R'
     'TENxPeaks-class.R'
     'TENxTSV-class.R'
+    'TENxSpatialList-class.R'
     'utils.R'

@@ -2,7 +2,9 @@
     "TENxSpatialList",
     contains = "TENxFileList",
     slots = c(
-        image = "character"
+        images = "character",
+        scaleJSON = "character",
+        tissuePos = "character"
     )
 )
 
@@ -20,16 +22,51 @@
 
 S4Vectors::setValidity2("TENxSpatialList", .validTENxSpatialList)
 
+.SCALE_JSON_FILE <- "scalefactors_json.json"
+
 TENxSpatialList <- function(
-    resource, image = c("lowres", "hires", "detected", "aligned")
+    resource, images = c("lowres", "hires", "detected", "aligned"),
+    jsonFile = .SCALE_JSON_FILE,
+    tissuePattern = "tissue_positions.*\\.csv"
 ) {
-    image <- match.arg(image, several.ok = TRUE)
+    images <- match.arg(images, several.ok = TRUE)
     compressed <- endsWith(resource, ".tar.gz")
-    spat <- TENxFileList(resource, compressed = compressed)
-    spatf <- decompress(con = spat)
-    imgs <- grep(paste(image, collapse = "|"), names(spatf), value = TRUE)
-    
+    spatf <- TENxFileList(resource, compressed = compressed)
+    if (compressed)
+        spatf <- decompress(con = spatf)
+    tissuePos <- grep(tissuePattern, names(spatf), value = TRUE)
+    if (!length(tissuePos))
+        stop("No tissue positions file found with pattern: ", tissuePattern)
+
     .TENxSpatialList(
-        spatf, image = imgs
+        spatf, images = images, scaleJSON = jsonFile, tissuePos = tissuePos
+    )
+}
+
+setMethod("import", "TENxSpatialList", function(con, format, text, ...) {
+    jsonFile <- con@scaleJSON
+    sfs <- jsonlite::fromJSON(txt = path(con[jsonFile]))
+
+    DFs <- lapply(con@images, function(image) {
+        .getImgRow(con = con, image = image, scaleFx = sfs)
+    })
+    do.call(rbind, DFs)
+})
+
+.getImgRow <- function(con, image, scaleFx) {
+    scfactor <- NA_integer_
+    fileNames <- names(con)
+    filePaths <- path(con)
+    imgFile <- grep(image, fileNames, value = TRUE)
+    imgPath <- filePaths[endsWith(filePaths, imgFile)]
+    spi <- SpatialExperiment::SpatialImage(imgPath)
+    scaleName <- grep(image, names(scaleFx), value = TRUE)
+    if (length(scaleName))
+        scfactor <- unlist(scaleFx[scaleName])
+
+    DataFrame(
+        image_id = image,
+        data = I(list(spi)),
+        scaleFactor = scfactor
     )
 }
