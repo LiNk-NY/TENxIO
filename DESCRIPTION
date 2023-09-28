@@ -55,4 +55,6 @@ Collate:
     'TENxPeaks-class.R'
     'TENxTSV-class.R'
     'TENxSpatialList-class.R'
+    'TENxSpatialCSV.R'
+    'TENxVisium-class.R'
     'utils.R'

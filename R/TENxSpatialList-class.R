@@ -9,10 +9,15 @@
 )
 
 .check_file <- function(obj, pattern) {
+    fname <- switch(
+        pattern,
+        "positions.*\\.csv$" = "tissue positions",
+        "scalefactors.*\\.json$" = "scalefactor JSON"
+    )
     if (any(grepl(pattern, names(obj))))
         TRUE
     else
-        paste0("The '", name, "' file was not found")
+        paste0("The '", fname, "' file was not found")
 }
 
 .validTENxSpatialList <- function(object) {
@@ -50,7 +55,14 @@ setMethod("import", "TENxSpatialList", function(con, format, text, ...) {
     DFs <- lapply(con@images, function(image) {
         .getImgRow(con = con, image = image, scaleFx = sfs)
     })
-    do.call(rbind, DFs)
+    list(
+        imgData = as(do.call(rbind, DFs), "DataFrame"),
+        colData = import(
+            TENxSpatialCSV(
+                path(con)[con@tissuePos]
+            )
+        )
+    )
 })
 
 .getImgRow <- function(con, image, scaleFx) {
@@ -59,6 +71,8 @@ setMethod("import", "TENxSpatialList", function(con, format, text, ...) {
     filePaths <- path(con)
     imgFile <- grep(image, fileNames, value = TRUE)
     imgPath <- filePaths[endsWith(filePaths, imgFile)]
+    if (!length(imgPath))
+        stop("Image: ", image, " not found in list of file names")
     spi <- SpatialExperiment::SpatialImage(imgPath)
     scaleName <- grep(image, names(scaleFx), value = TRUE)
     if (length(scaleName))
