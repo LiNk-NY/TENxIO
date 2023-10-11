@@ -4,7 +4,8 @@
     slots = c(
         images = "character",
         scaleJSON = "character",
-        tissuePos = "character"
+        tissuePos = "character",
+        sampleId = "character"
     )
 )
 
@@ -30,7 +31,9 @@ S4Vectors::setValidity2("TENxSpatialList", .validTENxSpatialList)
 .SCALE_JSON_FILE <- "scalefactors_json.json"
 
 TENxSpatialList <- function(
-    resource, images = c("lowres", "hires", "detected", "aligned"),
+    resource,
+    sample_id = "sample01",
+    images = c("lowres", "hires", "detected", "aligned"),
     jsonFile = .SCALE_JSON_FILE,
     tissuePattern = "tissue_positions.*\\.csv"
 ) {
@@ -44,16 +47,18 @@ TENxSpatialList <- function(
         stop("No tissue positions file found with pattern: ", tissuePattern)
 
     .TENxSpatialList(
-        spatf, images = images, scaleJSON = jsonFile, tissuePos = tissuePos
+        spatf, images = images, scaleJSON = jsonFile,
+        tissuePos = tissuePos, sampleId = sample_id
     )
 }
 
 setMethod("import", "TENxSpatialList", function(con, format, text, ...) {
     jsonFile <- con@scaleJSON
+    sampid <- con@sampleId
     sfs <- jsonlite::fromJSON(txt = path(con[jsonFile]))
 
     DFs <- lapply(con@images, function(image) {
-        .getImgRow(con = con, image = image, scaleFx = sfs)
+        .getImgRow(con = con, sampleId = sampid, image = image, scaleFx = sfs)
     })
     list(
         imgData = as(do.call(rbind, DFs), "DataFrame"),
@@ -65,7 +70,7 @@ setMethod("import", "TENxSpatialList", function(con, format, text, ...) {
     )
 })
 
-.getImgRow <- function(con, image, scaleFx) {
+.getImgRow <- function(con, sampleId, image, scaleFx) {
     scfactor <- NA_integer_
     fileNames <- names(con)
     filePaths <- path(con)
@@ -79,6 +84,7 @@ setMethod("import", "TENxSpatialList", function(con, format, text, ...) {
         scfactor <- unlist(scaleFx[scaleName])
 
     DataFrame(
+        sample_id = sampleId,
         image_id = image,
         data = I(list(spi)),
         scaleFactor = scfactor
