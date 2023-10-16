@@ -9,7 +9,7 @@
 \title{A class to represent and import Visium data}
 \usage{
 TENxVisium(
-  resource,
+  resources,
   spatialResource,
   sample_id = "sample01",
   images = c("lowres", "hires", "detected", "aligned"),
@@ -22,8 +22,8 @@ TENxVisium(
 \S4method{import}{TENxVisium,ANY,ANY}(con, format, text, ...)
 }
 \arguments{
-\item{resource}{A \link{TENxFileList} object or a file path to the tarball
-containing the matrix / assay data.}
+\item{resources}{A \link{TENxFileList} object or a file path to the tarball
+containing the matrix / assay data resources.}
 
 \item{spatialResource}{A \link{TENxSpatialList} object or a file path to the
 tarball containing the spatial data.}
