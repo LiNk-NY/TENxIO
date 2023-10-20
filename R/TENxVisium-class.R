@@ -63,6 +63,25 @@
 #' @param ... In the constructor, additional arguments passed to
 #'   [TENxFileList()]; otherwise, not used.
 #'
+#' @examples
+#' \dontrun{
+#'     spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz" 
+#'     dir.create(sdir <- tempfile())
+#'     untar(spatialtar, exdir = sdir)
+#'
+#'     matrixtar <-
+#'         "~/data/V1_Adult_Mouse_Brain_filtered_feature_bc_matrix.tar.gz" 
+#'     dir.create(mdir <- tempfile())
+#'     untar(matrixtar, exdir = mdir)
+#'
+#'     tv <- TENxVisium(
+#'         resources = mdir, spatialResource = tdir, images = "lowres"
+#'     )
+#'     import(tv)
+#'
+#'     unlink(sdir, recursive = TRUE)
+#'     unlink(mdir, recursive = TRUE)
+#' }
 #' @export
 TENxVisium <- function(
     resources,

@@ -94,3 +94,23 @@ of the columns in the spatial data containing the spatial coordinates.}
 \item{\code{sampleId}}{\code{character(1)} A scalar specifying the sample identifier.}
 }}
 
+\examples{
+\dontrun{
+    spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz" 
+    dir.create(sdir <- tempfile())
+    untar(spatialtar, exdir = sdir)
+
+    matrixtar <-
+        "~/data/V1_Adult_Mouse_Brain_filtered_feature_bc_matrix.tar.gz" 
+    dir.create(mdir <- tempfile())
+    untar(matrixtar, exdir = mdir)
+
+    tv <- TENxVisium(
+        resources = mdir, spatialResource = tdir, images = "lowres"
+    )
+    import(tv)
+
+    unlink(sdir, recursive = TRUE)
+    unlink(mdir, recursive = TRUE)
+}
+}
