@@ -9,9 +9,9 @@
 #' @details Typical `.tsv` files obtained from the 10X website are compressed
 #'   and contain information relevant to 'barcodes' and 'features'. Currently,
 #'   the code only supports files such as `features.tsv.*` and `barcodes.tsv.*`.
-#' 
+#'
 #' @inheritParams TENxMTX-class
-#' 
+#'
 #' @return A `TENxTSV` class object; a `tibble` for the import method
 #'
 #' @exportClass TENxTSV
@@ -27,6 +27,8 @@
 #' @export
 setMethod("import", "TENxTSV", function(con, format, text, ...) {
     resource <- path(con)
+    if (identical(Sys.info()[["sysname"]], "Darwin"))
+        readr::local_edition(1)
     df <- readr::read_tsv(
         resource, col_names = FALSE, show_col_types = FALSE, progress = FALSE,
         ...
@@ -40,7 +42,7 @@ setMethod("import", "TENxTSV", function(con, format, text, ...) {
 })
 
 #' @rdname TENxTSV-class
-#' 
+#'
 #' @inheritParams TENxMTX
 #'
 #' @export
