@@ -20,6 +20,8 @@
 #' @slot sampleId `character(1)` A scalar specifying the sample identifier.
 #'
 #' @return A [SpatialExperiment] object
+#' 
+#' @seealso <https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/output/overview>
 #'
 #' @exportClass TENxVisium
 .TENxVisium <- setClass(
@@ -31,6 +33,41 @@
         sampleId = "character"
     )
 )
+
+.find_convert_resources <- function(path, processing, ...) {
+    odir <- list.dirs(path, recursive = FALSE, full.names = TRUE)
+    fdirname <- paste0(processing, "_feature_bc_matrix")
+    featdir <- file.path(odir, fdirname)
+    if (endsWith(odir, "outs") && dir.exists(featdir))
+        path <- featdir
+    else 
+        stop(
+            "The 'outs' or '", fdirname, "' directory was not found",
+            call. = FALSE
+        )
+    
+    if (!is(path, "TENxFileList"))
+        resources <- TENxFileList(path, ...)
+    else
+        resources <- path
+    
+    resources
+}
+
+.find_convert_spatial <- function(path, ...) {
+    odir <- list.dirs(path, recursive = FALSE, full.names = TRUE)
+    if (endsWith(odir, "outs"))
+        path <- file.path(odir, "spatial")
+    else
+        stop("The 'outs' directory was not found")
+    
+    if (!is(path, "TENxSpatialList"))
+        spatialList <- TENxSpatialList(path, ...)
+    else
+        spatialList <- path
+    
+    spatialList
+}
 
 #' @rdname TENxVisium-class
 #'
@@ -45,6 +82,11 @@
 #'
 #' @param spatialResource A [TENxSpatialList] object or a file path to the
 #'   tarball containing the spatial data.
+#' 
+#' @param spacerangerSamp `character(1)` A single string specifying the path to
+#'   the sample directory of `spaceranger count`. The directory must contain the
+#'   `filtered_feature_bc_matrix` and `spatial` subdirectories in addition to
+#'   the `outs` folder.
 #'
 #' @param sample_id `character(1)` A single string specifying the sample ID.
 #'
@@ -78,15 +120,26 @@
 #'         resources = mdir, spatialResource = tdir, images = "lowres"
 #'     )
 #'     import(tv)
+#' 
+#'     ## SpaceRanger sample folder
+#'     sampdir <- file.path(tempfile(), "sample345")
+#'     outsdir <- file.path(sampdir, "outs")
+#'     dir.create(outsdir, recursive = TRUE)
+#'     untar(spatialtar, exdir = outsdir)
+#'     untar(matrixtar, exdir = outsdir)
+#'     TENxVisium(spacerangerSamp = sampdir)    
 #'
 #'     unlink(sdir, recursive = TRUE)
 #'     unlink(mdir, recursive = TRUE)
+#'     unlink(srsdir, recursive = TRUE)
 #' }
 #' @export
 TENxVisium <- function(
     resources,
     spatialResource,
+    spacerangerSamp,
     sample_id = "sample01",
+    processing = c("filtered", "raw"),
     images = c("lowres", "hires", "detected", "aligned"),
     jsonFile = .SCALE_JSON_FILE,
     tissuePattern = "tissue_positions.*\\.csv",
@@ -94,13 +147,23 @@ TENxVisium <- function(
     ...
 ) {
     images <- match.arg(images, several.ok = TRUE)
-    if (!is(resources, "TENxFileList"))
+    processing <- match.arg(processing)
+    stopifnot(
+        isScalarCharacter(spacerangerSamp), dir.exists(spacerangerSamp)
+    )
+    if (!missing(spacerangerSamp)) {
+        resources <- .find_convert_resources(spacerangerSamp, processing, ...)
+        spatialResource <- .find_convert_spatial(
+            path = spacerangerSamp, sample_id = sample_id, images = images,
+            jsonFile = jsonFile, tissuePattern = tissuePattern
+        )
+    } else {
         resources <- TENxFileList(resources, ...)
-    if (!is(spatialResource, "TENxSpatialList"))
         spatialResource <- TENxSpatialList(
             resource = spatialResource, sample_id = sample_id, images = images,
             jsonFile = jsonFile, tissuePattern = tissuePattern
         )
+    }
 
     .TENxVisium(
         resources = resources,
@@ -109,7 +172,6 @@ TENxVisium <- function(
         sampleId = sample_id
     )
 }
-
 
 .validTENxVisium <- function(object) {
     isFL <- is(object@resources, "TENxFileList")

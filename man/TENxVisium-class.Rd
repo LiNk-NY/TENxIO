@@ -11,7 +11,9 @@
 TENxVisium(
   resources,
   spatialResource,
+  spacerangerSamp,
   sample_id = "sample01",
+  processing = c("filtered", "raw"),
   images = c("lowres", "hires", "detected", "aligned"),
   jsonFile = .SCALE_JSON_FILE,
   tissuePattern = "tissue_positions.*\\\\.csv",
@@ -27,6 +29,11 @@ containing the matrix / assay data resources.}
 
 \item{spatialResource}{A \link{TENxSpatialList} object or a file path to the
 tarball containing the spatial data.}
+
+\item{spacerangerSamp}{\code{character(1)} A single string specifying the path to
+the sample directory of \verb{spaceranger count}. The directory must contain the
+\code{filtered_feature_bc_matrix} and \code{spatial} subdirectories in addition to
+the \code{outs} folder.}
 
 \item{sample_id}{\code{character(1)} A single string specifying the sample ID.}
 
@@ -110,7 +117,19 @@ of the columns in the spatial data containing the spatial coordinates.}
     )
     import(tv)
 
+    ## SpaceRanger sample folder
+    sampdir <- file.path(tempfile(), "sample345")
+    outsdir <- file.path(sampdir, "outs")
+    dir.create(outsdir, recursive = TRUE)
+    untar(spatialtar, exdir = outsdir)
+    untar(matrixtar, exdir = outsdir)
+    TENxVisium(spacerangerSamp = sampdir)    
+
     unlink(sdir, recursive = TRUE)
     unlink(mdir, recursive = TRUE)
+    unlink(srsdir, recursive = TRUE)
 }
+}
+\seealso{
+\url{https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/output/overview}
 }
