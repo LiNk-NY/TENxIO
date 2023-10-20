@@ -91,6 +91,11 @@
 #'
 #' @param sample_id `character(1)` A single string specifying the sample ID.
 #'
+#' @param processing `character(1)` A single string indicating the processing
+#'   folder available e.g., "filtered_feature_barcode_matrix" in the
+#'   `spacerangerSamp` folder. It can be either "filtered" or "raw" (default
+#'   "filtered").
+#'
 #' @param images `character()` A vector specifying the images to be imported;
 #'   can be one or multiple of "lowres", "hires", "detected", "aligned".
 #'

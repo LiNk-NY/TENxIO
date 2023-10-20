@@ -37,6 +37,11 @@ the \code{outs} folder.}
 
 \item{sample_id}{\code{character(1)} A single string specifying the sample ID.}
 
+\item{processing}{\code{character(1)} A single string indicating the processing
+folder available e.g., "filtered_feature_barcode_matrix" in the
+\code{spacerangerSamp} folder. It can be either "filtered" or "raw" (default
+"filtered").}
+
 \item{images}{\code{character()} A vector specifying the images to be imported;
 can be one or multiple of "lowres", "hires", "detected", "aligned".}
 
