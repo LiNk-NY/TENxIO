@@ -42,7 +42,8 @@
         path <- featdir
     else 
         stop(
-            "The 'outs' or '", fdirname, "' directory was not found",
+            "The 'outs' or '", fdirname, "' directory was not found.",
+            "\n  Verify 'spacerangerSamp' and 'processing' inputs.",
             call. = FALSE
         )
     
