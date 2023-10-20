@@ -103,12 +103,12 @@ of the columns in the spatial data containing the spatial coordinates.}
 
 \examples{
 \dontrun{
-    spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz" 
+    spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz"
     dir.create(sdir <- tempfile())
     untar(spatialtar, exdir = sdir)
 
     matrixtar <-
-        "~/data/V1_Adult_Mouse_Brain_filtered_feature_bc_matrix.tar.gz" 
+        "~/data/V1_Adult_Mouse_Brain_filtered_feature_bc_matrix.tar.gz"
     dir.create(mdir <- tempfile())
     untar(matrixtar, exdir = mdir)
 
@@ -123,7 +123,7 @@ of the columns in the spatial data containing the spatial coordinates.}
     dir.create(outsdir, recursive = TRUE)
     untar(spatialtar, exdir = outsdir)
     untar(matrixtar, exdir = outsdir)
-    TENxVisium(spacerangerSamp = sampdir)    
+    TENxVisium(spacerangerSamp = sampdir)
 
     unlink(sdir, recursive = TRUE)
     unlink(mdir, recursive = TRUE)

@@ -50,10 +50,10 @@ S4Vectors::setValidity2("TENxSpatialList", .validTENxSpatialList)
 #' @inheritParams TENxVisium
 #'
 #' @returns A `SpatialExperiment` object
-#' 
+#'
 #' @examples
 #' \dontrun{
-#'     spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz" 
+#'     spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz"
 #'     dir.create(tdir <- tempfile())
 #'     untar(spatialtar, exdir = tdir)
 #'     TENxSpatialList(tdir)

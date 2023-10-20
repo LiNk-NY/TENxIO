@@ -20,7 +20,7 @@
 #' @slot sampleId `character(1)` A scalar specifying the sample identifier.
 #'
 #' @return A [SpatialExperiment] object
-#' 
+#'
 #' @seealso <https://support.10xgenomics.com/spatial-gene-expression/software/pipelines/latest/output/overview>
 #'
 #' @exportClass TENxVisium
@@ -40,18 +40,18 @@
     featdir <- file.path(odir, fdirname)
     if (endsWith(odir, "outs") && dir.exists(featdir))
         path <- featdir
-    else 
+    else
         stop(
             "The 'outs' or '", fdirname, "' directory was not found.",
             "\n  Verify 'spacerangerSamp' and 'processing' inputs.",
             call. = FALSE
         )
-    
+
     if (!is(path, "TENxFileList"))
         resources <- TENxFileList(path, ...)
     else
         resources <- path
-    
+
     resources
 }
 
@@ -61,12 +61,12 @@
         path <- file.path(odir, "spatial")
     else
         stop("The 'outs' directory was not found")
-    
+
     if (!is(path, "TENxSpatialList"))
         spatialList <- TENxSpatialList(path, ...)
     else
         spatialList <- path
-    
+
     spatialList
 }
 
@@ -83,7 +83,7 @@
 #'
 #' @param spatialResource A [TENxSpatialList] object or a file path to the
 #'   tarball containing the spatial data.
-#' 
+#'
 #' @param spacerangerSamp `character(1)` A single string specifying the path to
 #'   the sample directory of `spaceranger count`. The directory must contain the
 #'   `filtered_feature_bc_matrix` and `spatial` subdirectories in addition to
@@ -108,12 +108,12 @@
 #'
 #' @examples
 #' \dontrun{
-#'     spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz" 
+#'     spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz"
 #'     dir.create(sdir <- tempfile())
 #'     untar(spatialtar, exdir = sdir)
 #'
 #'     matrixtar <-
-#'         "~/data/V1_Adult_Mouse_Brain_filtered_feature_bc_matrix.tar.gz" 
+#'         "~/data/V1_Adult_Mouse_Brain_filtered_feature_bc_matrix.tar.gz"
 #'     dir.create(mdir <- tempfile())
 #'     untar(matrixtar, exdir = mdir)
 #'
@@ -121,14 +121,14 @@
 #'         resources = mdir, spatialResource = tdir, images = "lowres"
 #'     )
 #'     import(tv)
-#' 
+#'
 #'     ## SpaceRanger sample folder
 #'     sampdir <- file.path(tempfile(), "sample345")
 #'     outsdir <- file.path(sampdir, "outs")
 #'     dir.create(outsdir, recursive = TRUE)
 #'     untar(spatialtar, exdir = outsdir)
 #'     untar(matrixtar, exdir = outsdir)
-#'     TENxVisium(spacerangerSamp = sampdir)    
+#'     TENxVisium(spacerangerSamp = sampdir)
 #'
 #'     unlink(sdir, recursive = TRUE)
 #'     unlink(mdir, recursive = TRUE)
