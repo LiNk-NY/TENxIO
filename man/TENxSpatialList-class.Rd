@@ -68,11 +68,12 @@ of this class.
 
 }}
 \examples{
-\dontrun{
-    spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz"
-    dir.create(tdir <- tempfile())
-    untar(spatialtar, exdir = tdir)
-    TENxSpatialList(tdir)
-    unlink(tdir, recursive = TRUE)
-}
+
+spatial_dir <- system.file(
+    file.path("extdata", "10xVisium", "section1", "outs", "spatial"),
+    package = "SpatialExperiment"
+)
+
+TENxSpatialList(resources = spatial_dir)
+
 }
