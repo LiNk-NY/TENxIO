@@ -166,7 +166,7 @@ TENxVisium <- function(
     } else {
         resources <- TENxFileList(resources, ...)
         spatialResource <- TENxSpatialList(
-            resource = spatialResource, sample_id = sample_id, images = images,
+            resources = spatialResource, sample_id = sample_id, images = images,
             jsonFile = jsonFile, tissuePattern = tissuePattern
         )
     }
