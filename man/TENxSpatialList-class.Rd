@@ -9,7 +9,7 @@
 \title{A class to represent and import spatial Visium data}
 \usage{
 TENxSpatialList(
-  resource,
+  resources,
   sample_id = "sample01",
   images = c("lowres", "hires", "detected", "aligned"),
   jsonFile = .SCALE_JSON_FILE,
@@ -19,6 +19,9 @@ TENxSpatialList(
 \S4method{import}{TENxSpatialList,ANY,ANY}(con, format, text, ...)
 }
 \arguments{
+\item{resources}{A \link{TENxFileList} object or a file path to the tarball
+containing the matrix / assay data resources.}
+
 \item{sample_id}{\code{character(1)} A single string specifying the sample ID.}
 
 \item{images}{\code{character()} A vector specifying the images to be imported;
