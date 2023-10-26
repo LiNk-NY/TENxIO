@@ -145,21 +145,31 @@ TENxVisium <- function(
 ) {
     images <- match.arg(images, several.ok = TRUE)
     processing <- match.arg(processing)
-    stopifnot(
-        isScalarCharacter(spacerangerSamp), dir.exists(spacerangerSamp)
-    )
     if (!missing(spacerangerSamp)) {
+        stopifnot(
+            isScalarCharacter(spacerangerSamp), dir.exists(spacerangerSamp)
+        )
         resources <- .find_convert_resources(spacerangerSamp, processing, ...)
         spatialResource <- .find_convert_spatial(
             path = spacerangerSamp, sample_id = sample_id, images = images,
             jsonFile = jsonFile, tissuePattern = tissuePattern
         )
     } else {
-        resources <- TENxFileList(resources, ...)
-        spatialResource <- TENxSpatialList(
-            resources = spatialResource, sample_id = sample_id, images = images,
-            jsonFile = jsonFile, tissuePattern = tissuePattern
+        stopifnot(
+            (isScalarCharacter(resources) && file.exists(resources)) ||
+                is(resources, "TENxFileList"),
+            (isScalarCharacter(spatialResource) &&
+                file.exists(spatialResource)) ||
+                    is(spatialResource, "TENxSpatialList")
         )
+        if (!is(resources, "TENxFileList"))
+            resources <- TENxFileList(resources, ...)
+        if (!is(spatialResource, "TENxSpatialList"))
+            spatialResource <- TENxSpatialList(
+                resources = spatialResource, sample_id = sample_id,
+                images = images, jsonFile = jsonFile,
+                tissuePattern = tissuePattern
+            )
     }
 
     .TENxVisium(
