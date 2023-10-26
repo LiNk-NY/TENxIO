@@ -172,16 +172,13 @@ TENxVisium <- function(
 
 .validTENxVisium <- function(object) {
     isFL <- is(object@resources, "TENxFileList")
-    if (!isFL)
+    isSL <- is(object@spatialList, "TENxSpatialList")
+    if (isSL && isFL)
+        TRUE
+    else if (!isFL)
         "'TENxFileList' component is not of TENxFileList class"
     else
-        isFL
-    isSL <- is(object@spatialList, "TENxSpatialList")
-    if (!isSL)
         "'TENxSpatialList' component is not of TENxSpatialList class"
-    else
-        isSL
-    isFL && isSL
 }
 
 S4Vectors::setValidity2("TENxVisium", .validTENxVisium)
