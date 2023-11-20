@@ -11,20 +11,14 @@
 TENxVisium <- function(
     resources,
     spatialResource,
-    sample_id = "sample01",
-    images = c("lowres", "hires", "detected", "aligned"),
-    jsonFile = .SCALE_JSON_FILE,
-    tissuePattern = "tissue_positions.*\\.csv",
-    spatialCoordsNames = c("pxl_col_in_fullres", "pxl_row_in_fullres"),
-    ...
+    sample_id,
+    spatialCoordsNames = c("pxl_col_in_fullres", "pxl_row_in_fullres")
 ) {
-    images <- match.arg(images, several.ok = TRUE)
     if (!is(resources, "TENxFileList"))
-        resources <- TENxFileList(resources, ...)
+        resources <- TENxFileList(resources)
     if (!is(spatialResource, "TENxSpatialList"))
         spatialResource <- TENxSpatialList(
-            resource = spatialResource, sample_id = sample_id, images = images,
-            jsonFile = jsonFile, tissuePattern = tissuePattern
+            spatialResource, sample_id = sample_id
         )
 
     .TENxVisium(
