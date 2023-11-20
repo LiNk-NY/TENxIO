@@ -61,14 +61,14 @@ S4Vectors::setValidity2("TENxSpatialList", .validTENxSpatialList)
 #' }
 #' @export
 TENxSpatialList <- function(
-    resources,
+    resource,
     sample_id = "sample01",
     images = c("lowres", "hires", "detected", "aligned"),
     jsonFile = .SCALE_JSON_FILE,
     tissuePattern = "tissue_positions.*\\.csv"
 ) {
     images <- match.arg(images, several.ok = TRUE)
-    spatf <- TENxFileList(resources)
+    spatf <- TENxFileList(resource)
     if (spatf@compressed)
         spatf <- decompress(con = spatf)
     tissuePos <- grep(tissuePattern, names(spatf), value = TRUE)
