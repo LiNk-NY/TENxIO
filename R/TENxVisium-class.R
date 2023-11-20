@@ -40,8 +40,8 @@
 #'   is a composed class of [TENxFileList] which can contain a list of
 #'   [TENxFile] objects and a [TENxSpatialList] object.
 #'
-#' @param resources A [TENxFileList] object or a file path to the tarball
-#'   containing the matrix / assay data resources.
+#' @param resource A [TENxFileList] object or a file path to the tarball
+#'   containing the matrix / assay data.
 #'
 #' @param spatialResource A [TENxSpatialList] object or a file path to the
 #'   tarball containing the spatial data.
@@ -65,7 +65,7 @@
 #'
 #' @export
 TENxVisium <- function(
-    resources,
+    resource,
     spatialResource,
     sample_id = "sample01",
     images = c("lowres", "hires", "detected", "aligned"),

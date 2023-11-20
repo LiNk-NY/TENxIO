@@ -19,6 +19,9 @@ TENxSpatialList(
 \S4method{import}{TENxSpatialList,ANY,ANY}(con, format, text, ...)
 }
 \arguments{
+\item{resource}{A \link{TENxFileList} object or a file path to the tarball
+containing the matrix / assay data.}
+
 \item{sample_id}{\code{character(1)} A single string specifying the sample ID.}
 
 \item{images}{\code{character()} A vector specifying the images to be imported;
