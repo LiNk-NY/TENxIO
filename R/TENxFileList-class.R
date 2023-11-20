@@ -99,7 +99,7 @@ S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 #' ## untar to simulate folder output
 #' dir.create(tdir <- tempfile())
 #' untar(fl, exdir = tdir)
-#'
+#' 
 #' ## Method 2 (folder)
 #' TENxFileList(tdir)
 #' import(TENxFileList(tdir))
@@ -135,8 +135,8 @@ TENxFileList <- function(..., version, compressed = FALSE) {
             exts <- vapply(undots, .get_ext, character(1L))
             version <- .version_from_fnames(names(undots))
             dots <- undots
-        }
-        isdir <- try(file.info(undots)[["isdir"]], silent = TRUE)
+        } 
+        isdir <- try(file.info(undots)[["isdir"]], silent = TRUE) 
         if (inherits(isdir, "try-error") && is(undots, "SimpleList")) {
             exts <- vapply(undots, .get_ext, character(1L))
             version <- .version_from_fnames(names(undots))
