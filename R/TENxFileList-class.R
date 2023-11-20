@@ -17,7 +17,7 @@
 #' @slot extension character() A vector of file extensions for each file
 #'
 #' @slot compressed logical(1) Whether the file is compressed as `.tar.gz`
-#' 
+#'
 #' @slot version character(1) The version number of the tarball usually either
 #'   '2' or '3'
 #'
@@ -73,8 +73,8 @@ S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 #' 'genes.tsv.gz'. If known, indicate the `version` argument in the
 #' `TENxFileList` constructor function.
 #'
-#' @param ... A single file path, named arguments corresponding to file paths,
-#'   or a list of named file paths
+#' @param ... Typically, a file path to a tarball archive. Can be named
+#'   arguments corresponding to file paths, or a named list of file paths.
 #'
 #' @param version character(1) The version in the tarball. See details.
 #'
@@ -90,7 +90,38 @@ S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 #'     package = "TENxIO", mustWork = TRUE
 #' )
 #'
+#' ## Method 1 (tarball)
+#' TENxFileList(fl)
+#'
+#' ## import() method
 #' import(TENxFileList(fl))
+#'
+#' ## untar to simulate folder output
+#' dir.create(tdir <- tempfile())
+#' untar(fl, exdir = tdir)
+#'
+#' ## Method 2 (folder)
+#' TENxFileList(tdir)
+#' import(TENxFileList(tdir))
+#'
+#' ## Method 3 (list of TENxFile objects)
+#' files <- list.files(tdir, recursive = TRUE, full.names = TRUE)
+#' names(files) <- basename(files)
+#' filelist <- lapply(files, TENxFile)
+#'
+#' TENxFileList(filelist, compressed = FALSE)
+#'
+#' ## Method 4 (SimpleList)
+#' TENxFileList(as(filelist, "SimpleList"), compressed = FALSE)
+#'
+#' ## Method 5 (named arguments)
+#' TENxFileList(
+#'     barcodes.tsv.gz = TENxFile(files[1]),
+#'     features.tsv.gz = TENxFile(files[2]),
+#'     matrix.mtx.gz = TENxFile(files[3])
+#' )
+#'
+#' unlink(tdir, recursive = TRUE)
 #'
 #' @export
 TENxFileList <- function(..., version, compressed = FALSE) {
@@ -100,17 +131,29 @@ TENxFileList <- function(..., version, compressed = FALSE) {
         dots <- dots[names(dots) != "extension"]
     undots <- dots[[1L]]
     if (identical(length(dots), 1L)) {
+        if (is.list(undots) || is(undots, "SimpleList")) {
+            exts <- vapply(undots, .get_ext, character(1L))
+            version <- .version_from_fnames(names(undots))
+            dots <- undots
+        }
+        isdir <- try(file.info(undots)[["isdir"]], silent = TRUE)
+        if (inherits(isdir, "try-error") && is(undots, "SimpleList")) {
+            exts <- vapply(undots, .get_ext, character(1L))
+            version <- .version_from_fnames(names(undots))
+        } else if (isdir) {
+            undots <- .get_files_from_folder(undots)
+            dots <- lapply(undots, TENxFile)
+        }
         if (is.character(undots) && is.null(exts))
             exts <- .get_ext(undots)
-        if (missing(version) && is.character(undots))
-            version <- .version_from_filelist(undots)
+        if (missing(version) && is.character(undots) &&
+                all(endsWith(undots, "tar.gz")))
+            version <- .version_from_tarball(undots)
+        else if (missing(version) && is.character(undots))
+            version <- .version_from_fnames(undots)
         if (is(undots, "TENxFile")) {
             exts <- undots@extension
             version <- undots@version
-        }
-        if (is.list(undots)) {
-            exts <- vapply(undots, .get_ext, character(1L))
-            version <- .version_from_fnames(unlist(undots, use.names = FALSE))
         }
     } else {
         exts <- vapply(dots, .get_ext, character(1L))
@@ -121,6 +164,12 @@ TENxFileList <- function(..., version, compressed = FALSE) {
     .TENxFileList(
         dots, extension = exts, compressed = compressed, version = version
     )
+}
+
+.get_files_from_folder <- function(folder) {
+    files <- list.files(folder, full.names = TRUE, recursive = TRUE)
+    names(files) <- basename(files)
+    files
 }
 
 #' @importFrom utils untar tail
@@ -184,7 +233,10 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
 })
 
 .version_from_fnames <- function(fnames) {
-    fnames <- basename(fnames)
+    if (is(fnames, "SimpleList"))
+        fnames <- names(fnames)
+    else
+        fnames <- basename(fnames)
     if (any(grepl("features.tsv[\\.gz]*", fnames)))
         version <- "3"
     else if (any(grepl("genes.tsv[\\.gz]*", fnames)))
@@ -193,7 +245,7 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
         NA_character_
 }
 
-.version_from_filelist <- function(tarball) {
+.version_from_tarball <- function(tarball) {
     flist <- untar(tarball, list = TRUE)
     .version_from_fnames(flist)
 }
@@ -205,7 +257,10 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
 #'
 #' @export
 setMethod("import", "TENxFileList", function(con, format, text, ...) {
-    fdata <- decompress(con = con)
+    if (con@compressed)
+        fdata <- decompress(con = con)
+    else
+        fdata <- con
     datalist <- lapply(fdata, import)
     features <-
         .selectByVersion(file.list.map, version = con@version, "features")
