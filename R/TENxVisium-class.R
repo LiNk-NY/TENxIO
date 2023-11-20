@@ -78,12 +78,6 @@
 #'   is a composed class of [TENxFileList] which can contain a list of
 #'   [TENxFile] objects and a [TENxSpatialList] object.
 #'
-#' @details
-#' Note that the `images`, `jsonFile`, `tissuePattern`, and `spatialCoordsNames`
-#' arguments are only considered when the `spacerangerSamp` argument or both the
-#' `resources` and `spatialResource` arguments are paths to files.
-#'
-#'
 #' @param resources A [TENxFileList] object or a file path to the tarball
 #'   containing the matrix / assay data resources.
 #'
@@ -100,7 +94,7 @@
 #' @param processing `character(1)` A single string indicating the processing
 #'   folder available e.g., "filtered_feature_barcode_matrix" in the
 #'   `spacerangerSamp` folder. It can be either "filtered" or "raw" (default
-#'   "filtered"). Only used when `spacerangerSamp` is specified.
+#'   "filtered").
 #'
 #' @param images `character()` A vector specifying the images to be imported;
 #'   can be one or multiple of "lowres", "hires", "detected", "aligned".

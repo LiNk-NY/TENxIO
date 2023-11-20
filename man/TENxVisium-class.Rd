@@ -40,7 +40,7 @@ the \code{outs} folder.}
 \item{processing}{\code{character(1)} A single string indicating the processing
 folder available e.g., "filtered_feature_barcode_matrix" in the
 \code{spacerangerSamp} folder. It can be either "filtered" or "raw" (default
-"filtered"). Only used when \code{spacerangerSamp} is specified.}
+"filtered").}
 
 \item{images}{\code{character()} A vector specifying the images to be imported;
 can be one or multiple of "lowres", "hires", "detected", "aligned".}
@@ -87,10 +87,6 @@ is a composed class of \link{TENxFileList} which can contain a list of
 Typically, the user will not create an object of this class directly
 but rather use the \code{\link[=TENxVisium]{TENxVisium()}} constructor function to create an object
 of this class.
-
-Note that the \code{images}, \code{jsonFile}, \code{tissuePattern}, and \code{spatialCoordsNames}
-arguments are only considered when the \code{spacerangerSamp} argument or both the
-\code{resources} and \code{spatialResource} arguments are paths to files.
 }
 \section{Functions}{
 \itemize{
