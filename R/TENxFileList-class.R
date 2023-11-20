@@ -99,21 +99,18 @@ S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 #'
 #' dir.create(tdir <- tempfile())
 #' untar(fl, exdir = tdir)
-#' files <- list.files(tdir, recursive = TRUE, full.names = TRUE)
+#' files <- list.files(tdir, recursive = TRUE)
 #' names(files) <- basename(files)
 #' filelist <- lapply(files, TENxFile)
 #'
 #' ## Method 2 (list of files)
 #' TENxFileList(filelist, compressed = FALSE)
 #'
-#' TENxFileList(as(filelist, "SimpleList"), compressed = FALSE)
-#' 
-#'
 #' ## Method 3 (named arguments)
 #' TENxFileList(
-#'     barcodes.tsv.gz = TENxFile(files[1]),
-#'     features.tsv.gz = TENxFile(files[2]),
-#'     matrix.mtx.gz = TENxFile(files[3])
+#'     barcodes.tsv.gz = files[1],
+#'     features.tsv.gz = files[2],
+#'     matrix.mtx.gz = files[3]
 #' )
 #'
 #' @export
@@ -124,19 +121,8 @@ TENxFileList <- function(..., version, compressed = FALSE) {
         dots <- dots[names(dots) != "extension"]
     undots <- dots[[1L]]
     if (identical(length(dots), 1L)) {
-        if (is.list(undots) || is(undots, "SimpleList")) {
-            exts <- vapply(undots, .get_ext, character(1L))
-            version <- .version_from_fnames(names(undots))
-            dots <- undots
-        } 
-        isdir <- try(file.info(undots)[["isdir"]], silent = TRUE) 
-        if (inherits(isdir, "try-error") && is(undots, "SimpleList")) {
-            exts <- vapply(undots, .get_ext, character(1L))
-            version <- .version_from_fnames(names(undots))
-        } else if (isdir) {
+        if (file.info(undots)[["isdir"]])
             undots <- .get_files_from_folder(undots)
-            dots <- lapply(undots, TENxFile)
-        }
         if (is.character(undots) && is.null(exts))
             exts <- .get_ext(undots)
         if (missing(version) && is.character(undots) &&
@@ -147,6 +133,10 @@ TENxFileList <- function(..., version, compressed = FALSE) {
         if (is(undots, "TENxFile")) {
             exts <- undots@extension
             version <- undots@version
+        }
+        if (is.list(undots)) {
+            exts <- vapply(undots, .get_ext, character(1L))
+            version <- .version_from_fnames(unlist(undots, use.names = FALSE))
         }
     } else {
         exts <- vapply(dots, .get_ext, character(1L))
