@@ -2,9 +2,7 @@
     "TENxSpatialList",
     contains = "TENxFileList",
     slots = c(
-        images = "character",
-        scaleJSON = "character",
-        tissuePos = "character"
+        image = "character"
     )
 )
 
@@ -22,51 +20,16 @@
 
 S4Vectors::setValidity2("TENxSpatialList", .validTENxSpatialList)
 
-.SCALE_JSON_FILE <- "scalefactors_json.json"
-
 TENxSpatialList <- function(
-    resource, images = c("lowres", "hires", "detected", "aligned"),
-    jsonFile = .SCALE_JSON_FILE,
-    tissuePattern = "tissue_positions.*\\.csv"
+    resource, image = c("lowres", "hires", "detected", "aligned")
 ) {
-    images <- match.arg(images, several.ok = TRUE)
+    image <- match.arg(image, several.ok = TRUE)
     compressed <- endsWith(resource, ".tar.gz")
-    spatf <- TENxFileList(resource, compressed = compressed)
-    if (compressed)
-        spatf <- decompress(con = spatf)
-    tissuePos <- grep(tissuePattern, names(spatf), value = TRUE)
-    if (!length(tissuePos))
-        stop("No tissue positions file found with pattern: ", tissuePattern)
-
+    spat <- TENxFileList(resource, compressed = compressed)
+    spatf <- decompress(con = spat)
+    imgs <- grep(paste(image, collapse = "|"), names(spatf), value = TRUE)
+    
     .TENxSpatialList(
-        spatf, images = images, scaleJSON = jsonFile, tissuePos = tissuePos
-    )
-}
-
-setMethod("import", "TENxSpatialList", function(con, format, text, ...) {
-    jsonFile <- con@scaleJSON
-    sfs <- jsonlite::fromJSON(txt = path(con[jsonFile]))
-
-    DFs <- lapply(con@images, function(image) {
-        .getImgRow(con = con, image = image, scaleFx = sfs)
-    })
-    do.call(rbind, DFs)
-})
-
-.getImgRow <- function(con, image, scaleFx) {
-    scfactor <- NA_integer_
-    fileNames <- names(con)
-    filePaths <- path(con)
-    imgFile <- grep(image, fileNames, value = TRUE)
-    imgPath <- filePaths[endsWith(filePaths, imgFile)]
-    spi <- SpatialExperiment::SpatialImage(imgPath)
-    scaleName <- grep(image, names(scaleFx), value = TRUE)
-    if (length(scaleName))
-        scfactor <- unlist(scaleFx[scaleName])
-
-    DataFrame(
-        image_id = image,
-        data = I(list(spi)),
-        scaleFactor = scfactor
+        spatf, image = imgs
     )
 }
