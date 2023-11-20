@@ -3,29 +3,24 @@
     slots = c(
         resources = "TENxFileList",
         spatialList = "TENxSpatialList",
-        coordNames = "character",
-        sampleId = "character"
+        coordNames = "character"
     )
 )
 
 TENxVisium <- function(
     resources,
     spatialResource,
-    sample_id,
     spatialCoordsNames = c("pxl_col_in_fullres", "pxl_row_in_fullres")
 ) {
     if (!is(resources, "TENxFileList"))
         resources <- TENxFileList(resources)
     if (!is(spatialResource, "TENxSpatialList"))
-        spatialResource <- TENxSpatialList(
-            spatialResource, sample_id = sample_id
-        )
+        spatialResource <- TENxSpatialList(spatialResource)
 
     .TENxVisium(
         resources = resources,
         spatialList = spatialResource,
-        coordNames = spatialCoordsNames,
-        sampleId = sample_id
+        coordNames = spatialCoordsNames
     )
 }
 
@@ -61,7 +56,7 @@ setMethod("import", "TENxVisium", function(con, format, text, ...) {
     SpatialExperiment::SpatialExperiment(
         assays = assays(sce),
         rowData = DataFrame(Symbol = rowData(sce)[["Symbol"]]),
-        sample_id = con@sampleId,
+        sample_id = con@spatialList@images,
         colData = spd,
         spatialCoordsNames = con@coordNames,
         imgData = img
