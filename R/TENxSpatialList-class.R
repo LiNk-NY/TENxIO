@@ -50,15 +50,7 @@ S4Vectors::setValidity2("TENxSpatialList", .validTENxSpatialList)
 #' @inheritParams TENxVisium
 #'
 #' @returns A `SpatialExperiment` object
-#' 
-#' @examples
-#' \dontrun{
-#'     spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz" 
-#'     dir.create(tdir <- tempfile())
-#'     untar(spatialtar, exdir = tdir)
-#'     TENxSpatialList(tdir)
-#'     unlink(tdir, recursive = TRUE)
-#' }
+#'
 #' @export
 TENxSpatialList <- function(
     resource,
@@ -68,8 +60,9 @@ TENxSpatialList <- function(
     tissuePattern = "tissue_positions.*\\.csv"
 ) {
     images <- match.arg(images, several.ok = TRUE)
-    spatf <- TENxFileList(resource)
-    if (spatf@compressed)
+    compressed <- endsWith(resource, ".tar.gz")
+    spatf <- TENxFileList(resource, compressed = compressed)
+    if (compressed)
         spatf <- decompress(con = spatf)
     tissuePos <- grep(tissuePattern, names(spatf), value = TRUE)
     if (!length(tissuePos))

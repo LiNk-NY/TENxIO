@@ -96,32 +96,25 @@ S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 #' ## import() method
 #' import(TENxFileList(fl))
 #'
-#' ## untar to simulate folder output
+#'
 #' dir.create(tdir <- tempfile())
 #' untar(fl, exdir = tdir)
-#' 
-#' ## Method 2 (folder)
-#' TENxFileList(tdir)
-#' import(TENxFileList(tdir))
-#'
-#' ## Method 3 (list of TENxFile objects)
 #' files <- list.files(tdir, recursive = TRUE, full.names = TRUE)
 #' names(files) <- basename(files)
 #' filelist <- lapply(files, TENxFile)
 #'
+#' ## Method 2 (list of files)
 #' TENxFileList(filelist, compressed = FALSE)
 #'
-#' ## Method 4 (SimpleList)
 #' TENxFileList(as(filelist, "SimpleList"), compressed = FALSE)
+#' 
 #'
-#' ## Method 5 (named arguments)
+#' ## Method 3 (named arguments)
 #' TENxFileList(
 #'     barcodes.tsv.gz = TENxFile(files[1]),
 #'     features.tsv.gz = TENxFile(files[2]),
 #'     matrix.mtx.gz = TENxFile(files[3])
 #' )
-#'
-#' unlink(tdir, recursive = TRUE)
 #'
 #' @export
 TENxFileList <- function(..., version, compressed = FALSE) {
@@ -257,10 +250,7 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
 #'
 #' @export
 setMethod("import", "TENxFileList", function(con, format, text, ...) {
-    if (con@compressed)
-        fdata <- decompress(con = con)
-    else
-        fdata <- con
+    fdata <- decompress(con = con)
     datalist <- lapply(fdata, import)
     features <-
         .selectByVersion(file.list.map, version = con@version, "features")

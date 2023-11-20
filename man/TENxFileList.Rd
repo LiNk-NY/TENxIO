@@ -7,8 +7,8 @@
 TENxFileList(..., version, compressed = FALSE)
 }
 \arguments{
-\item{...}{Typically, a file path to a tarball archive. Can be named
-arguments corresponding to file paths, or a named list of file paths.}
+\item{...}{A single file path, named arguments corresponding to file paths,
+or a list of named file paths}
 
 \item{version}{character(1) The version in the tarball. See details.}
 
@@ -43,37 +43,6 @@ fl <- system.file(
     package = "TENxIO", mustWork = TRUE
 )
 
-## Method 1 (tarball)
-TENxFileList(fl)
-
-## import() method
 import(TENxFileList(fl))
-
-## untar to simulate folder output
-dir.create(tdir <- tempfile())
-untar(fl, exdir = tdir)
-
-## Method 2 (folder)
-TENxFileList(tdir)
-import(TENxFileList(tdir))
-
-## Method 3 (list of TENxFile objects)
-files <- list.files(tdir, recursive = TRUE, full.names = TRUE)
-names(files) <- basename(files)
-filelist <- lapply(files, TENxFile)
-
-TENxFileList(filelist, compressed = FALSE)
-
-## Method 4 (SimpleList)
-TENxFileList(as(filelist, "SimpleList"), compressed = FALSE)
-
-## Method 5 (named arguments)
-TENxFileList(
-    barcodes.tsv.gz = TENxFile(files[1]),
-    features.tsv.gz = TENxFile(files[2]),
-    matrix.mtx.gz = TENxFile(files[3])
-)
-
-unlink(tdir, recursive = TRUE)
 
 }

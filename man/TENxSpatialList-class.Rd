@@ -64,12 +64,3 @@ of this class.
 \item \code{import(con = TENxSpatialList, format = ANY, text = ANY)}: Import a \code{TENxSpatialList} object
 
 }}
-\examples{
-\dontrun{
-    spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz" 
-    dir.create(tdir <- tempfile())
-    untar(spatialtar, exdir = tdir)
-    TENxSpatialList(tdir)
-    unlink(tdir, recursive = TRUE)
-}
-}
