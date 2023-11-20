@@ -14,7 +14,6 @@ Imports:
   BiocIO,
   GenomeInfoDb,
   GenomicRanges,
-  jsonlite,
   Matrix,
   MatrixGenerics,
   methods,
@@ -22,7 +21,6 @@ Imports:
   readr,
   R.utils,
   S4Vectors,
-  SpatialExperiment,
   utils
 Suggests:
   BiocStyle,
@@ -55,8 +53,8 @@ Collate:
     'TENxIO-package.R'
     'TENxMTX-class.R'
     'TENxPeaks-class.R'
-    'TENxSpatialCSV.R'
-    'TENxSpatialList-class.R'
     'TENxTSV-class.R'
+    'TENxSpatialList-class.R'
+    'TENxSpatialCSV.R'
     'TENxVisium-class.R'
     'utils.R'

@@ -1,27 +1,3 @@
-#' @docType class
-#'
-#' @title A class to represent and import Visium data
-#'
-#' @description This class is a composed class of [TENxFileList] which can
-#'   contain a list of [TENxFile] objects and a [TENxSpatialList] object. It is
-#'   meant to handle Visium data from 10X Genomics.
-#'
-#' @details Typically, the user will not create an object of this class directly
-#'   but rather use the [TENxVisium()] constructor function to create an object
-#'   of this class.
-#'
-#' @slot resources A [TENxFileList] object containing the Visium data.
-#'
-#' @slot spatialList A [TENxSpatialList] object containing the spatial
-#'
-#' @slot coordNames `character()` A vector specifying the names
-#'   of the columns in the spatial data containing the spatial coordinates.
-#'
-#' @slot sampleId `character(1)` A scalar specifying the sample identifier.
-#'
-#' @return A [SpatialExperiment] object
-#'
-#' @exportClass TENxVisium
 .TENxVisium <- setClass(
     Class = "TENxVisium",
     slots = c(
@@ -32,40 +8,8 @@
     )
 )
 
-#' @rdname TENxVisium-class
-#'
-#' @title Represent and import Visium data from 10X Genomics
-#'
-#' @description `TENxVisium` is a class to represent and import Visium data. It
-#'   is a composed class of [TENxFileList] which can contain a list of
-#'   [TENxFile] objects and a [TENxSpatialList] object.
-#'
-#' @param resource A [TENxFileList] object or a file path to the tarball
-#'   containing the matrix / assay data.
-#'
-#' @param spatialResource A [TENxSpatialList] object or a file path to the
-#'   tarball containing the spatial data.
-#'
-#' @param sample_id `character(1)` A single string specifying the sample ID.
-#'
-#' @param images `character()` A vector specifying the images to be imported;
-#'   can be one or multiple of "lowres", "hires", "detected", "aligned".
-#'
-#' @param jsonFile `character(1)` A single string specifying the name of the
-#'  JSON file containing the scale factors.
-#'
-#' @param tissuePattern `character(1)` A single string specifying the pattern
-#'   to match the tissue positions file.
-#'
-#' @param spatialCoordsNames `character()` A vector of strings specifying the
-#'  names of the columns in the spatial data containing the spatial coordinates.
-#'
-#' @param ... In the constructor, additional arguments passed to
-#'   [TENxFileList()]; otherwise, not used.
-#'
-#' @export
 TENxVisium <- function(
-    resource,
+    resources,
     spatialResource,
     sample_id = "sample01",
     images = c("lowres", "hires", "detected", "aligned"),
@@ -108,15 +52,6 @@ TENxVisium <- function(
 
 S4Vectors::setValidity2("TENxVisium", .validTENxVisium)
 
-#' @describeIn TENxVisium-class Import Visium data
-#'
-#' @inheritParams BiocIO::import
-#'
-#' @importFrom BiocIO import
-#' @importFrom SpatialExperiment SpatialExperiment
-#' @importFrom SummarizedExperiment assays rowData colData
-#'
-#' @exportMethod import
 setMethod("import", "TENxVisium", function(con, format, text, ...) {
     sce <- import(con@resources)
     slist <- import(con@spatialList)
@@ -131,7 +66,7 @@ setMethod("import", "TENxVisium", function(con, format, text, ...) {
 
     SpatialExperiment::SpatialExperiment(
         assays = assays(sce),
-        rowData = S4Vectors::DataFrame(Symbol = rowData(sce)[["Symbol"]]),
+        rowData = DataFrame(Symbol = rowData(sce)[["Symbol"]]),
         sample_id = con@sampleId,
         colData = spd,
         spatialCoordsNames = con@coordNames,

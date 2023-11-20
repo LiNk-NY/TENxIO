@@ -1,18 +1,3 @@
-#' @docType class
-#'
-#' @title A class to represent and import spatial Visium data
-#'
-#' @description This class is a composed class of [TENxFileList], which can
-#'   contain a list of [TENxFile] objects, and a [TENxSpatialList] object. It is
-#'   meant to handle spatial Visium data from 10X Genomics.
-#'
-#' @details Typically, the user will not create an object of this class directly
-#'   but rather use the [TENxVisium()] constructor function to create an object
-#'   of this class.
-#'
-#' @inheritParams TENxVisium
-#'
-#' @exportClass TENxSpatialList
 .TENxSpatialList <- setClass(
     "TENxSpatialList",
     contains = "TENxFileList",
@@ -45,13 +30,6 @@ S4Vectors::setValidity2("TENxSpatialList", .validTENxSpatialList)
 
 .SCALE_JSON_FILE <- "scalefactors_json.json"
 
-#' @rdname TENxSpatialList-class
-#'
-#' @inheritParams TENxVisium
-#'
-#' @returns A `SpatialExperiment` object
-#'
-#' @export
 TENxSpatialList <- function(
     resource,
     sample_id = "sample01",
@@ -74,13 +52,6 @@ TENxSpatialList <- function(
     )
 }
 
-#' @describeIn TENxSpatialList Import a `TENxSpatialList` object
-#'
-#' @param ... Parameters to pass to the format-specific method.
-#'
-#' @inheritParams BiocIO::import
-#'
-#' @exportMethod import
 setMethod("import", "TENxSpatialList", function(con, format, text, ...) {
     jsonFile <- con@scaleJSON
     sampid <- con@sampleId
@@ -112,7 +83,7 @@ setMethod("import", "TENxSpatialList", function(con, format, text, ...) {
     if (length(scaleName))
         scfactor <- unlist(scaleFx[scaleName])
 
-    S4Vectors::DataFrame(
+    DataFrame(
         sample_id = sampleId,
         image_id = image,
         data = I(list(spi)),
