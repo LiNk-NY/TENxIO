@@ -112,18 +112,33 @@
 #'   [TENxFileList()]; otherwise, not used.
 #'
 #' @examples
+#' \dontrun{
+#'     spatialtar <- "~/data/V1_Adult_Mouse_Brain_spatial.tar.gz"
+#'     dir.create(sdir <- tempfile())
+#'     untar(spatialtar, exdir = sdir)
 #'
-#' sample_dir <- system.file(
-#'     file.path("extdata", "10xVisium", "section1"),
-#'     package = "SpatialExperiment"
-#' )
+#'     matrixtar <-
+#'         "~/data/V1_Adult_Mouse_Brain_filtered_feature_bc_matrix.tar.gz"
+#'     dir.create(mdir <- tempfile())
+#'     untar(matrixtar, exdir = mdir)
 #'
-#' tv <- TENxVisium(
-#'     spacerangerSamp = sample_dir, processing = "raw", images = "lowres"
-#' )
+#'     tv <- TENxVisium(
+#'         resources = mdir, spatialResource = tdir, images = "lowres"
+#'     )
+#'     import(tv)
 #'
-#' import(tv)
+#'     ## SpaceRanger sample folder
+#'     sampdir <- file.path(tempfile(), "sample345")
+#'     outsdir <- file.path(sampdir, "outs")
+#'     dir.create(outsdir, recursive = TRUE)
+#'     untar(spatialtar, exdir = outsdir)
+#'     untar(matrixtar, exdir = outsdir)
+#'     TENxVisium(spacerangerSamp = sampdir)
 #'
+#'     unlink(sdir, recursive = TRUE)
+#'     unlink(mdir, recursive = TRUE)
+#'     unlink(srsdir, recursive = TRUE)
+#' }
 #' @export
 TENxVisium <- function(
     resources,
