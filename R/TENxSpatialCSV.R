@@ -58,11 +58,10 @@ TENxSpatialCSV <- function(resource, colnames = .TISSUE_POS_COLS) {
 #'
 #' @exportMethod import
 setMethod("import", "TENxSpatialCSV", function(con, format, text, ...) {
-    dat <- utils::read.csv(
+    utils::read.csv(
         path(con),
         header = !con@isList,
         row.names = 1L,
         col.names = con@colnames
     )
-    as(dat, "DataFrame")
 })
