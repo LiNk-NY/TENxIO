@@ -1,3 +1,10 @@
+## Changes in version 1.6.0
+
+### Bug fixes and minor improvements
+
+* Use `rowData` from filtered `SingleCellExperiment` object (@MalteThodberg, #5)
+* Add examples to `TENxFileList` documentation and improve constructor function
+
 ## Changes in version 1.4.0
 
 ### Bug fixes and minor improvements
