@@ -1,7 +1,7 @@
 Package: TENxIO
 Type: Package
 Title: Import methods for 10X Genomics files
-Version: 1.5.3
+Version: 1.5.4
 Authors@R:
   person(
     "Marcel", "Ramos", , "marcel.ramos@roswellpark.org",
