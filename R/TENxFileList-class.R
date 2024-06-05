@@ -209,6 +209,8 @@ setMethod("path", "TENxFileList", function(object, ...) {
 #' @export
 setMethod("decompress", "TENxFileList", function(manager, con, ...) {
     res_ext <- con@extension
+    if (!identical(length(res_ext), 1L))
+        stop("The 'extension' of 'con' must be from a single compressed file")
     if (is.na(res_ext))
         res_ext <- .get_ext(path(con))
     if (con@compressed) {
