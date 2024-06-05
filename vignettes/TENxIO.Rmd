@@ -24,10 +24,11 @@ knitr::opts_chunk$set(cache = TRUE)
 # Introduction
 
 `TENxIO` allows users to import 10X pipeline files into known Bioconductor
-classes. The package is not comprehensive, there are files that are not
-supported. It currently does not support Visium datasets. It does replace
-some functionality in `DropletUtils`. If you would like a file format to be
-supported. Please open an issue at https://github.com/waldronlab/TENxIO.
+classes. The package is not comprehensive, there are file types that are not
+supported. For Visium datasets, we direct users to the `VisiumIO` package on
+Bioconductor. TENxIO consolidates functionality from `DropletUtils`. If you
+would like a file format to be supported, open an issue at
+https://github.com/waldronlab/TENxIO.
 
 # Supported Formats
 
@@ -297,27 +298,6 @@ example, the genomic ranges can be displayed via `rowRanges`:
 ```{r}
 rowRanges(fra)
 ```
-
-# TENxVisium
-
-The `TENxVisium` class is used to import 10X Visium data. The `TENxVisium`
-constructor function takes the following arguments:
-
-```{r,eval=FALSE}
-TENxVisium(
-    resource = "path/to/10x/visium/file.tar.gz",
-    spatialResource = "path/to/10x/visium/spatial/file.spatial.tar.gz",
-    sample_id = "sample01",
-    images = c("lowres", "hires", "detected", "aligned"),
-    jsonFile = "scalefactors_json.json",
-    tissuePattern = "tissue_positions.*\\.csv",
-    spatialCoordsNames = c("pxl_col_in_fullres", "pxl_row_in_fullres")
-)
-```
-
-The `resource` argument is the path to the 10X Visium file. The `spatialResource`
-argument is the path to the 10X Visium spatial file. It usually ends in
-`spatial.tar.gz`.
 
 # Session Information
 
