@@ -23,7 +23,7 @@
 #'   a map of fields and their corresponding file locations within the H5 file.
 #'   This map is used to create the `rowData` structure from the file.
 #'
-#' @section import: 
+#' @section import:
 #'   The `import` method uses `DelayedArray::TENxMatrix` to represent matrix
 #'   data. Generally, version 3 datasets contain associated genomic coordinates.
 #'   The associated feature data, as displayed by the `rowData` method, is
@@ -90,9 +90,9 @@
 #'   An additional `ref` argument can be provided when the file contains
 #'   multiple `feature_type` in the file or "Type" in the `rowData`. By
 #'   default, the most frequent type is represented.
-#' 
+#'
 #'   For data that do not contain genomic coordinate information, one can
-#'   set the `ranges` argument to `NA_character_`. 
+#'   set the `ranges` argument to `NA_character_`.
 #'
 #'   The data version "3" mainly includes a "matrix" group and "interval"
 #'   information within the file. Version "2" data does not include
@@ -196,21 +196,9 @@ h5.version.map <- data.frame(
         df[df[["Version"]] == version, select]
 }
 
-#' @describeIn TENxH5 Generate the rowData ad hoc from a TENxH5 file
-#'
-#' @param x A `TENxH5` object
-#'
-#' @inheritParams SummarizedExperiment::rowData
-#'
-#' @export
-setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
+.read_rowData <- function(x, nrows) {
     gm <- .selectByVersion(h5.version.map, x@version)
     remote <- x@remote
-    nrows <- list(...)[["rows"]]
-    ## Implement a smaller index for display purposes only
-    mxrow <- max(x@rowidx)
-    if (is.null(nrows) && mxrow > 12)
-        nrows <- c(seq(6), mxrow - 5:0)
     gm[] <- Filter(Negate(is.na), gm)
     res <- lapply(gm, function(colval) {
         readname <- paste0(x@group, colval)
@@ -223,6 +211,22 @@ setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
         DF[["Type"]] <- as.factor(DF[["Type"]])
     rownames(DF) <- nrows
     DF
+}
+
+#' @describeIn TENxH5 Generate the rowData ad hoc from a TENxH5 file
+#'
+#' @param x A `TENxH5` object
+#'
+#' @inheritParams SummarizedExperiment::rowData
+#'
+#' @export
+setMethod("rowData", "TENxH5", function(x, use.names = TRUE, ...) {
+    nrows <- list(...)[["rows"]]
+    ## Implement a smaller index for display purposes only
+    mxrow <- max(x@rowidx)
+    if (is.null(nrows) && mxrow > 12)
+        nrows <- c(seq(6), mxrow - 5:0)
+    .read_rowData(x, nrows)
 })
 
 #' @describeIn TENxH5 Get the dimensions of the data as stored in the file
@@ -299,6 +303,7 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
 #'
 #' @importFrom MatrixGenerics rowRanges
 #' @importFrom BiocBaseUtils isScalarCharacter
+#' @importFrom S4Vectors isEmpty
 #'
 #' @inheritParams BiocIO::import
 #'
@@ -320,6 +325,9 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
             rowRanges(sce) <- rr
             ## remove stand-in NA values
             sce <- sce[seqnames(rr) != "NA_character_", ]
+        }
+        if (!isEmpty(rowData(con))) {
+            rowData(sce) <- .read_rowData(con, con@rowidx)
         }
     }
     types <- rowData(sce)[["Type"]]

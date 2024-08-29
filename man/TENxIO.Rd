@@ -3,7 +3,6 @@
 \docType{package}
 \name{TENxIO}
 \alias{TENxIO}
-\alias{_PACKAGE}
 \alias{TENxIO-package}
 \title{TENxIO: A Bioconductor package for importing 10X Genomics files}
 \description{
