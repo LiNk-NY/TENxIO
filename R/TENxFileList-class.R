@@ -276,6 +276,8 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
         )
         feats <- datalist[[features]]
         sce <- as(mat, "SingleCellExperiment")
+        if (!is.null(feats) && ncol(feats))
+            rownames(sce) <- feats[[1L]]
         if ("Chr" %in% names(feats)) {
             feats[is.na(feats[["Chr"]]), "Chr"] <- "NA_character_:0"
             rr <- GenomicRanges::makeGRangesFromDataFrame(
