@@ -84,7 +84,6 @@ TENxPeaks <- function(resource, extension, ...) {
 #'
 #' @export
 setMethod("import", "TENxPeaks", function(con, format, ...) {
-    .checkPkgsAvail("readr")
     if (identical(Sys.info()[["sysname"]], "Darwin"))
         readr::local_edition(1)
     panno <- readr::read_tsv(

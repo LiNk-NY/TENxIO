@@ -86,12 +86,13 @@ TENxFragments <- function(resource, yieldSize = 200, which = GRanges(), ...) {
 #'   data from 10x via `Rsamtools` and `RaggedExperiment`
 #'
 #' @importFrom utils read.table
+#' @importFrom BiocBaseUtils checkInstalled
 #'
 #' @inheritParams BiocIO::import
 #'
 #' @export
 setMethod("import", "TENxFragments", function(con, format, text, ...) {
-    .checkPkgsAvail(c("Rsamtools", "RaggedExperiment"))
+    checkInstalled(c("Rsamtools", "RaggedExperiment"))
     which <- con@which
     yieldSize <- con@yieldSize
     tb <- Rsamtools::TabixFile(path(con), yieldSize = yieldSize)

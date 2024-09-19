@@ -48,7 +48,7 @@
 )
 
 .get_h5_group <- function(fpath, remote) {
-    .checkPkgsAvail("rhdf5")
+    checkInstalled("rhdf5")
     l1 <- rhdf5::h5ls(fpath, recursive = FALSE, s3 = remote)
     l1[l1$otype == "H5I_GROUP", "name"]
 }
@@ -309,7 +309,7 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
 #'
 #' @export
 setMethod("import", "TENxH5", function(con, format, text, ...) {
-    .checkPkgsAvail("HDF5Array")
+    checkInstalled("HDF5Array")
     matrixdata <-
         HDF5Array::TENxMatrix(path(con), con@group)[con@rowidx, con@colidx]
     dots <- list(...)
