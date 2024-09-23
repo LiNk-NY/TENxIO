@@ -11,6 +11,11 @@
 #'   identifiers
 #' Note that version '2' includes `genes.tsv.gz` instead of `features.tsv.gz` in
 #' version '3'.
+#' 
+#' An additional `ref` argument can be provided when the file contains
+#' multiple `feature_type` in the file or "Type" in the `rowData`. By default,
+#' the first type reported in `table()` is set as the `mainExpName` in the
+#' `SingleCellExperiment` object.
 #'
 #' @slot listData list() The data in list format
 #'
@@ -263,6 +268,7 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
         fdata <- decompress(con = con)
     else
         fdata <- con
+    dots <- list(...)
     datalist <- lapply(fdata, import)
     features <-
         .selectByVersion(file.list.map, version = con@version, "features")
@@ -288,14 +294,14 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
         } else {
             rowData(sce) <- feats
         }
-        if (!is.null(feats[["Type"]]) && length(feats[["Type"]]))
-            splitAltExps(
-                sce,
-                feats[["Type"]],
-                ref = "Gene Expression"
-            )
-        else
-            sce
+        ref <- dots[["ref"]]
+        types <- feats[["Type"]]
+        if (!is.null(types) && length(types)) {
+            if (!isScalarCharacter(ref))
+                ref <- names(table(types)[1L])
+            sce <- splitAltExps(sce, types, ref = ref)
+        }
+        sce
     } else {
         ## return a list for now
         datalist

@@ -59,6 +59,11 @@ identifiers
 Note that version '2' includes \code{genes.tsv.gz} instead of \code{features.tsv.gz} in
 version '3'.
 }
+
+An additional \code{ref} argument can be provided when the file contains
+multiple \code{feature_type} in the file or "Type" in the \code{rowData}. By default,
+the first type reported in \code{table()} is set as the \code{mainExpName} in the
+\code{SingleCellExperiment} object.
 }
 \section{Functions}{
 \itemize{

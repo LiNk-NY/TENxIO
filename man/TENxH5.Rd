@@ -48,8 +48,9 @@ metadata such as \code{rowData} and "Type" column, if available. The term
 data file is \code{import}ed.
 
 An additional \code{ref} argument can be provided when the file contains
-multiple \code{feature_type} in the file or "Type" in the \code{rowData}. By
-default, the most frequent type is represented.
+multiple \code{feature_type} in the file or "Type" in the \code{rowData}. By default,
+the first type reported in \code{table()} is set as the \code{mainExpName} in the
+\code{SingleCellExperiment} object.
 
 For data that do not contain genomic coordinate information, the \code{TENxH5}
 will fail to read \code{"/features/interval"} and will set the \code{ranges}

@@ -87,8 +87,9 @@
 #'   data file is `import`ed.
 #'
 #'   An additional `ref` argument can be provided when the file contains
-#'   multiple `feature_type` in the file or "Type" in the `rowData`. By
-#'   default, the most frequent type is represented.
+#'   multiple `feature_type` in the file or "Type" in the `rowData`. By default,
+#'   the first type reported in `table()` is set as the `mainExpName` in the
+#'   `SingleCellExperiment` object.
 #'
 #'   For data that do not contain genomic coordinate information, the `TENxH5`
 #'   will fail to read `"/features/interval"` and will set the `ranges`
@@ -349,7 +350,7 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     if (!is.null(types)) {
         ref <- dots[["ref"]]
         if (is.null(ref) || is.na(ref))
-            ref <- names(which.max(table(types)))
+            ref <- names(table(types)[1L])
         if (isScalarCharacter(ref))
             sce <- splitAltExps(sce, types, ref = ref)
     }
