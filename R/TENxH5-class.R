@@ -312,6 +312,7 @@ setMethod("rowRanges", "TENxH5", function(x, ...) {
     names(gr) <- rows
     mcols(gr) <- rowData(x, rows = rows)
     genome(gr) <- genome(x)
+    cat("preview <= 12 rowRanges:", basename(x@resource), "\n")
     gr
 })
 
@@ -334,13 +335,21 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     sce <- SingleCellExperiment(
         assays = list(counts = matrixdata)
     )
+    if (anyDuplicated(rownames(sce))) {
+        warning(
+            "'rownames' in assay are not unique; using 'make.unique()'"
+        )
+        rownames(sce) <- make.unique(rownames(sce))
+    }
     if (identical(con@version, "3")) {
         if (!is.na(con@ranges)) {
             rr <- rowRanges(con, rows = con@rowidx)
             names(rr) <- mcols(rr)[["ID"]]
             rowRanges(sce) <- rr
+            okrows <- seqnames(rr) != "NA_character_"
             ## remove stand-in NA values
-            sce <- sce[seqnames(rr) != "NA_character_", ]
+            sce <- sce[okrows, ]
+            con@rowidx <- con@rowidx[as.logical(okrows)]
         }
         if (!isEmpty(rowData(con))) {
             rowData(sce) <- .read_rowData(con, con@rowidx)

@@ -284,13 +284,22 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
         sce <- as(mat, "SingleCellExperiment")
         if (!is.null(feats) && ncol(feats))
             rownames(sce) <- feats[[1L]]
+        if (!is.null(rownames(sce)) && anyDuplicated(rownames(sce))) {
+            warning(
+                "'rownames' in assay are not unique; using 'make.unique()'"
+            )
+            rownames(sce) <- make.unique(rownames(sce))
+        }
         if ("Chr" %in% names(feats)) {
             feats[is.na(feats[["Chr"]]), "Chr"] <- "NA_character_:0"
             rr <- GenomicRanges::makeGRangesFromDataFrame(
                 feats, keep.extra.columns = TRUE
             )
+            names(rr) <- rownames(sce)
             rowRanges(sce) <- rr
-            sce <- sce[seqnames(rr) != "NA_character_", ]
+            okrows <- seqnames(rr) != "NA_character_"
+            sce <- sce[okrows, ]
+            feats <- feats[as.logical(okrows), , drop = FALSE]
         } else {
             rowData(sce) <- feats
         }
