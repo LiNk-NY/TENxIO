@@ -1,3 +1,17 @@
+## Changes in version 1.8.0
+
+### New features
+
+* The `import` method for h5 files now includes all `rowData` which typically
+includes "ID", "Symbol", and "Type" columns.
+
+### Bug fixes and minor improvements
+
+* `rownames` are set to first column in the `features.tsv.gz` data (`rownames`
+for h5 files are determined by `HDF5Array::TENxMatrix`)
+* `TENxH5` now tests whether there is a `/matrix/features/interval` dataset in
+the h5 file. It sets ranges to `NA_character_` when interval data is not found.
+
 ## Changes in version 1.6.0
 
 ### Bug fixes and minor improvements
