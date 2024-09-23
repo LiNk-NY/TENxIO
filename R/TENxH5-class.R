@@ -90,8 +90,9 @@
 #'   multiple `feature_type` in the file or "Type" in the `rowData`. By
 #'   default, the most frequent type is represented.
 #'
-#'   For data that do not contain genomic coordinate information, one can
-#'   set the `ranges` argument to `NA_character_`.
+#'   For data that do not contain genomic coordinate information, the `TENxH5`
+#'   will fail to read `"/features/interval"` and will set the `ranges`
+#'   argument to `NA_character_`.
 #'
 #'   The data version "3" mainly includes a "matrix" group and "interval"
 #'   information within the file. Version "2" data does not include
@@ -163,8 +164,7 @@ TENxH5 <-
         warning("File extension is not 'h5'; import may fail", call. = FALSE)
     if (missing(ranges))
         ranges <- .selectByVersion(h5.version.map, version, "Ranges")
-    else if ((!is.character(ranges) && is.na(ranges)) || !nzchar(ranges))
-        ranges <- NA_character_
+    ranges <- .validateRanges(resource, group, ranges)
     if (missing(rowidx))
         rowidx <- seq_len(dims[[1L]])
     if (missing(colidx))
@@ -193,6 +193,23 @@ h5.version.map <- data.frame(
         NA_character_
     else
         df[df[["Version"]] == version, select]
+}
+
+.validateRanges <- function(file, group, ranges) {
+    if (!isScalarCharacter(ranges))
+        NA_character_
+    else
+        tryCatch({
+            rhdf5::h5read(file, name = paste0(group, ranges), index = list(1L))
+            ranges
+        }, error = function(e) {
+            warning(
+                simpleWarning(
+                    message = conditionMessage(e), call = conditionCall(e)
+                )
+            )
+            NA_character_
+        })
 }
 
 .read_rowData <- function(x, nrows) {

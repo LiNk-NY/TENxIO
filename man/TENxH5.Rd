@@ -51,8 +51,9 @@ An additional \code{ref} argument can be provided when the file contains
 multiple \code{feature_type} in the file or "Type" in the \code{rowData}. By
 default, the most frequent type is represented.
 
-For data that do not contain genomic coordinate information, one can
-set the \code{ranges} argument to \code{NA_character_}.
+For data that do not contain genomic coordinate information, the \code{TENxH5}
+will fail to read \code{"/features/interval"} and will set the \code{ranges}
+argument to \code{NA_character_}.
 
 The data version "3" mainly includes a "matrix" group and "interval"
 information within the file. Version "2" data does not include
