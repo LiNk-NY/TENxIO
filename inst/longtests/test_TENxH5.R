@@ -15,7 +15,16 @@ expect_true(
     is(res, "TENxH5")
 )
 expect_true(
-    is(import(res, ref = NA), "SingleCellExperiment")
+    is(
+        import(res, ref = NA),
+        "SingleCellExperiment"
+    )
+)
+expect_true(
+    is(
+        import(res),
+        "SingleCellExperiment"
+    )
 )
 
 path <- eh[["EH3688"]]
@@ -25,7 +34,9 @@ expect_error(
 )
 expect_true(
     is(
-        res <- TENxFileList(path, extension = "tar.gz", compressed = TRUE),
+        res <- TENxFileList(
+            path, extension = "tar.gz", compressed = TRUE, version = "2"
+        ),
         "TENxFileList"
     )
 )
