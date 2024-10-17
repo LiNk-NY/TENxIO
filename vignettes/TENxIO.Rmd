@@ -44,7 +44,7 @@ https://github.com/waldronlab/TENxIO.
 
 # Tested 10X Products
 
-We have tested these functions with _some_ 
+We have tested these functions with _some_
 [datasets](https://www.10xgenomics.com/resources/datasets) from 10x Genomics
 including those from:
 
@@ -84,9 +84,9 @@ library(TENxIO)
 
 `TENxIO` offers an set of classes that allow users to easily work with files
 typically obtained from the 10X Genomics website. Generally, these are outputs
-from the Cell Ranger pipeline. 
+from the Cell Ranger pipeline.
 
-# Procedure 
+# Procedure
 
 Loading the data into a Bioconductor class is a two step process. First, the
 file must be identified by either the user or the `TENxFile` function. The
@@ -120,7 +120,7 @@ showClass("TENxFile")
 
 ### `ExperimentHub` resources
 
-`TENxFile` can handle resources from `ExperimentHub` with careful inputs. 
+`TENxFile` can handle resources from `ExperimentHub` with careful inputs.
 For example, one can import a `TENxBrainData` dataset via the appropriate
 `ExperimentHub` identifier (`EH1039`):
 
@@ -170,7 +170,7 @@ h5ls(h5f)
 ```
 
 Note. The `h5ls` function gives an overview of the structure of the file.
-It matches version 3 in our version map. 
+It matches version 3 in our version map.
 
 The show method gives an overview of the data components in the file:
 
@@ -210,7 +210,7 @@ con
 ## import MTX method
 
 The `import` method yields a `SummarizedExperiment` without colnames or
-rownames. 
+rownames.
 
 ```{r}
 import(con)
