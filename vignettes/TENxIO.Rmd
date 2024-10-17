@@ -11,7 +11,7 @@ output:
     number_sections: no
     toc: yes
     toc_depth: 4
-Package: TENxIO
+package: TENxIO
 ---
 
 <!-- badges: start -->
