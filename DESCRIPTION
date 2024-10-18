@@ -29,7 +29,7 @@ Suggests:
   DropletTestFiles,
   ExperimentHub,
   knitr,
-  RaggedExperiment,
+  RaggedExperiment (>= 1.29.5),
   rmarkdown,
   Rsamtools,
   tinytest

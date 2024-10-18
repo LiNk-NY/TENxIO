@@ -89,7 +89,9 @@ setMethod("import", "TENxPeaks", function(con, format, ...) {
     panno <- readr::read_tsv(
         file = path(con), col_types = c("c", "n", "n", "c", "n", "c")
     )
-    makeGRangesFromDataFrame(panno, keep.extra.columns = TRUE)
+    grs <- makeGRangesFromDataFrame(panno, keep.extra.columns = TRUE)
+    metadata(grs) <- metadata(con)
+    grs
 })
 
 #' @describeIn TENxPeaks-class Replacement method to add annotation data to a

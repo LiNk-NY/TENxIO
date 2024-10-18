@@ -7,6 +7,7 @@
 \alias{path,TENxFileList-method}
 \alias{decompress,TENxFileList-method}
 \alias{import,TENxFileList,ANY,ANY-method}
+\alias{metadata,TENxFileList-method}
 \title{TENxFileList: A list-like representation for TENxFiles}
 \usage{
 \S4method{path}{TENxFileList}(object, ...)
@@ -14,6 +15,8 @@
 \S4method{decompress}{TENxFileList}(manager, con, ...)
 
 \S4method{import}{TENxFileList,ANY,ANY}(con, format, text, ...)
+
+\S4method{metadata}{TENxFileList}(x, ...)
 }
 \arguments{
 \item{object}{
@@ -22,9 +25,7 @@
     number of paths.
   }
 
-\item{...}{
-    Additional arguments, for use in specific methods.
-  }
+\item{...}{Additional arguments (not used)}
 
 \item{manager}{A \code{ConnectionManager} internal instance; currently not used.}
 
@@ -41,6 +42,9 @@ unnecessary when \code{con} is a derivative of \linkS4class{BiocFile}.}
 
 \item{text}{If \code{con} is missing, this can be a character vector directly
 providing the string data to import.}
+
+\item{x}{An object of class \code{TENxFile}, \code{TENxFileList}, \code{TENxMTX}, \code{TENxH5},
+\code{TENxPeaks}, \code{TENxTSV}, or derivatives}
 }
 \value{
 A \code{TENxFileList} class object
@@ -75,6 +79,8 @@ as a vector
 
 \item \code{import(con = TENxFileList, format = ANY, text = ANY)}: Recursively import files within a
 \code{TENxFileList}
+
+\item \code{metadata(TENxFileList)}: \code{metadata} method for \code{TENxFileList} objects
 
 }}
 \section{Slots}{

@@ -69,6 +69,7 @@ setMethod("import", "TENxMTX", function(con, format, text, ...) {
     ## coerce to common use class
     mtxf <- as(mtxf, "CsparseMatrix")
     SummarizedExperiment(
-        assays = S4Vectors::SimpleList(counts = mtxf)
+        assays = S4Vectors::SimpleList(counts = mtxf),
+        metadata = metadata(con)
     )
 })

@@ -1,3 +1,7 @@
+#' @include TENxFile-class.R
+#'
+NULL
+
 #' TENxFragments: A class to represent fragments data as `GRanges`
 #'
 #' This class is designed to work mainly with `fragments.tsv.gz` files from
@@ -107,5 +111,5 @@ setMethod("import", "TENxFragments", function(con, format, text, ...) {
     )
     grs <- splitAsList(ggr, mcols(ggr)$barcode)
     ggrl <- as(grs, "GRangesList")
-    RaggedExperiment::RaggedExperiment(ggrl)
+    RaggedExperiment::RaggedExperiment(ggrl, metadata = metadata(con))
 })

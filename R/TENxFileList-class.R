@@ -98,8 +98,15 @@ S4Vectors::setValidity2("TENxFileList", .validTENxFileList)
 #' ## Method 1 (tarball)
 #' TENxFileList(fl)
 #'
+#' ## metadata before import
+#' metadata(TENxFileList(fl))
+#'
 #' ## import() method
 #' import(TENxFileList(fl))
+#'
+#' ## metadata after import
+#' import(TENxFileList(fl)) |>
+#'     metadata()
 #'
 #' ## untar to simulate folder output
 #' dir.create(tdir <- tempfile())
@@ -262,6 +269,8 @@ setMethod("decompress", "TENxFileList", function(manager, con, ...) {
 #'
 #' @inheritParams BiocIO::import
 #'
+#' @importFrom S4Vectors metadata<-
+#'
 #' @export
 setMethod("import", "TENxFileList", function(con, format, text, ...) {
     if (con@compressed)
@@ -282,6 +291,7 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
         )
         feats <- datalist[[features]]
         sce <- as(mat, "SingleCellExperiment")
+        metadata(sce) <- metadata(con)
         if (!is.null(feats) && ncol(feats))
             rownames(sce) <- feats[[1L]]
         if (!is.null(rownames(sce)) && anyDuplicated(rownames(sce))) {
@@ -315,4 +325,24 @@ setMethod("import", "TENxFileList", function(con, format, text, ...) {
         ## return a list for now
         datalist
     }
+})
+
+#' @describeIn TENxFileList-class `metadata` method for `TENxFileList` objects
+#'
+#' @param x An object of class `TENxFile`, `TENxFileList`, `TENxMTX`, `TENxH5`,
+#'   `TENxPeaks`, `TENxTSV`, or derivatives
+#' 
+#' @param ... Additional arguments (not used)
+#'
+#' @exportMethod metadata
+setMethod("metadata", "TENxFileList", function(x, ...) {
+    sn <- slotNames(x)
+    sn <- setdiff(sn, slotNames("SimpleList"))
+    snl <- structure(sn, .Names = sn)
+    metadata <- lapply(snl, getElement, object = x)
+    ldata <- lapply(x@listData, function(y) {
+        if (inherits(y, "TENxFile")) metadata(y) else basename(y)
+    })
+    metadata[["resources"]] <- ldata
+    list(TENxFileList = metadata)
 })

@@ -4,13 +4,31 @@
 \name{TENxFile-class}
 \alias{TENxFile-class}
 \alias{.TENxFile}
+\alias{metadata,TENxFile-method}
 \title{TENxFile: General purpose class for 10X files}
+\usage{
+\S4method{metadata}{TENxFile}(x, ...)
+}
+\arguments{
+\item{x}{An object of class \code{TENxFile}, \code{TENxFileList}, \code{TENxMTX}, \code{TENxH5},
+\code{TENxPeaks}, \code{TENxTSV}, or derivatives}
+
+\item{...}{Additional arguments (not used)}
+}
+\value{
+A list of metadata for the given object
+}
 \description{
 The \code{TENxFile} class is the default representation for
 unrecognized subclasses. It inherits from the BiocFile class and adds a few
 additional slots. The constructor function can handle typical 10X file
 types. For more details, see the constructor function documentation.
 }
+\section{Functions}{
+\itemize{
+\item \code{metadata(TENxFile)}: \code{metadata} method for \code{TENxFile} objects
+
+}}
 \section{Slots}{
 
 \describe{

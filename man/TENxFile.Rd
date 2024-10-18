@@ -40,6 +40,8 @@ if (interactive()) {
     hub <- ExperimentHub::ExperimentHub()
     fname <- hub[["EH1039"]]
     TENxFile(fname, extension = "h5", group = "mm10", version = "2")
+    TENxFile(fname, extension = "h5", group = "mm10", version = "2") |>
+        metadata()
 
 }
 }

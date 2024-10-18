@@ -6,11 +6,14 @@
 \alias{.TENxTSV}
 \alias{TENxTSV}
 \alias{import,TENxTSV,ANY,ANY-method}
+\alias{metadata,TENxTSV-method}
 \title{TENxTSV: A class to represent 10x tab separated values files}
 \usage{
 \S4method{import}{TENxTSV,ANY,ANY}(con, format, text, ...)
 
 TENxTSV(resource, compressed = FALSE, ...)
+
+\S4method{metadata}{TENxTSV}(x, ...)
 }
 \arguments{
 \item{con}{The connection from which data is loaded or to which data is
@@ -51,5 +54,7 @@ the code only supports files such as \verb{features.tsv.*} and \verb{barcodes.ts
 \itemize{
 \item \code{import(con = TENxTSV, format = ANY, text = ANY)}: General import method for \code{tsv} files from 10x;
 using \code{readr::read_tsv} and returning a \code{tibble} representation
+
+\item \code{metadata(TENxTSV)}: \code{metadata} method for \code{TENxTSV} objects
 
 }}

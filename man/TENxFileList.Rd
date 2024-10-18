@@ -46,8 +46,15 @@ fl <- system.file(
 ## Method 1 (tarball)
 TENxFileList(fl)
 
+## metadata before import
+metadata(TENxFileList(fl))
+
 ## import() method
 import(TENxFileList(fl))
+
+## metadata after import
+import(TENxFileList(fl)) |>
+    metadata()
 
 ## untar to simulate folder output
 dir.create(tdir <- tempfile())

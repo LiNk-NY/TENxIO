@@ -38,6 +38,7 @@ setMethod("import", "TENxTSV", function(con, format, text, ...) {
         names(df) <- c("ID", "Symbol", "Type", "Chr", "Start", "End")
     else if (startsWith(fname, "barcodes.tsv"))
         names(df) <- "barcode"
+    attr(df, "metadata") <- metadata(con)
     df
 })
 
@@ -56,3 +57,13 @@ TENxTSV <-  function(resource, compressed = FALSE, ...) {
         warning("File extension is not 'tsv'; import may fail", call. = FALSE)
     .TENxTSV(resource = resource, compressed = compr, extension = ext)
 }
+
+#' @describeIn TENxTSV-class `metadata` method for `TENxTSV` objects
+#' @exportMethod metadata
+setMethod("metadata", "TENxTSV", function(x, ...) {
+    sn <- slotNames(x)
+    snl <- structure(sn, .Names = sn)
+    metadata <- lapply(snl, getElement, object = x)
+    metadata[["resource"]] <- basename(metadata[["resource"]])
+    list(TENxTSV = metadata)
+})

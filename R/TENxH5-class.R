@@ -333,7 +333,8 @@ setMethod("import", "TENxH5", function(con, format, text, ...) {
     if (!con@version %in% c("2", "3"))
         stop("Version not supported.")
     sce <- SingleCellExperiment(
-        assays = list(counts = matrixdata)
+        assays = list(counts = matrixdata),
+        metadata = metadata(con)
     )
     if (anyDuplicated(rownames(sce))) {
         warning(
