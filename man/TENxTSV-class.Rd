@@ -36,6 +36,8 @@ providing the string data to import.}
 
 \item{compressed}{logical(1) Whether the resource file is compressed (default
 FALSE)}
+
+\item{x}{A \code{TENxTSV} object}
 }
 \value{
 A \code{TENxTSV} class object; a \code{tibble} for the import method
