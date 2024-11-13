@@ -165,7 +165,7 @@ TENxH5 <-
         warning("File extension is not 'h5'; import may fail", call. = FALSE)
     if (missing(ranges))
         ranges <- .selectByVersion(h5.version.map, version, "Ranges")
-    ranges <- .validateRanges(resource, group, ranges)
+    ranges <- .validateRanges(resource, group, ranges, remote)
     if (missing(rowidx))
         rowidx <- seq_len(dims[[1L]])
     if (missing(colidx))
@@ -196,12 +196,17 @@ h5.version.map <- data.frame(
         df[df[["Version"]] == version, select]
 }
 
-.validateRanges <- function(file, group, ranges) {
+.validateRanges <- function(file, group, ranges, remote) {
     if (!isScalarCharacter(ranges))
         NA_character_
     else
         tryCatch({
-            rhdf5::h5read(file, name = paste0(group, ranges), index = list(1L))
+            rhdf5::h5read(
+                file,
+                name = paste0(group, ranges),
+                index = list(1L),
+                s3 = remote
+            )
             ranges
         }, error = function(e) {
             warning(
