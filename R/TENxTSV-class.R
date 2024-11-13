@@ -59,6 +59,9 @@ TENxTSV <-  function(resource, compressed = FALSE, ...) {
 }
 
 #' @describeIn TENxTSV-class `metadata` method for `TENxTSV` objects
+#'
+#' @param x A `TENxTSV` object
+#'
 #' @exportMethod metadata
 setMethod("metadata", "TENxTSV", function(x, ...) {
     sn <- slotNames(x)
