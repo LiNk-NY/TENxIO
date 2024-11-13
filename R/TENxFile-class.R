@@ -137,6 +137,7 @@ TENxFile <- function(resource, extension, ...) {
 #' @return A list of metadata for the given object
 #'
 #' @importFrom S4Vectors metadata
+#' @importFrom methods slotNames
 #'
 #' @exportMethod metadata
 setMethod("metadata", "TENxFile", function(x, ...) {
