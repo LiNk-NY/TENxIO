@@ -43,9 +43,8 @@ provide a snapshot of the data using a length 12 head and tail subset for
 efficiency. In contrast, methods such as \code{dimnames} and \code{dim} give
 a full view of the dimensions of the data. The \code{show} method provides
 relevant information regarding the dimensions of the data including
-metadata such as \code{rowData} and "Type" column, if available. The term
-"projection" refers to the data class that will be provided once the
-data file is \code{import}ed.
+metadata such as \code{rowData} and "Type" column, if available. The data files
+are \code{import}ed as \code{SingleCellExperiment} class objects.
 
 An additional \code{ref} argument can be provided when the file contains
 multiple \code{feature_type} in the file or "Type" in the \code{rowData}. By default,

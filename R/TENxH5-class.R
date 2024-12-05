@@ -82,9 +82,8 @@
 #'   efficiency. In contrast, methods such as `dimnames` and `dim` give
 #'   a full view of the dimensions of the data. The `show` method provides
 #'   relevant information regarding the dimensions of the data including
-#'   metadata such as `rowData` and "Type" column, if available. The term
-#'   "projection" refers to the data class that will be provided once the
-#'   data file is `import`ed.
+#'   metadata such as `rowData` and "Type" column, if available. The data files
+#'   are `import`ed as `SingleCellExperiment` class objects.
 #'
 #'   An additional `ref` argument can be provided when the file contains
 #'   multiple `feature_type` in the file or "Type" in the `rowData`. By default,
@@ -394,7 +393,6 @@ setMethod("show", "TENxH5", function(object) {
     cat(
         class(object), "object",
         "\nresource:", path(object),
-        "\nprojection:", "SingleCellExperiment",
         "\ndim:", dim(object),
         "\nrownames:", rn,
         "\nrowData", rdnamecount, rdnames,
